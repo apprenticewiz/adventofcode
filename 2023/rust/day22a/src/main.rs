@@ -1,39 +1,12 @@
+use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs;
 use std::process;
 
-#[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
+#[derive(Copy, Clone, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
 struct Point(u32, u32, u32);
 
-#[derive(Clone, Copy, Debug, PartialEq)]
-struct Brick {
-    start: Point,
-    end: Point,
-}
-
-impl Brick {
-    // this is really dumb, and there is surely a better way to do this
-    fn intersects(&self, other: Brick) -> bool {
-        for x1 in self.start.0..=self.end.0 {
-            for y1 in self.start.1..=self.end.1 {
-                for z1 in self.start.2..=self.end.2 {
-                    let p1 = Point(x1, y1, z1);
-                    for x2 in other.start.0..=other.end.0 {
-                        for y2 in other.start.1..=other.end.1 {
-                            for z2 in other.start.2..=other.end.2 {
-                                let p2 = Point(x2, y2, z2);
-                                if p1 == p2 {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        false
-    }
-}
+type Brick = HashSet<Point>;
 
 fn usage() {
     let progname = env::args().next().unwrap();
@@ -53,68 +26,106 @@ fn parse_input(contents: &str) -> Vec<Brick> {
             .split(',')
             .map(|x| x.parse::<u32>().unwrap())
             .collect::<Vec<u32>>();
-        let brick: Brick = Brick {
-            start: Point(sv[0], sv[1], sv[2]),
-            end: Point(ev[0], ev[1], ev[2]),
-        };
+        let mut brick: Brick = HashSet::new();
+        for z in sv[2]..=ev[2] {
+            for y in sv[1]..=ev[1] {
+                for x in sv[0]..=ev[0] {
+                    brick.insert(Point(x, y, z));
+                }
+            }
+        }
         bricks.push(brick);
     }
-    bricks.sort_by_key(|x| x.start.2);
+    bricks.sort_by(|a, b| {
+        let min_a = a.iter().map(|&Point(_, _, z)| z).min().unwrap();
+        let min_b = b.iter().map(|&Point(_, _, z)| z).min().unwrap();
+        min_a.cmp(&min_b)
+    });
     bricks
 }
 
-fn drop_bricks(bricks: &[Brick]) -> Vec<Brick> {
-    let mut dropped: u32 = 0;
-    let mut working_bricks = bricks.to_vec();
-    loop {
-        let mut next_bricks: Vec<Brick> = vec![];
-        for i in 0..working_bricks.len() {
-            let brick = &working_bricks[i];
-            let new_brick: Brick = Brick {
-                start: Point(brick.start.0, brick.start.1, brick.start.2 - 1),
-                end: Point(brick.end.0, brick.end.1, brick.end.2 - 1),
-            };
-            let mut intersected = false;
-            for other_brick in working_bricks.iter().take(i) {
-                if new_brick.intersects(*other_brick) {
-                    intersected = true;
-                    break;
+fn drop_bricks(bricks: &[Brick]) -> HashMap<usize, HashSet<usize>> {
+    let mut occupied: HashMap<Point, usize> = HashMap::new();
+    let mut supports: HashMap<usize, HashSet<usize>> = HashMap::new();
+    for i in 0..bricks.len() {
+        supports.insert(i, HashSet::new());
+    }
+    for i in 0..bricks.len() {
+        let mut brick = bricks.get(i).unwrap().clone();
+        let mut next_pos: Brick = brick
+            .iter()
+            .map(|&Point(x, y, z)| Point(x, y, z - 1))
+            .collect();
+        let mut intersected: HashSet<usize> = HashSet::new();
+        for pos in next_pos.iter() {
+            if occupied.contains_key(&pos) {
+                intersected.insert(*occupied.get(&pos).unwrap());
+            }
+        }
+        while intersected.is_empty() && !next_pos.iter().map(|&Point(_, _, z)| z).any(|x| x == 0) {
+            brick = next_pos;
+            next_pos = brick
+                .iter()
+                .map(|&Point(x, y, z)| Point(x, y, z - 1))
+                .collect();
+            intersected = HashSet::new();
+            for pos in next_pos.iter() {
+                if occupied.contains_key(&pos) {
+                    intersected.insert(*occupied.get(&pos).unwrap());
                 }
             }
-            if !intersected && new_brick.start.2 != 0 && new_brick.end.2 != 0 {
-                next_bricks.push(new_brick);
-                dropped += 1;
-            } else {
-                next_bricks.push(*brick);
-            }
         }
-        working_bricks = next_bricks;
-        if dropped == 0 {
-            break;
-        } else {
-            dropped = 0;
+        let mut occupied_i: HashMap<Point, usize> = HashMap::new();
+        for pos in brick.iter() {
+            occupied_i.insert(*pos, i);
+        }
+        occupied.extend(&occupied_i);
+        for parent in intersected.iter() {
+            supports.entry(*parent).and_modify(|x| {
+                x.insert(i);
+            });
         }
     }
-    working_bricks
+    supports
 }
 
-fn count_safes(bricks: &Vec<Brick>) -> u32 {
-    let mut count: u32 = 0;
-    for i in 0..bricks.len() {
-        let mut working_bricks = bricks.clone();
-        working_bricks.remove(i);
-        let dropped_bricks = drop_bricks(&working_bricks);
-        if dropped_bricks == working_bricks {
-            count += 1;
+fn calc_supported(supports: &HashMap<usize, HashSet<usize>>) -> HashMap<usize, HashSet<usize>> {
+    let mut supported: HashMap<usize, HashSet<usize>> = HashMap::new();
+    for (parent, children) in supports.iter() {
+        for child in children.iter() {
+            supported
+                .entry(*child)
+                .and_modify(|x| {
+                    x.insert(*parent);
+                })
+                .or_insert(HashSet::from([*parent]));
         }
     }
-    count
+    supported
+}
+
+fn count_supports(
+    supports: &HashMap<usize, HashSet<usize>>,
+    supported: &HashMap<usize, HashSet<usize>>,
+) -> u32 {
+    let mut safe: HashSet<usize> = HashSet::new();
+    for (parent, children) in supports.iter() {
+        if children.is_empty()
+            || children
+                .iter()
+                .all(|child| supported.get(child).unwrap().len() > 1)
+        {
+            safe.insert(*parent);
+        }
+    }
+    safe.len() as u32
 }
 
 fn process(contents: &str) -> u32 {
-    let mut bricks = parse_input(contents);
-    bricks = drop_bricks(&bricks);
-    count_safes(&bricks)
+    let bricks = parse_input(contents);
+    let supports = drop_bricks(&bricks);
+    let supported = calc_supported(&supports);
+    count_supports(&supports, &supported)
 }
 
 fn main() {
