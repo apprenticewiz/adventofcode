@@ -1,72 +1,71 @@
 module Main ( main ) where
 
 import Data.List
-import Data.Maybe
 import System.Environment
 import System.Exit
+import System.IO
 
-usage :: IO ()
-usage =
-    do
-        progName <- getProgName    
-        putStrLn ("usage: " ++ progName ++ " <file>")
-        exitFailure
+totalRed :: Int
+totalRed = 12
 
-splitOn :: Char -> String -> [String]
-splitOn _ [] = [""]
-splitOn delimiter (x:xs)
-  | x == delimiter = "" : rest
-  | otherwise = (x : head rest) : tail rest
-  where
-    rest = splitOn delimiter xs
+totalGreen :: Int
+totalGreen = 13
 
-trimLeft :: String -> String
-trimLeft [] = []
-trimLeft (x:xs)
-    | x == ' ' || x == '\t' || x == '\n' = trimLeft xs
-    | otherwise = x : xs
+totalBlue :: Int
+totalBlue = 14
 
-checkColors :: String -> Bool
-checkColors colorAmounts =
-    let trimmed = trimLeft colorAmounts
-        amountPart = (splitOn ' ' trimmed) !! 0
-        color = (splitOn ' ' trimmed) !! 1
-        amount = read amountPart :: Int
-        reds = 12
-        greens = 13
-        blues = 14
-    in case color of
-        "red" -> amount <= reds
-        "green" -> amount <= greens
-        "blue" -> amount <= blues
-        otherwise -> error ("unknown color: '" ++ color ++ "'")
-
-validDraws :: String -> Bool
-validDraws draws = all (== True) (map validDraw $ splitOn ';' draws)
-    where validDraw draw = all (== True) (map checkColors $ splitOn ',' draw)
-
-processLines :: [String] -> Int -> Int
-processLines [] result = result
-processLines (line:rest) result =
-    let gamePart = (splitOn ':' line) !! 0
-        drawsPart = (splitOn ':' line) !! 1
-        gameIdPart = (splitOn ' ' gamePart) !! 1
-        gameId = (read gameIdPart) :: Int
-    in if (validDraws drawsPart)
-        then processLines rest (result + gameId)
-        else processLines rest result
+usage :: IO a
+usage = do
+  progname <- getProgName
+  putStrLn $ "usage: " ++ progname ++ " <file>"
+  exitWith (ExitFailure 1)
 
 process :: String -> Int
-process contents = processLines (lines contents) 0
+process contents = sum validGames
+  where
+    validGames = [gameNum | line <- lines contents
+                           , let gameStr =  head (splitOn ": " line)
+                           , let revealsStr = head $ drop 1 (splitOn ": " line)
+                           , let gameNumStr = head $ drop 1 (words gameStr)
+                           , let gameNum = read gameNumStr :: Int
+                           , let valid = all (\subsetStr ->
+                                              all (\cubesStr ->
+                                                     let color = head $ drop 1 (words cubesStr)
+                                                         amountStr = head (words cubesStr)
+                                                         amount = read amountStr :: Int
+                                                     in case color of
+                                                          "red"   -> amount <= totalRed
+                                                          "green" -> amount <= totalGreen
+                                                          "blue"  -> amount <= totalBlue
+                                                          _       -> error ("unknown color: '" ++ color ++ "'")
+                                                  ) (splitOn ", " subsetStr)
+                                          ) (splitOn "; " revealsStr)
+                           , valid
+                           ]
+
+splitOn :: Eq a => [a] -> [a] -> [[a]]
+splitOn _ [] = []
+splitOn delimiter list =
+  chunk : splitOn delimiter rest
+  where
+    (chunk, rest) = breakList delimiter list
+
+breakList :: Eq a => [a] -> [a] -> ([a], [a])
+breakList delimiter list =
+  case stripPrefix delimiter list of
+    Just suffix -> ([], suffix)
+    Nothing ->
+      case list of
+        [] -> ([], [])
+        x : xs -> let (chunk, rest) = breakList delimiter xs in (x : chunk, rest)
 
 main :: IO ()
-main =
-    do
-        args <- getArgs
-        if (length args) < 1
-            then usage
-            else do
-                     let filename = head args
-                     contents <- readFile filename
-                     let result = process contents
-                     putStrLn ("result = " ++ (show result))
+main = do
+  args <- getArgs
+  case args of
+    [] -> usage
+    [filename] -> do
+      contents <- readFile filename
+      let result = process contents
+      putStrLn $ "result = " ++ show result
+    _ -> usage

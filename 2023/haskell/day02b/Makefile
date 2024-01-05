@@ -1,6 +1,6 @@
 GHC = ghc
 
-TARGET = day02a
+TARGET = day02b
 
 all: $(TARGET).exe
 
