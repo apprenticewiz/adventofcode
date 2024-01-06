@@ -26,8 +26,8 @@
                                            max-index))
                                        nil
                                        digits)
-                    left-digit (if (nil? min-index) \x (get line min-index))
-                    right-digit (if (nil? max-index) \x (get line max-index))]
+                    left-digit (get line min-index)
+                    right-digit (get line max-index)]
                 (+ (* (- (int left-digit) (int \0)) 10)
                    (- (int right-digit) (int \0))))))))
 
