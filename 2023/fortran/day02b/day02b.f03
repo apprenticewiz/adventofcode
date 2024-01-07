@@ -70,11 +70,11 @@ function process(filename)
                         amount_str = trim(color_amount(1:color_pos - 1))
                         read (amount_str, *) amount
                         color = trim(color_amount(color_pos + 1:))
-                        if ( trim(color) .eq. "red" .and. amount > red_needed ) then
+                        if ( trim(color) .eq. "red" .and. amount .gt. red_needed ) then
                             red_needed = amount
-                        else if ( trim(color) .eq. "green" .and. amount > green_needed ) then
+                        else if ( trim(color) .eq. "green" .and. amount .gt. green_needed ) then
                             green_needed = amount
-                        else if ( trim(color) .eq. "blue" .and. amount > blue_needed ) then
+                        else if ( trim(color) .eq. "blue" .and. amount .gt. blue_needed ) then
                             blue_needed = amount
                         end if
                         if ( inner_pos .eq. 0 ) then

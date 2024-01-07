@@ -72,11 +72,11 @@ function process(filename)
                         amount_str = trim(color_amount(1:color_pos - 1))
                         read (amount_str, *) amount
                         color = trim(color_amount(color_pos + 1:))
-                        if ( trim(color) .eq. "red" .and. amount > TOTAL_RED ) then
+                        if ( trim(color) .eq. "red" .and. amount .gt. TOTAL_RED ) then
                             valid = .false.
-                        else if ( trim(color) .eq. "green" .and. amount > TOTAL_GREEN ) then
+                        else if ( trim(color) .eq. "green" .and. amount .gt. TOTAL_GREEN ) then
                             valid = .false.
-                        else if ( trim(color) .eq. "blue" .and. amount > TOTAL_BLUE ) then
+                        else if ( trim(color) .eq. "blue" .and. amount .gt. TOTAL_BLUE ) then
                             valid = .false.
                         end if
                         if ( inner_pos .eq. 0 ) then
