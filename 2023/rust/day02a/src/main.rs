@@ -13,7 +13,7 @@ fn usage() {
 }
 
 fn process(contents: &str) -> u32 {
-    let mut valid_games: Vec<u32> = vec![];
+    let mut result: u32 = 0;
     for line in contents.lines() {
         if let Some((game_str, reveals_str)) = line.split_once(": ") {
             if let Some((_, game_num_str)) = game_str.split_once(' ') {
@@ -45,12 +45,12 @@ fn process(contents: &str) -> u32 {
                     }
                 }
                 if valid {
-                    valid_games.push(game_num);
+                    result += game_num;
                 }
             }
         }
     }
-    valid_games.iter().sum()
+    result
 }
 
 fn main() {

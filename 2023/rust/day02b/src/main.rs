@@ -8,17 +8,17 @@ fn usage() {
     process::exit(1);
 }
 
-fn process(contents: &str) -> u64 {
-    let mut powers: Vec<u64> = vec![];
+fn process(contents: &str) -> u32 {
+    let mut result: u32 = 0;
     for line in contents.lines() {
         if let Some((_, reveals_str)) = line.split_once(": ") {
-            let mut red_needed: u64 = 0;
-            let mut green_needed: u64 = 0;
-            let mut blue_needed: u64 = 0;
+            let mut red_needed: u32 = 0;
+            let mut green_needed: u32 = 0;
+            let mut blue_needed: u32 = 0;
             for subset_str in reveals_str.split("; ") {
                 for cubes_str in subset_str.split(", ") {
                     if let Some((amount_str, color)) = cubes_str.split_once(' ') {
-                        let amount: u64 = amount_str.parse::<u64>().unwrap();
+                        let amount: u32 = amount_str.parse::<u32>().unwrap();
                         match color {
                             "red" => {
                                 if amount > red_needed {
@@ -40,10 +40,10 @@ fn process(contents: &str) -> u64 {
                     }
                 }
             }
-            powers.push(red_needed * green_needed * blue_needed);
+            result += red_needed * green_needed * blue_needed;
         }
     }
-    powers.iter().sum()
+    result
 }
 
 fn main() {
