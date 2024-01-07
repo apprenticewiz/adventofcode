@@ -64,7 +64,7 @@ function process(filename)
     process = sum
 end function
 
-program template
+program day01a
     implicit none
 
     integer :: process

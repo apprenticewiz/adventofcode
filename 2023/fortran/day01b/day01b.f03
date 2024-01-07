@@ -93,7 +93,7 @@ function process(filename)
     process = sum
 end function
 
-program template
+program day01b
     implicit none
 
     integer :: process
