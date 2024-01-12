@@ -35,7 +35,7 @@ fun process(contents: String): Int {
         var leftDigit: Int? = null
         var rightDigit: Int? = null
         if ( line.isEmpty() ) {
-            break;
+            break
         }
         digitsMap.keys.forEach { digit ->
             if ( line.contains(digit) ) {

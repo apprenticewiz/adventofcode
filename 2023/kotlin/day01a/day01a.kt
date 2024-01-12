@@ -14,7 +14,7 @@ fun process(contents: String): Int {
         var leftDigit: Char? = null
         var rightDigit: Char? = null
         if ( line.isEmpty() ) {
-            break;
+            break
         }
         digits.forEach { digit ->
             if ( line.contains(digit) ) {
