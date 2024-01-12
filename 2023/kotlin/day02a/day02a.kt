@@ -25,7 +25,7 @@ fun process(contents: String): Int {
                             cubesStr.split(' ').let { (amountStr, color) ->
                                 val amount = amountStr.toIntOrNull()
                                 if ( amount != null ) {
-                                    when (color) {
+                                    when ( color ) {
                                         "red" -> if (amount > TOTAL_RED) valid = false
                                         "green" -> if (amount > TOTAL_GREEN) valid = false
                                         "blue" -> if (amount > TOTAL_BLUE) valid = false
