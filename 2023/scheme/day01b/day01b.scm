@@ -1,4 +1,4 @@
-(module day01a (main main))
+(module day01b (main main))
 
 (define (prog-usage progname)
     (display (format "usage: ~a <file>" progname))
