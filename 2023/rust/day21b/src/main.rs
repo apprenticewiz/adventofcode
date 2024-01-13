@@ -87,7 +87,7 @@ fn process(contents: &str) -> i64 {
     let b2: i64 = walk(&garden, 65 + 2 * 131) as i64;
     let n: i64 = 202300;
     // the following formula comes from inv(A) * B = X,
-    // where A is Vandemonde matrix:
+    // where A is Vandermonde matrix:
     // [ 0 0 1 ]
     // [ 1 1 1 ]
     // [ 4 2 1 ]
