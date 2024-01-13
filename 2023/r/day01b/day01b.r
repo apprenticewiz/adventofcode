@@ -1,9 +1,9 @@
 #!/usr/bin/env Rscript
 
-prog_name <- "day01b.r"
+PROG_NAME <- "day01b.r"
 
 usage <- function() {
-    cat("usage:", prog_name, "<file>\n")
+    cat("usage:", PROG_NAME, "<file>\n")
     quit(status=1)
 }
 
