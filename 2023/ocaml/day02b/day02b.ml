@@ -20,7 +20,7 @@ let process contents =
             String.split_on_char ',' trimmed_draw
             |> List.iter (fun color_amount ->
                let trimmed_color_amount =
-                 if (String.get color_amount 0) == ' '
+                 if (String.get color_amount 0) = ' '
                     then (String.sub color_amount 1 ((String.length color_amount) - 1))
                     else color_amount
                in
