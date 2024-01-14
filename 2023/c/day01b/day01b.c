@@ -31,7 +31,9 @@ uint32_t process(const char *filename) {
     size_t len = 0;
     ssize_t nread = 0;
     char *ptr = NULL;
-    int min_index, max_index, left_index, right_index, left_digit, right_digit = 0;
+    int min_index = 0, max_index = 0;
+    int left_index = 0, right_index = 0;
+    int left_digit = 0, right_digit = 0;
 
     if ( (infile = fopen(filename, "r")) == NULL ) {
         perror("fopen");
