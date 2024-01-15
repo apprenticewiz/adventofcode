@@ -1,4 +1,3 @@
-
 Object subclass: Day01a [
     Day01a class >> usage [
        'usage: ./run.sh <progname> <file>' displayNl.

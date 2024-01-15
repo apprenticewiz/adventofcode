@@ -1,10 +1,9 @@
-
-Object subclass: Day01a [
-    Day01a class >> usage [
+Object subclass: Day01b [
+    Day01b class >> usage [
        'usage: ./run.sh <progname> <file>' displayNl.
     ]
 
-    Day01a class >> process: contents [
+    Day01b class >> process: contents [
         | result digitsMap minIndex maxIndex leftDigit rightDigit leftIndex rightIndex |
         result := 0.
         digitsMap := LookupTable new.
@@ -56,7 +55,7 @@ Object subclass: Day01a [
         ^ result.
     ]
 
-    Day01a class >> main [
+    Day01b class >> main [
         | filename contents result |
         (Smalltalk arguments size < 1) ifTrue: [ ^self usage ].
         filename := Smalltalk arguments at: 1.
@@ -66,4 +65,4 @@ Object subclass: Day01a [
     ]
 ]
 
-Day01a main.
+Day01b main.
