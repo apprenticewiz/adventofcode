@@ -21,7 +21,7 @@ Object subclass: Day02b [
                     ((color = 'blue') & (amount > blueNeeded)) ifTrue: [ blueNeeded := amount ].
                 ].
             ].
-            result := result + (redNeeded * greenNeeded * blueNeeded ).
+            result := result + (redNeeded * greenNeeded * blueNeeded).
         ].
         ^ result.
     ]
