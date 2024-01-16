@@ -17,7 +17,7 @@ process_line(Line) ->
         fun(Draws, {CurrentRed, CurrentGreen, CurrentBlue}) ->
             lists:foldl(
                 fun(ColorAmount, {RedNeeded, GreenNeeded, BlueNeeded}) ->
-                    [AmountStr | _] = string:split(ColorAmount, " "),
+                    AmountStr = hd(string:split(ColorAmount, " ")),
                     Color = lists:last(string:split(ColorAmount, " ")),
                     {Amount, _} = string:to_integer(AmountStr),
                     case Color of

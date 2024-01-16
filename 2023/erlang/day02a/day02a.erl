@@ -19,7 +19,7 @@ process_lines([Line | Rest], Result) ->
     end.
 
 process_line(Line) ->
-    [GamePart | _] = string:split(Line, ": "),
+    GamePart = hd(string:split(Line, ": ")),
     GameNumPart = lists:last(string:split(GamePart, " ")),
     {GameNum, _} = string:to_integer(GameNumPart),
     DrawsPart = lists:last(string:split(Line, ": ")),
@@ -27,7 +27,7 @@ process_line(Line) ->
         fun(Draws, CurrentValid) ->
             lists:foldl(
                 fun(ColorAmount, DrawValid) ->
-                    [AmountStr | _] = string:split(ColorAmount, " "),
+                    AmountStr = hd(string:split(ColorAmount, " ")),
                     Color = lists:last(string:split(ColorAmount, " ")),
                     {Amount, _} = string:to_integer(AmountStr),
                     case Color of
