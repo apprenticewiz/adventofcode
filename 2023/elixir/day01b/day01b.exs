@@ -16,31 +16,31 @@ defmodule Day01b do
     }
     Enum.reduce(lines, 0, fn line, result ->
       {_min_index, left_digit} =
-        Enum.reduce_while(Map.keys(digits_map), {nil, nil}, fn digit, {min_val, left} ->
+        Enum.reduce(Map.keys(digits_map), {nil, nil}, fn digit, {min_val, left} ->
           if String.contains?(line, digit) do
             {:ok, pattern} = Regex.compile(digit)
             {left_index, _} = hd(hd(Regex.scan(pattern, line, return: :index)))
             case min_val do
-              nil -> {:cont, {left_index, digit}}
-              _ when left_index < min_val -> {:cont, {left_index, digit}}
-              _ -> {:cont, {min_val, left}}
+              nil -> {left_index, digit}
+              _ when left_index < min_val -> {left_index, digit}
+              _ -> {min_val, left}
             end
           else
-            {:cont, {min_val, left}}
+            {min_val, left}
           end
         end)
       {_max_index, right_digit} =
-        Enum.reduce_while(Map.keys(digits_map), {nil, nil}, fn digit, {max_val, right} ->
+        Enum.reduce(Map.keys(digits_map), {nil, nil}, fn digit, {max_val, right} ->
           if String.contains?(line, digit) do
             {:ok, pattern} = Regex.compile(digit)
             {right_index, _} = hd(List.last(Regex.scan(pattern, line, return: :index)))
             case max_val do
-              nil -> {:cont, {right_index, digit}}
-              _ when right_index > max_val -> {:cont, {right_index, digit}}
-              _ -> {:cont, {max_val, right}}
+              nil -> {right_index, digit}
+              _ when right_index > max_val -> {right_index, digit}
+              _ -> {max_val, right}
             end
           else
-            {:cont, {max_val, right}}
+            {max_val, right}
           end
         end)
         result + Map.get(digits_map, left_digit) * 10 + Map.get(digits_map, right_digit)
