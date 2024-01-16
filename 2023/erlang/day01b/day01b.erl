@@ -1,8 +1,8 @@
--module (day01a).
+-module (day01b).
 -export ([main/1]).
 
 usage() ->
-    Module = "day01a.erl",
+    Module = "day01b.erl",
     io:format("usage: escript ~p <file>~n", [Module]),
     halt(1).
 
