@@ -8,10 +8,6 @@
 
 (defrecord Position [row col])
 
-(defrecord NumberLocation [number pos])
-
-(defrecord GearLocation [gear pos])
-
 (defn build-numbers [contents]
   (let [number-str (atom "")
         scanning-number (atom false)
