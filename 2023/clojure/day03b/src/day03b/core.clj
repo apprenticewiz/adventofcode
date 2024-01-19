@@ -15,17 +15,16 @@
 (defn build-numbers [contents]
   (let [number-str (atom "")
         scanning-number (atom false)
-        number-loc (atom nil)
-        number-locs (atom [])]
+        current-loc (atom nil)
+        number-locs (atom {})]
     (doseq [[row line] (map-indexed vector (str/split-lines contents))]
       (doseq [[col ch] (map-indexed vector line)]
         (if @scanning-number
           (if (Character/isDigit ch)
             (swap! number-str str ch)
             (do
-              (reset! number-loc (assoc @number-loc :number @number-str))
-              (swap! number-locs conj @number-loc)
-              (reset! number-loc nil)
+              (reset! number-locs (assoc @number-locs @current-loc @number-str))
+              (reset! current-loc nil)
               (reset! number-str "")
               (reset! scanning-number false)))
           (do
@@ -33,44 +32,42 @@
               (do
                 (reset! scanning-number true)
                 (swap! number-str str ch)
-                (reset! number-loc (assoc @number-loc :pos (->Position row col))))))))
+                (reset! current-loc (->Position row col)))))))
       (if @scanning-number
         (do
-          (reset! number-loc (assoc @number-loc :number @number-str))
-          (swap! number-locs conj @number-loc)
-          (reset! number-loc nil)
+          (reset! number-locs (assoc @number-locs @current-loc @number-str))
+          (reset! current-loc nil)
           (reset! number-str "")
           (reset! scanning-number false))))
     @number-locs))
 
 (defn build-gears [contents]
-  (let [gear-locs (atom [])]
+  (let [gear-locs (atom {})]
     (doseq [[row line] (map-indexed vector (str/split-lines contents))]
       (doseq [[col ch] (map-indexed vector line)]
-        (if (and (not (Character/isDigit ch))
-                 (not (= ch \.)))
-          (swap! gear-locs conj (->GearLocation ch (->Position row col))))))
+        (if (= ch \*)
+          (reset! gear-locs (assoc @gear-locs (->Position row col) ch)))))
     @gear-locs))
 
 (defn check-gears [number-locs gear-locs]
   (let [result (atom 0)]
-    (doseq [gear-loc gear-locs]
+    (doseq [gear-loc (keys gear-locs)]
       (let [adjacents (atom [])]
-        (doseq [number-loc number-locs]
+        (doseq [number-loc (keys number-locs)]
           (let [skip (atom false)]
             (doseq [delta-row (range -1 2)]
-              (let [adjacent-row (+ (-> gear-loc :pos :row) delta-row)]
+              (let [adjacent-row (+ (-> gear-loc :row) delta-row)]
                 (doseq [delta-col (range -1 2)]
-                  (let [adjacent-col (+ (-> gear-loc :pos :col) delta-col)
-                        number-col-start (-> number-loc :pos :col)
-                        number-col-end (+ (-> number-loc :pos :col) (count (-> number-loc :number)))]
+                  (let [adjacent-col (+ (-> gear-loc :col) delta-col)
+                        number-col-start (-> number-loc :col)
+                        number-col-end (+ (-> number-loc :col) (count (get number-locs number-loc)))]
                     (doseq [number-col (range number-col-start number-col-end)]
                       (if (and (not @skip)
-                               (= adjacent-row (-> number-loc :pos :row))
+                               (= adjacent-row (-> number-loc :row))
                                (= adjacent-col number-col))
                         (do
                           (reset! skip true)
-                          (swap! adjacents conj (Integer/parseInt (-> number-loc :number))))))))))))
+                          (swap! adjacents conj (Integer/parseInt (get number-locs number-loc))))))))))))
         (if (= (count @adjacents) 2)
           (swap! result + (reduce * @adjacents)))))
     @result))
