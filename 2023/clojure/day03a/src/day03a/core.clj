@@ -9,66 +9,72 @@
 (defrecord Position [row col])
 
 (defn build-numbers [contents]
-  (let [number-str (atom "")
-        scanning-number (atom false)
-        current-loc (atom nil)
-        number-locs (atom {})]
-    (doseq [[row line] (map-indexed vector (str/split-lines contents))]
-      (doseq [[col ch] (map-indexed vector line)]
-        (if @scanning-number
-          (if (Character/isDigit ch)
-            (swap! number-str str ch)
-            (do
-              (reset! number-locs (assoc @number-locs @current-loc @number-str))
-              (reset! current-loc nil)
-              (reset! number-str "")
-              (reset! scanning-number false)))
-          (do
-            (if (Character/isDigit ch)
-              (do
-                (reset! scanning-number true)
-                (swap! number-str str ch)
-                (reset! current-loc (->Position row col)))))))
-      (if @scanning-number
-        (do
-          (reset! number-locs (assoc @number-locs @current-loc @number-str))
-          (reset! current-loc nil)
-          (reset! number-str "")
-          (reset! scanning-number false))))
-    @number-locs))
+  (nth (reduce
+    (fn [[row num-locs] line]
+      [(+ row 1) 
+      (nth (reduce
+          (fn [[col scanning-number number current-pos num-locs] ch]
+            (if scanning-number
+              (if (Character/isDigit ch)
+                (if (= (+ col 1) (count line))
+                  [(+ col 1) false "" (->Position -1 -1) (assoc num-locs current-pos (str number ch))]
+                  [(+ col 1) true (str number ch) current-pos num-locs])
+                [(+ col 1) false "" (->Position -1 -1) (assoc num-locs current-pos number)])
+              (if (Character/isDigit ch)
+                [(+ col 1) true (str ch) (->Position row col) num-locs]
+                [(+ col 1) false "" (->Position -1 -1) num-locs])))
+          [0 false "" (->Position -1 -1) num-locs]
+          line) 4)])
+    [0 {}]
+    (str/split-lines contents)) 1))
 
-(defn build-gears [contents]
-  (let [gear-locs (atom {})]
-    (doseq [[row line] (map-indexed vector (str/split-lines contents))]
-      (doseq [[col ch] (map-indexed vector line)]
-        (if (and (not (Character/isDigit ch))
-                 (not (= ch \.)))
-          (reset! gear-locs (assoc @gear-locs (->Position row col) ch)))))
-    @gear-locs))
+(defn build-parts [contents]
+  (nth (reduce
+    (fn [[row part-locs] line]
+      [(+ row 1) (nth (reduce
+        (fn [[col part-locs] ch]
+            (if (and (not (Character/isDigit ch)) (not= ch \.))
+              [(+ col 1) (assoc part-locs (->Position row col) ch)]
+              [(+ col 1) part-locs]))
+        [0 part-locs]
+        line) 1)])
+    [0 {}]
+    (str/split-lines contents)) 1))
 
-(defn check-gears [number-locs gear-locs]
-  (let [result (atom 0)]
-    (doseq [number-loc (keys number-locs)]
-      (let [adjacent-count (atom 0)
-            number-col-start (-> number-loc :col)
-            number-col-end (+ (-> number-loc :col) (count (get number-locs number-loc)))]
-        (doseq [number-col (range number-col-start number-col-end)]
-          (doseq [delta-row (range -1 2)]
-            (let [adjacent-row (+ (-> number-loc :row) delta-row)]
-              (doseq [delta-col (range -1 2)]
-                (let [adjacent-col (+ number-col delta-col)]
-                  (doseq [gear-loc (keys gear-locs)]
-                    (if (and (= adjacent-row (-> gear-loc :row))
-                             (= adjacent-col (-> gear-loc :col)))
-                      (reset! adjacent-count (+ @adjacent-count 1)))))))))
-        (if (not (= @adjacent-count 0))
-          (swap! result + (Integer/parseInt (get number-locs number-loc))))))
-    @result))
+(defn check-parts [number-locs part-locs]
+  (reduce
+    (fn [result number-loc]
+      (let [number-row (-> number-loc :row)
+            number-col-first (-> number-loc :col)
+            number-col-last (+ (-> number-loc :col) (count (get number-locs number-loc)))
+            found-adjacent (reduce
+              (fn [found number-col]
+                (if found
+                  true
+                  (reduce
+                    (fn [found-adjacent neighbor]
+                      (let [adjacent-pos (->Position (+ (-> number-loc :row) (-> neighbor :row))
+                                                     (+ number-col (-> neighbor :col)))]
+                        (if (contains? part-locs adjacent-pos)
+                          true
+                          found-adjacent)))
+                    false
+                    [(->Position -1 -1) (->Position -1 0) (->Position -1 1)
+                     (->Position 0 -1) (->Position 0 1)
+                     (->Position 1 -1) (->Position 1 0) (->Position 1 1)])))
+              false
+              (range number-col-first number-col-last)
+            )]
+        (if found-adjacent
+          (+ result (Integer/parseInt (get number-locs number-loc)))
+          result)))
+    0
+    (keys number-locs)))
 
 (defn process [contents]
   (let [number-locs (build-numbers contents)
-        gear-locs (build-gears contents)]
-    (check-gears number-locs gear-locs)))
+        part-locs (build-parts contents)]
+    (check-parts number-locs part-locs)))
 
 (defn -main [& args]
   (if (< (count args) 1)
