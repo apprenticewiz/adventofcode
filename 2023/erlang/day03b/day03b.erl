@@ -48,8 +48,11 @@ check_gears(NumberLocs, GearLocs) ->
                     NumberColFirst = element(2, NumberLoc),
                     NumberColLast = element(2, NumberLoc) + string:length(maps:get(NumberLoc, NumberLocs)) - 1,
                     FoundAdjacent = lists:foldl(fun (Neighbor, Found) ->
-                            AdjacentPos = {element(1, GearLoc) + element(1, Neighbor), element(2, GearLoc) + element(2, Neighbor)},
-                            Found orelse ((element(1, AdjacentPos) == NumberRow) andalso (element(2, AdjacentPos) >= NumberColFirst) andalso (element(2, AdjacentPos) =< NumberColLast))
+                            AdjacentPos = {element(1, GearLoc) + element(1, Neighbor),
+                                           element(2, GearLoc) + element(2, Neighbor)},
+                            Found orelse ((element(1, AdjacentPos) == NumberRow) andalso
+                                          (element(2, AdjacentPos) >= NumberColFirst) andalso
+                                          (element(2, AdjacentPos) =< NumberColLast))
                         end, false, [{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}]),
                     case FoundAdjacent of
                         true -> AdjacentsVec ++ [maps:get(NumberLoc, NumberLocs)];
@@ -57,7 +60,8 @@ check_gears(NumberLocs, GearLocs) ->
                     end
                 end, [], maps:keys(NumberLocs)),
             if length(Adjacents) == 2 ->
-                Result + lists:foldl(fun (Adjacent, Acc) -> Acc * element(1, string:to_integer(Adjacent)) end, 1, Adjacents);
+                Result + lists:foldl(fun (Adjacent, Acc) ->
+                    Acc * element(1, string:to_integer(Adjacent)) end, 1, Adjacents);
             true ->
                 Result
             end
