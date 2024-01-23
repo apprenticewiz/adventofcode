@@ -53,7 +53,7 @@
                   true
                   (reduce
                     (fn [found-adjacent neighbor]
-                      (let [adjacent-pos (->Position (+ (-> number-loc :row) (-> neighbor :row))
+                      (let [adjacent-pos (->Position (+ number-row (-> neighbor :row))
                                                      (+ number-col (-> neighbor :col)))]
                         (if (contains? part-locs adjacent-pos)
                           true
