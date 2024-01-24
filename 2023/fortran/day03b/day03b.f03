@@ -331,7 +331,7 @@ function process(filename)
     process = result
 end function
 
-program day03a
+program day03b
     use position_types
     use lists
 
