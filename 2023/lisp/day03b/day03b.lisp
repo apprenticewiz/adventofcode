@@ -1,6 +1,6 @@
 #!/usr/bin/env clisp
 
-(setf *progname* "day03a.lisp")
+(setf *progname* "day03b.lisp")
 
 (defun prog-usage ()
   (format t "usage: ~a <file>" *progname*)
