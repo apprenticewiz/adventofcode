@@ -181,7 +181,7 @@ uint32_t check_gears(node_t *numbers, node_t *gears) {
                 adj_row = gear->pos.row + delta_row;
                 for ( delta_col = -1; delta_col <= 1; delta_col++ ) {
                     adj_col = gear->pos.col + delta_col;
-                    for ( num_col = numloc->pos.col; num_col < numloc->pos.col + strlen(numloc->number); num_col ++ ) {
+                    for ( num_col = numloc->pos.col; num_col < numloc->pos.col + strlen(numloc->number); num_col++ ) {
                         if ( adj_row == numloc->pos.row && adj_col == num_col ) {
                             part_num = (int *)malloc(sizeof(int));
                             *part_num = atoi(numloc->number);
