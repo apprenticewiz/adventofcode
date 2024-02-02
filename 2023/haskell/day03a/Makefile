@@ -1,4 +1,4 @@
-GHC = ghc-9.6
+GHC = ghc-9.8
 
 TARGET = day03a
 
