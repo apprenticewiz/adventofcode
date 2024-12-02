@@ -28,7 +28,7 @@ computeScores :: [Int] -> [Int] -> [Int]
 computeScores firstList secondList =
     foldl
         (\scores firstNumber ->
-            let score = firstNumber * (length $ findIndices (== firstNumber) secondList)
+            let score = firstNumber * (length $ elemIndices firstNumber secondList)
             in scores ++ [score]
         )
         []
