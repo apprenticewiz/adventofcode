@@ -12,8 +12,18 @@ fn build_lists(contents: &str) -> (Vec<u32>, Vec<u32>) {
     let mut first_list = vec![];
     let mut second_list = vec![];
     for line in contents.lines() {
-        let first_number = line.split_whitespace().next().unwrap().parse::<u32>().unwrap();
-        let second_number = line.split_whitespace().nth(1).unwrap().parse::<u32>().unwrap();
+        let first_number = line
+            .split_whitespace()
+            .next()
+            .unwrap()
+            .parse::<u32>()
+            .unwrap();
+        let second_number = line
+            .split_whitespace()
+            .nth(1)
+            .unwrap()
+            .parse::<u32>()
+            .unwrap();
         first_list.push(first_number);
         second_list.push(second_number);
     }
