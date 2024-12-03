@@ -43,7 +43,7 @@ scanReportsWithRetries levels =
         then True
         else let levelsCount = length levels
                  retries = filter (\x -> (length x) == (levelsCount - 1)) (subsequences levels)
-             in any (\x -> x) $ map scanReports retries
+             in any id $ map scanReports retries
 
 process :: String -> Int
 process contents = length $ elemIndices True $ map scanReportsWithRetries $ map (map read) $ map words $ lines contents
