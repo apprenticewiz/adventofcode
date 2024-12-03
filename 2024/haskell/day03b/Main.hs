@@ -7,8 +7,6 @@ import System.Environment
 import System.Exit
 import Text.Regex.TDFA
 
-import Debug.Trace
-
 usage :: IO ()
 usage = do
   progname <- getProgName
