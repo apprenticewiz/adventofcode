@@ -25,14 +25,7 @@ buildLists contents =
         (lines contents)
 
 computeScores :: [Int] -> [Int] -> [Int]
-computeScores firstList secondList =
-    foldl
-        (\scores firstNumber ->
-            let score = firstNumber * (length $ elemIndices firstNumber secondList)
-            in scores ++ [score]
-        )
-        []
-        firstList
+computeScores firstList secondList = map (\firstNumber -> firstNumber * (length $ elemIndices firstNumber secondList)) firstList
 
 process :: String -> Int
 process contents =

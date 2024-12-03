@@ -25,14 +25,7 @@ buildLists contents =
         (lines contents)
 
 computeDistances :: [(Int, Int)] -> [Int]
-computeDistances sortedPairs =
-    foldl
-        (\distances (firstNumber, secondNumber) ->
-            let distance = abs (firstNumber - secondNumber)
-            in distances ++ [distance]
-        )
-        []
-        sortedPairs
+computeDistances sortedPairs = map (\(first, second) -> abs (first - second)) sortedPairs
 
 process :: String -> Int
 process contents =
