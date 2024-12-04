@@ -1,10 +1,8 @@
 module Main ( main ) where
 
-import Data.Char
-import Data.List
-import Data.Maybe
-import System.Environment
-import System.Exit
+import Data.List ( elemIndices )
+import System.Environment ( getArgs, getProgName )
+import System.Exit ( exitFailure )
 
 data Direction = Unknown | Increasing | Decreasing
     deriving (Eq, Show)
