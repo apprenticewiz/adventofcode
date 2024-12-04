@@ -4,30 +4,18 @@ import Data.List ( elemIndices )
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
 
-data Direction = Unknown | Increasing | Decreasing
-    deriving (Eq, Show)
-
 usage :: IO ()
 usage = do
   progname <- getProgName
   putStrLn $ "usage: " ++ progname ++ " <file>"
-  exitFailure
+  System.Exit.exitFailure
 
 scanReports :: [Int] -> Bool
 scanReports levels =
-    let doScan :: Direction -> [Int] -> Bool
-        doScan _ [x] = True
-        doScan dir (x:y:zs) =
-            (not (x == y || abs (x - y) > 3) && (case dir of
-                        Unknown ->
-                            if y < x
-                                then doScan Decreasing (y:zs)
-                                else doScan Increasing (y:zs)
-                        Increasing ->
-                            y >= x && doScan dir (y:zs)
-                        Decreasing ->
-                            (y <= x) && doScan dir (y:zs)))
-    in doScan Unknown levels
+    let calcDiffs [x] = []
+        calcDiffs (x:y:zs) = (y - x) : calcDiffs (y:zs)
+        diffs = calcDiffs levels
+    in notElem 0 diffs && all (\x -> abs x <= 3) diffs && (all (\x -> signum x == 1) diffs || all (\x -> signum x == -1) diffs)
 
 process :: String -> Int
 process contents = length $ elemIndices True $ map ((scanReports . map read) . words) (lines contents)
