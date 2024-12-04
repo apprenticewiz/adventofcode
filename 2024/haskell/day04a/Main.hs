@@ -12,7 +12,7 @@ usage = do
 
 process :: String -> Int
 process contents =
-    let grid = words contents
+    let grid = lines contents
         maxRow = length grid
         maxCol = length (head grid)
         deltas =
