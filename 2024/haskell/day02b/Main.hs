@@ -15,7 +15,7 @@ scanReports levels =
     let calcDiffs [x] = []
         calcDiffs (x:y:zs) = (y - x) : calcDiffs (y:zs)
         diffs = calcDiffs levels
-    in notElem 0 diffs && all (\x -> abs x <= 3) diffs && (all (\x -> signum x == 1) diffs || all (\x -> signum x == -1) diffs)
+    in all (\x -> x /= 0 && abs x <= 3) diffs && (all (\x -> signum x == 1) diffs || all (\x -> signum x == -1) diffs)
 
 scanReportsWithRetries :: [Int] -> Bool
 scanReportsWithRetries levels =
