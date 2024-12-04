@@ -1,10 +1,8 @@
 module Main ( main ) where
 
-import Data.Char
-import Data.List
-import Data.Maybe
-import System.Environment
-import System.Exit
+import Data.List ( elemIndices, subsequences )
+import System.Environment ( getArgs, getProgName )
+import System.Exit ( exitFailure )
 
 data Direction = Unknown | Increasing | Decreasing
     deriving (Eq, Show)
@@ -20,33 +18,25 @@ scanReports levels =
     let doScan :: Direction -> [Int] -> Bool
         doScan _ [x] = True
         doScan dir (x:y:zs) =
-            if (x == y) || (abs (x - y)) > 3
-                then False
-                else case dir of
+            (not (x == y || abs (x - y) > 3) && (case dir of
                         Unknown ->
                             if y < x
                                 then doScan Decreasing (y:zs)
                                 else doScan Increasing (y:zs)
                         Increasing ->
-                            if y < x
-                                then False
-                                else doScan dir (y:zs)
+                            (y >= x) && doScan dir (y:zs)
                         Decreasing ->
-                            if y > x
-                                then False
-                                else doScan dir (y:zs)
+                            (y <= x) && doScan dir (y:zs)))
     in doScan Unknown levels
 
 scanReportsWithRetries :: [Int] -> Bool
 scanReportsWithRetries levels =
-    if scanReports levels
-        then True
-        else let levelsCount = length levels
-                 retries = filter (\x -> (length x) == (levelsCount - 1)) (subsequences levels)
-             in any id $ map scanReports retries
+    scanReports levels || (let levelsCount = length levels
+                               retries = filter (\x -> length x == levelsCount - 1) (subsequences levels)
+                           in any scanReports retries)
 
 process :: String -> Int
-process contents = length $ elemIndices True $ map scanReportsWithRetries $ map (map read) $ map words $ lines contents
+process contents = length $ elemIndices True $ map ((scanReportsWithRetries . map read) . words) (lines contents)
 
 main :: IO ()
 main = do

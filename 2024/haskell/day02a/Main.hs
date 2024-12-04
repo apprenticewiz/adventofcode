@@ -20,25 +20,19 @@ scanReports levels =
     let doScan :: Direction -> [Int] -> Bool
         doScan _ [x] = True
         doScan dir (x:y:zs) =
-            if (x == y) || (abs (x - y)) > 3
-                then False
-                else case dir of
+            (not (x == y || abs (x - y) > 3) && (case dir of
                         Unknown ->
                             if y < x
                                 then doScan Decreasing (y:zs)
                                 else doScan Increasing (y:zs)
                         Increasing ->
-                            if y < x
-                                then False
-                                else doScan dir (y:zs)
+                            y >= x && doScan dir (y:zs)
                         Decreasing ->
-                            if y > x
-                                then False
-                                else doScan dir (y:zs)
+                            (y <= x) && doScan dir (y:zs)))
     in doScan Unknown levels
 
 process :: String -> Int
-process contents = length $ elemIndices True $ map scanReports $ map (map read) $ map words $ lines contents
+process contents = length $ elemIndices True $ map ((scanReports . map read) . words) (lines contents)
 
 main :: IO ()
 main = do

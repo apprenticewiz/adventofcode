@@ -12,20 +12,20 @@ usage = do
 
 process :: String -> Int
 process contents =
-    let extractIsns str = getAllTextMatches (str =~ "mul\\([0-9]+,[0-9]+\\)|don't\\(\\)|do\\(\\)") :: [String]
+    let extractInsns str = getAllTextMatches (str =~ "mul\\([0-9]+,[0-9]+\\)|don't\\(\\)|do\\(\\)") :: [String]
         extractNumPair mulExpr = getAllTextMatches (mulExpr =~ "[0-9]+") :: [String]
         convertPair numPair = map read numPair :: [Int]
     in fst $ foldl
-                (\(acc, enabled) isn ->
-                  case isn of
+                (\(acc, enabled) insn ->
+                  case insn of
                     "do()" -> (acc, True)
                     "don't()" -> (acc, False)
                     _ -> if enabled
-                            then (acc + product (convertPair $ extractNumPair isn), enabled)
+                            then (acc + product (convertPair $ extractNumPair insn), enabled)
                             else (acc, enabled)
                 )
                 (0, True)
-                (extractIsns contents)
+                (extractInsns contents)
 
 main :: IO ()
 main = do

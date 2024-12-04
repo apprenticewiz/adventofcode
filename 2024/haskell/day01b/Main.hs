@@ -1,10 +1,8 @@
 module Main ( main ) where
 
-import Data.Char
-import Data.List
-import Data.Maybe
-import System.Environment
-import System.Exit
+import Data.List ( elemIndices )
+import System.Environment ( getArgs, getProgName )
+import System.Exit ( exitFailure )
 
 usage :: IO ()
 usage = do
@@ -18,14 +16,14 @@ buildLists contents =
         (\(firstList, secondList) line ->
             let numbersList = words line
                 firstNumber = read $ head numbersList :: Int
-                secondNumber = read $ head $ drop 1 numbersList :: Int
+                secondNumber = read (numbersList !! 1) :: Int
             in (firstList ++ [firstNumber], secondList ++ [secondNumber])
         )
         ([], [])
         (lines contents)
 
 computeScores :: [Int] -> [Int] -> [Int]
-computeScores firstList secondList = map (\firstNumber -> firstNumber * (length $ elemIndices firstNumber secondList)) firstList
+computeScores firstList secondList = map (\firstNumber -> firstNumber * length (elemIndices firstNumber secondList)) firstList
 
 process :: String -> Int
 process contents =

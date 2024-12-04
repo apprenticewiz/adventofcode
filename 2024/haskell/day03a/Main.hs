@@ -1,11 +1,8 @@
 module Main ( main ) where
 
-import Data.Char
-import Data.List
-import Data.Maybe
-import System.Environment
-import System.Exit
-import Text.Regex.TDFA
+import System.Environment ( getArgs, getProgName )
+import System.Exit ( exitFailure )
+import Text.Regex.TDFA ( (=~), AllTextMatches(getAllTextMatches) )
 
 usage :: IO ()
 usage = do
@@ -18,7 +15,7 @@ process contents =
     let extractMulExprs str = getAllTextMatches (str =~ "mul\\([0-9]+,[0-9]+\\)") :: [String]
         extractNumPair mulExpr = getAllTextMatches (mulExpr =~ "[0-9]+") :: [String]
         convertPair numPair = map read numPair :: [Int]
-    in sum $ map product $ map convertPair $ map extractNumPair $ extractMulExprs contents
+    in sum $ map ((product . convertPair) . extractNumPair) (extractMulExprs contents)
 
 main :: IO ()
 main = do
