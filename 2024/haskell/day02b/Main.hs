@@ -12,9 +12,7 @@ usage = do
 
 scanReports :: [Int] -> Bool
 scanReports levels =
-    let calcDiffs [x] = []
-        calcDiffs (x:y:zs) = (y - x) : calcDiffs (y:zs)
-        diffs = calcDiffs levels
+    let diffs = zipWith (flip (-)) levels (tail levels)
     in all (\x -> x /= 0 && abs x <= 3) diffs && (all (\x -> signum x == 1) diffs || all (\x -> signum x == -1) diffs)
 
 scanReportsWithRetries :: [Int] -> Bool
