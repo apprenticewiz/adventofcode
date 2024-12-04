@@ -13,28 +13,30 @@ usage = do
 process :: String -> Int
 process contents =
     let grid = lines contents
+        charAt grid row col = (grid !! row) !! col
         maxRow = length grid
         maxCol = length (head grid)
+        inBounds row col = row >= 0 && row < maxRow && col >= 0 && col < maxRow
         leftDelta = [(-1, -1), (0, 0), (1, 1)]
         rightDelta = [(-1, 1), (0, 0), (1, -1)]
         word1 = "MAS"
         word2 = reverse word1
     in length $ foldl
         (\result startingCoords ->
-            let leftCoordsToScan = filter (\(r, c) -> r >= 0 && r < maxRow && c >= 0 && c < maxCol)
+            let leftCoordsToScan = filter (uncurry inBounds)
                    (map (bimap (fst startingCoords +) (snd startingCoords +)) leftDelta)
-                rightCoordsToScan = filter (\(r, c) -> r >= 0 && r < maxRow && c >= 0 && c < maxCol)
+                rightCoordsToScan = filter (uncurry inBounds)
                    (map (bimap (fst startingCoords +) (snd startingCoords +)) rightDelta)
                 hasX leftCoords rightCoords =
-                    let leftChars = map (\(r, c) -> (grid !! r) !! c) leftCoords
-                        rightChars = map (\(r, c) -> (grid !! r) !! c) rightCoords
+                    let leftChars = map (uncurry (charAt grid)) leftCoords
+                        rightChars = map (uncurry (charAt grid)) rightCoords
                     in (leftChars == word1 || leftChars == word2) && (rightChars == word1 || rightChars == word2)
             in if hasX leftCoordsToScan rightCoordsToScan
                 then result ++ [startingCoords]
                 else result
         )
         []
-        (filter (\(r, c) -> ((grid !! r) !! c) == 'A') [(r, c) | r <- [0..(maxRow - 1)], c <- [0..(maxCol - 1)]])
+        (filter (\(r, c) -> charAt grid r c == 'A') [(r, c) | r <- [0..(maxRow - 1)], c <- [0..(maxCol - 1)]])
 
 main :: IO ()
 main = do
