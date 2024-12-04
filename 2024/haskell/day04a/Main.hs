@@ -1,6 +1,6 @@
 module Main ( main ) where
 
-import qualified Data.Map as Map
+import Data.Bifunctor ( Bifunctor(bimap) )
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
 
@@ -12,26 +12,27 @@ usage = do
 
 process :: String -> Int
 process contents =
-    let grid =
-            Map.fromList $ fst $ foldl
-                (\(cells, (row, col)) ch ->
-                    case ch of
-                        '\n' -> (cells, (row + 1, 1))
-                        _ -> (cells ++ [((row, col), ch)], (row, col + 1))
-                )
-                ([], (1, 1))
-                contents
-        extents = maximum (Map.keys grid)
-        maxRow = fst extents
-        maxCol = snd extents
-        dirs = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
+    let grid = words contents
+        maxRow = length grid
+        maxCol = length (head grid)
+        deltas =
+            [
+              [(0, 0), (-1, -1), (-2, -2), (-3, -3)],
+              [(0, 0), (-1, 0), (-2, 0), (-3, 0)],
+              [(0, 0), (-1, 1), (-2, 2), (-3, 3)],
+              [(0, 0), (0, -1), (0, -2), (0, -3)],
+              [(0, 0), (0, 1), (0, 2), (0, 3)],
+              [(0, 0), (1, -1), (2, -2), (3, -3)],
+              [(0, 0), (1, 0), (2, 0), (3, 0)],
+              [(0, 0), (1, 1), (2, 2), (3, 3)]
+            ]
         word = "XMAS"
     in length $ foldl
         (\result startingCoords ->
-            let coordsToScan = filter (all (\(r, c) -> r >= 1 && r <= maxRow && c >= 1 && c <= maxCol)) $
-                    map (\(deltaRow, deltaCol) -> take 4 $ iterate (\(r, c) -> (r + deltaRow, c + deltaCol)) startingCoords) dirs
+            let coordsToScan = filter (all (\(r, c) -> r >= 0 && r < maxRow && c >= 0 && c < maxCol))
+                    (map (map (bimap (fst startingCoords +) (snd startingCoords +))) deltas)
                 hasWord coordsList =
-                    let chars = map (grid Map.!) coordsList
+                    let chars = map (\(r, c) -> (grid !! r) !! c) coordsList
                     in chars == word
                 matches = filter hasWord coordsToScan
             in if not (null matches)
@@ -39,7 +40,7 @@ process contents =
                 else result
         )
         []
-        (Map.keys grid)
+        (filter (\(r, c) -> ((grid !! r) !! c) == head word) [(r, c) | r <- [0..(maxRow - 1)], c <- [0..(maxCol - 1)]])
 
 main :: IO ()
 main = do
