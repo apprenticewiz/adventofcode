@@ -2,6 +2,7 @@ module Main ( main ) where
 
 import Data.IntMap ( IntMap )
 import qualified Data.IntMap as IntMap
+import Data.Text ( pack, splitOn, unpack )
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
 
@@ -10,13 +11,6 @@ usage = do
   progname <- getProgName
   putStrLn $ "usage: " ++ progname ++ " <file>"
   exitFailure
-
-splitOn :: Char -> String -> [String]
-splitOn ch s =
-    case dropWhile (== ch) s of
-        "" -> []
-        s' -> w : splitOn ch s''
-            where (w, s'') = break (== ch) s'
 
 makeRulesTable :: [String] -> IntMap [Int]
 makeRulesTable =
@@ -55,7 +49,7 @@ process contents =
     let splitInput inputLines = (takeWhile (/= "") inputLines, tail (dropWhile (/= "") inputLines))
         (rules, updates) = splitInput (lines contents)
         rulesTable = makeRulesTable rules
-        updatesList = map (map read . splitOn ',') updates
+        updatesList = map (map (read . unpack) . splitOn (pack ",") . pack) updates
     in processUpdates rulesTable updatesList
 
 main :: IO ()
