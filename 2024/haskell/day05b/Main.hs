@@ -20,11 +20,7 @@ makeRulesTable =
             let (first, second) = (takeWhile (/= '|') ruleTxt, tail (dropWhile (/= '|') ruleTxt))
                 firstNum = read first
                 secondNum = read second
-            in if IntMap.notMember firstNum currentMap
-                then IntMap.insert firstNum [ secondNum ] currentMap
-                else
-                    let items = currentMap IntMap.! firstNum
-                    in IntMap.insert firstNum (items ++ [secondNum]) currentMap
+            in IntMap.insertWith (++) firstNum [secondNum] currentMap
         )
         IntMap.empty
 
