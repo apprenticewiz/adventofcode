@@ -1,6 +1,5 @@
 module Main ( main ) where
 
-import qualified Data.Text as Text
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
 
