@@ -4,8 +4,6 @@ import qualified Data.Text as Text
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
 
-import Debug.Trace ( trace )
-
 usage :: IO ()
 usage = do
   progname <- getProgName
