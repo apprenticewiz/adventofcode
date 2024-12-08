@@ -8,8 +8,6 @@ import qualified Data.Set as Set
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
 
-import Debug.Trace
-
 usage :: IO ()
 usage = do
   progname <- getProgName
