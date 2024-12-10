@@ -37,7 +37,7 @@ computeTrailRating grid trailhead =
                     let newPaths = map (\x -> currPath ++ [x]) $ 
                                     filter (\x -> (grid Map.! x) == (height + 1)) $
                                     filter (`Map.member` grid) $
-                                    [Data.Bifunctor.bimap (r +) (c +) pos | (r, c) <- dirs]
+                                    [bimap (r +) (c +) pos | (r, c) <- dirs]
                     in walkTrail (rest ++ newPaths) paths
     in walkTrail [[trailhead]] []
 
