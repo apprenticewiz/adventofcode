@@ -4,8 +4,6 @@ import Data.Bifunctor ( Bifunctor(bimap) )
 import Data.Char ( digitToInt )
 import Data.Map.Strict ( Map )
 import qualified Data.Map.Strict as Map
-import Data.Set ( Set )
-import qualified Data.Set as Set
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
 
