@@ -7,8 +7,6 @@ import qualified Data.Map.Strict as Map
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
 
-import Debug.Trace
-
 type Position = (Int, Int)
 type Grid = Map (Int, Int) Int
 
