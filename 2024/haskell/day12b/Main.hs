@@ -79,17 +79,6 @@ calcAreaAndSides grid positions = (area, sides)
                                    sw == ch && s == ch && w /= ch,
                                    s /= ch && w /= ch]
                     in length $ filter (== True) corners
-                edge =
-                    foldl
-                        (\acc pos ->
-                            let posNeighbors = neighbors pos
-                                isEdge = any (`isBoundary` pos) posNeighbors
-                            in if isEdge
-                                then Set.union acc (Set.singleton pos)
-                                else acc
-                        )
-                        Set.empty
-                        positionList
 
 computePrices :: Grid -> [(Char, Set Position)] -> Map Char Int
 computePrices grid = foldl
