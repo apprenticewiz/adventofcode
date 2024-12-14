@@ -59,17 +59,17 @@ calcAreaAndSides grid positions = (area, sides)
         countCorners positionList = sum $ map countCornersAt positionList
             where
                 isBoundary (nr, nc) (row, col) = not (inBounds (nr, nc) grid) || grid ! (nr, nc) /= grid ! (row, col)
-                getChar (row, col) = if inBounds (row, col) grid then grid ! (row, col) else '*'
+                charAt (row, col) = if inBounds (row, col) grid then grid ! (row, col) else '*'
                 countCornersAt (row, col) =
-                    let ch = getChar (row, col)
-                        nw = getChar (row - 1, col - 1)
-                        n = getChar (row - 1, col)
-                        ne = getChar (row - 1, col + 1)
-                        e = getChar (row, col + 1)
-                        se = getChar (row + 1, col + 1)
-                        s = getChar (row + 1, col)
-                        sw = getChar (row + 1, col - 1)
-                        w = getChar (row, col - 1)
+                    let ch = charAt (row, col)
+                        nw = charAt (row - 1, col - 1)
+                        n = charAt (row - 1, col)
+                        ne = charAt (row - 1, col + 1)
+                        e = charAt (row, col + 1)
+                        se = charAt (row + 1, col + 1)
+                        s = charAt (row + 1, col)
+                        sw = charAt (row + 1, col - 1)
+                        w = charAt (row, col - 1)
                         corners = [nw == ch && n == ch && w /= ch,
                                    n /= ch && w /= ch,
                                    ne == ch && n == ch && e /= ch,
