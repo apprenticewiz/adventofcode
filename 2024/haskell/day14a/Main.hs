@@ -1,6 +1,5 @@
 module Main ( main ) where
 
-import Data.Ratio ( (%), denominator, numerator )
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
 import Text.Regex.TDFA ( (=~), AllTextMatches(getAllTextMatches) )
