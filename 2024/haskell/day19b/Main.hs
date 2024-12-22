@@ -7,8 +7,6 @@ import qualified Data.Text as Text
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
 
-type Position = (Int, Int)
-
 usage :: IO ()
 usage = do
     progname <- getProgName
