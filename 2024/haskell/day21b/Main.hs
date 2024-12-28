@@ -59,19 +59,19 @@ findSequences keyPresses keypad =
 process :: String -> Int
 process contents =
     let codes = lines contents
-        seqCounts sequence = foldl (\subMap s -> Map.insertWith (+) s 1 subMap) Map.empty (findSequences sequence dirPad)
+        seqCounts sq = foldl (\subMap s -> Map.insertWith (+) s 1 subMap) Map.empty (findSequences sq dirPad)
         initFreqTables = map (\code -> Map.singleton (concat $ findSequences code numericPad) 1) codes
         expandTables = map expandTable
             where
                 expandTable = Map.foldrWithKey
-                        (\sequence freq subFreqTable ->
+                        (\sq freq subFreqTable ->
                             Map.foldrWithKey
                                 (\subSeq subFreq subFreqTable' ->
                                     let count = Map.findWithDefault 0 subSeq subFreqTable' + (subFreq * freq)
                                     in Map.insert subSeq count subFreqTable'
                                 )
                                 subFreqTable
-                                (seqCounts sequence)
+                                (seqCounts sq)
                         )
                         Map.empty
         freqTables = iterate expandTables initFreqTables !! 25
