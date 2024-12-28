@@ -6,8 +6,6 @@ import qualified Data.Map as Map
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
 
-import Debug.Trace
-
 type Position = (Int, Int)
 
 data Keypad = Keypad { coords :: Map Char Position
