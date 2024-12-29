@@ -25,9 +25,6 @@ buildGraph contents =
         Map.empty
         (lines contents)
 
-startsWith :: String -> Char -> Bool
-startsWith s ch = head s == ch
-
 findTriangles :: Map String [String] -> [Set String]
 findTriangles graph =
     let vertices = Map.keys graph
