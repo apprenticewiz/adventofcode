@@ -2,7 +2,7 @@ module Main ( main ) where
 
 import Data.Array ( Array )
 import qualified Data.Array as Array
-import Data.List ( break, intersect )
+import Data.List ( break )
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
 
