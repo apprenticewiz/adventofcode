@@ -4,7 +4,7 @@ import Data.Bits ( (.&.), (.|.), shiftL, xor )
 import Data.Char ( isDigit )
 import Data.List ( break, isPrefixOf )
 import Data.Map.Strict ( Map )
-import qualified Data.Map as Map
+import qualified Data.Map.Strict as Map
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
 

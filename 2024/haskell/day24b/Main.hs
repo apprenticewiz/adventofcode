@@ -3,7 +3,7 @@ module Main ( main ) where
 import Data.Bits ( (.&.), (.|.), xor )
 import Data.Char ( isDigit )
 import Data.List ( break, intercalate, isPrefixOf, sort )
-import Data.Map ( Map )
+import Data.Map.Strict ( Map )
 import qualified Data.Map.Strict as Map
 import Data.Set ( Set )
 import qualified Data.Set as Set
