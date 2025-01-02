@@ -3,7 +3,7 @@ module Main ( main ) where
 import Data.Bits ( (.&.), (.|.), shiftL, xor )
 import Data.Char ( isDigit )
 import Data.List ( break, isPrefixOf )
-import Data.Map ( Map )
+import Data.Map.Strict ( Map )
 import qualified Data.Map as Map
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
