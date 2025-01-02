@@ -1,10 +1,10 @@
 module Main ( main ) where
 
-import Data.Bits ( (.&.), (.|.), shiftL, xor )
+import Data.Bits ( (.&.), (.|.), xor )
 import Data.Char ( isDigit )
 import Data.List ( break, intercalate, isPrefixOf, sort )
 import Data.Map ( Map )
-import qualified Data.Map as Map
+import qualified Data.Map.Strict as Map
 import Data.Set ( Set )
 import qualified Data.Set as Set
 import System.Environment ( getArgs, getProgName )
