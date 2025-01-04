@@ -20,7 +20,12 @@ fn parse_input(contents: &str) -> (HashMap<char, HashSet<Position>>, (usize, usi
         for (col, ch) in row_chars.chars().enumerate() {
             if ch != '.' {
                 let pos = (row as isize, col as isize);
-                antennas.entry(ch).and_modify(|s| { s.insert(pos); }).or_insert(HashSet::from([pos]));
+                antennas
+                    .entry(ch)
+                    .and_modify(|s| {
+                        s.insert(pos);
+                    })
+                    .or_insert(HashSet::from([pos]));
             }
         }
     }
@@ -31,9 +36,13 @@ fn in_bounds(pos: &Position, grid_size: &(usize, usize)) -> bool {
     pos.0 >= 0 && pos.0 < (grid_size.0 as isize) && pos.1 >= 0 && pos.1 < (grid_size.1 as isize)
 }
 
-fn gen_antinodes(freq: char, antennas: &HashMap<char, HashSet<Position>>, grid_size: &(usize, usize)) -> HashSet<Position> {
+fn gen_antinodes(
+    freq: char,
+    antennas: &HashMap<char, HashSet<Position>>,
+    grid_size: &(usize, usize),
+) -> HashSet<Position> {
     let freq_antennas = antennas.get(&freq).unwrap();
-    let combos = freq_antennas.into_iter().combinations(2);
+    let combos = freq_antennas.iter().combinations(2);
     let mut antinodes: HashSet<Position> = HashSet::new();
     combos.for_each(|combo| {
         let dr = combo[0].0 - combo[1].0;
@@ -54,7 +63,10 @@ fn process(contents: &str) -> u64 {
     let (antennas, grid_size) = parse_input(contents);
     let mut antinodes: HashSet<Position> = HashSet::new();
     for freq in antennas.keys() {
-        antinodes = antinodes.union(&gen_antinodes(*freq, &antennas, &grid_size)).cloned().collect();
+        antinodes = antinodes
+            .union(&gen_antinodes(*freq, &antennas, &grid_size))
+            .cloned()
+            .collect();
     }
     antinodes.len() as u64
 }
