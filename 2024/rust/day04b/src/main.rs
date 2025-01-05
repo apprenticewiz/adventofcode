@@ -1,6 +1,7 @@
 use std::env;
 use std::fs;
 use std::process;
+use std::time::SystemTime;
 
 fn usage() {
     let progname = env::args().next().unwrap();
@@ -80,12 +81,28 @@ fn process(contents: &str) -> u32 {
     find_xmas(&grid, &a_cells)
 }
 
+fn calc_runtime(start_time: &SystemTime) -> String {
+    let mut elapsed = start_time.elapsed().unwrap().as_micros() as f64;
+    let mut units = "μs";
+    if elapsed > 1000.0 {
+        elapsed /= 1000.0;
+        units = "ms";
+    }
+    if elapsed > 1000.0 {
+        elapsed /= 1000.0;
+        units = "s";
+    }
+    format!("(elapsed time: {elapsed} {units})")
+}
+
 fn main() {
+    let start_time = SystemTime::now();
     if env::args().count() < 2 {
         usage();
     }
     let filename = env::args().nth(1).unwrap();
     let contents = fs::read_to_string(filename).expect("read of input file failed");
     let result = process(&contents);
-    println!("result = {result}");
+    let duration = calc_runtime(&start_time);
+    println!("result = {result}  {duration}");
 }

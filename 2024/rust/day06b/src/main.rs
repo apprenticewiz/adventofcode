@@ -2,6 +2,7 @@ use std::collections::HashSet;
 use std::env;
 use std::fs;
 use std::process;
+use std::time::SystemTime;
 
 fn usage() {
     let progname = env::args().next().unwrap();
@@ -70,9 +71,9 @@ fn walk(
     loop {
         path.push((pos, dir));
         let maybe_pos = (pos.0 as isize + dir.0, pos.1 as isize + dir.1);
-        if !in_bounds(&maybe_pos, extents) {
-            break;
-        } else if check_cycles && path.iter().filter(|&&x| x == *path.last().unwrap()).count() > 1 {
+        if !in_bounds(&maybe_pos, extents)
+            || (check_cycles && path.iter().filter(|&&x| x == *path.last().unwrap()).count() > 1)
+        {
             break;
         }
         let new_pos = (maybe_pos.0 as usize, maybe_pos.1 as usize);
@@ -110,7 +111,7 @@ fn add_obstacles(
     let mut added_obstacles: HashSet<(usize, usize)> = HashSet::new();
     for &current_state in path.iter().skip(1) {
         let new_obstacle = current_state.0;
-        if try_obstacle(&start_pos, &start_dir, extents, obstacles, &new_obstacle) {
+        if try_obstacle(start_pos, start_dir, extents, obstacles, &new_obstacle) {
             added_obstacles.insert(new_obstacle);
         }
     }
@@ -130,12 +131,28 @@ fn process(contents: &str) -> u32 {
     add_obstacles(&path, &start_pos, &start_dir, &extents, &obstacles).len() as u32
 }
 
+fn calc_runtime(start_time: &SystemTime) -> String {
+    let mut elapsed = start_time.elapsed().unwrap().as_micros() as f64;
+    let mut units = "μs";
+    if elapsed > 1000.0 {
+        elapsed /= 1000.0;
+        units = "ms";
+    }
+    if elapsed > 1000.0 {
+        elapsed /= 1000.0;
+        units = "s";
+    }
+    format!("(elapsed time: {elapsed} {units})")
+}
+
 fn main() {
+    let start_time = SystemTime::now();
     if env::args().count() < 2 {
         usage();
     }
     let filename = env::args().nth(1).unwrap();
     let contents = fs::read_to_string(filename).expect("read of input file failed");
     let result = process(&contents);
-    println!("result = {result}");
+    let duration = calc_runtime(&start_time);
+    println!("result = {result}  {duration}");
 }
