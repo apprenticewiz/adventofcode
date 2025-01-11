@@ -9,84 +9,58 @@ fn usage() {
     process::exit(1);
 }
 
-fn process(contents: &str) -> u64 {
-    let split_line = |line: &str| {
-        let parts: Vec<&str> = line.split(':').collect();
-        let lhs = parts[0].trim().parse::<u64>().unwrap();
-        let rhs = parts[1]
-            .split_whitespace()
-            .map(|s| s.parse::<u64>().unwrap())
-            .collect::<Vec<_>>();
-        (lhs, rhs)
-    };
-
-    fn generate_equations(numbers: Vec<u64>) -> Vec<String> {
-        if numbers.len() == 1 {
-            vec![numbers[0].to_string()]
-        } else {
-            let mut equations = Vec::new();
-            let first = numbers[0];
-            let rest = generate_equations(numbers[1..].to_vec());
-            for eqn in rest {
-                equations.push(format!("{} + {}", first, eqn));
-                equations.push(format!("{} * {}", first, eqn));
-                equations.push(format!("{} || {}", first, eqn));
-            }
-            equations
+fn parse_input(contents: &str) -> Vec<(u64, Vec<u64>)> {
+    contents.lines().fold(vec![], |mut acc, line| {
+        let nums: Vec<&str> = line.split_whitespace().collect();
+        if let Some(first) = nums.first() {
+            let result: u64 = first
+                .chars()
+                .filter(|c| c.is_ascii_digit())
+                .collect::<String>()
+                .parse::<u64>()
+                .unwrap_or(0);
+            let operands: Vec<u64> = nums
+                .iter()
+                .skip(1)
+                .filter_map(|s| s.parse::<u64>().ok())
+                .rev()
+                .collect();
+            acc.push((result, operands));
         }
+        acc
+    })
+}
+
+fn valid_expr((total, operands): (u64, &[u64])) -> bool {
+    if operands.len() == 1 {
+        operands[0] == total
+    } else {
+        let head = operands[0];
+        let tail = &operands[1..];
+        let total_str = total.to_string();
+        let head_str = head.to_string();
+        let can_div = total % head == 0;
+        let can_sub = total >= head;
+        let can_cat = total.to_string().ends_with(&head_str);
+        (can_div && valid_expr((total / head, tail)))
+            || (can_sub && valid_expr((total - head, tail)))
+            || (can_cat
+                && valid_expr((
+                    total_str[0..(total_str.len() - head_str.len())]
+                        .parse::<u64>()
+                        .unwrap_or(0),
+                    tail,
+                )))
     }
+}
 
-    let solve = |expr: Vec<&str>| -> String {
-        let mut stack: Vec<String> = Vec::new();
-        for token in expr {
-            match token {
-                "+" | "*" => stack.push(token.to_string()),
-                _ => stack.push(token.to_string()),
-            }
-            if stack.len() == 3 {
-                let x = stack.pop().unwrap();
-                let op = stack.pop().unwrap();
-                let y = stack.pop().unwrap();
-                match op.as_str() {
-                    "+" => {
-                        let sum = x.parse::<u64>().unwrap() + y.parse::<u64>().unwrap();
-                        stack.push(format!("{}", sum));
-                    }
-                    "*" => {
-                        let prod = x.parse::<u64>().unwrap() * y.parse::<u64>().unwrap();
-                        stack.push(format!("{}", prod));
-                    }
-                    "||" => {
-                        stack.push(format!("{}{}", &y, &x));
-                    }
-                    _ => panic!("unexpected operator found on stack"),
-                }
-            }
-        }
-        stack
-            .pop()
-            .unwrap_or_else(|| panic!("Stack is empty after solving expression"))
-    };
-
-    let valid_solutions = contents.lines().fold(Vec::new(), |mut valid, line| {
-        let (lhs, rhs) = split_line(line);
-        let rhs_eqns = generate_equations(rhs);
-        let solutions: Vec<u64> = rhs_eqns
-            .iter()
-            .map(|eqn| {
-                solve(eqn.split_whitespace().collect::<Vec<_>>())
-                    .parse::<u64>()
-                    .unwrap()
-            })
-            .collect();
-
-        if solutions.contains(&lhs) {
-            valid.push(lhs);
-        }
-        valid
-    });
-
-    valid_solutions.iter().sum()
+fn process(contents: &str) -> u64 {
+    let input = parse_input(contents);
+    input
+        .into_iter()
+        .filter(|(result, operands)| valid_expr((*result, operands.as_slice())))
+        .map(|(total, _)| total)
+        .sum()
 }
 
 fn calc_runtime(start_time: &SystemTime) -> String {
