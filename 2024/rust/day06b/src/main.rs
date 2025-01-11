@@ -4,131 +4,129 @@ use std::fs;
 use std::process;
 use std::time::SystemTime;
 
+type Position = (usize, usize);
+
+struct Lab {
+    start: Position,
+    direction: usize,
+    grid: Vec<Vec<char>>,
+    num_rows: usize,
+    num_cols: usize,
+}
+
 fn usage() {
     let progname = env::args().next().unwrap();
     println!("usage: {progname} <file>");
     process::exit(1);
 }
 
-fn build_grid(contents: &str) -> Vec<Vec<char>> {
+fn parse(contents: &str) -> Lab {
     let mut grid: Vec<Vec<char>> = vec![];
     for line in contents.lines() {
-        let row: Vec<char> = line.chars().collect();
-        grid.push(row);
+        grid.push(line.chars().collect::<Vec<char>>());
     }
-    grid
-}
-
-fn find_start(grid: &[Vec<char>]) -> Option<(usize, usize)> {
-    let extents = (grid.len(), grid[0].len());
-    for (row, row_chars) in grid.iter().enumerate().take(extents.0) {
-        for (col, ch) in row_chars.iter().enumerate().take(extents.1) {
+    let num_rows: usize = grid.len();
+    let num_cols: usize = grid[0].len();
+    let mut start: Position = (0, 0);
+    for (row, row_chars) in grid.iter_mut().enumerate() {
+        for (col, ch) in row_chars.iter_mut().enumerate() {
             if *ch == '^' {
-                return Some((row, col));
+                start = (row, col);
+                *ch = '.';
             }
         }
     }
-    None
-}
-
-fn find_obstacles(grid: &[Vec<char>]) -> HashSet<(usize, usize)> {
-    let mut obstacles: HashSet<(usize, usize)> = HashSet::new();
-    let extents = (grid.len(), grid[0].len());
-    for (row, row_chars) in grid.iter().enumerate().take(extents.0) {
-        for (col, ch) in row_chars.iter().enumerate().take(extents.1) {
-            if *ch == '#' {
-                obstacles.insert((row, col));
-            }
-        }
-    }
-    obstacles
-}
-
-fn turn(dir: &(isize, isize)) -> (isize, isize) {
-    match dir {
-        (-1, 0) => (0, 1),
-        (0, 1) => (1, 0),
-        (1, 0) => (0, -1),
-        (0, -1) => (-1, 0),
-        _ => panic!("unknown direction in turn()"),
+    Lab {
+        start,
+        direction: 0,
+        grid,
+        num_rows,
+        num_cols,
     }
 }
 
-fn in_bounds(pos: &(isize, isize), extents: &(usize, usize)) -> bool {
-    pos.0 >= 0 && pos.0 < extents.0 as isize && pos.1 >= 0 && pos.1 < extents.1 as isize
-}
-
-fn walk(
-    start_pos: &(usize, usize),
-    start_dir: &(isize, isize),
-    extents: &(usize, usize),
-    obstacles: &HashSet<(usize, usize)>,
-    check_cycles: bool,
-) -> Vec<((usize, usize), (isize, isize))> {
-    let mut path: Vec<((usize, usize), (isize, isize))> = vec![];
-    let mut pos = *start_pos;
-    let mut dir = *start_dir;
+fn guard_positions(lab: &Lab) -> Vec<(Position, usize)> {
+    let directions = [(-1, 0), (0, 1), (1, 0), (0, -1)];
+    let mut positions: Vec<(Position, usize)> = vec![];
+    let mut pos = lab.start;
+    let mut dir = lab.direction;
     loop {
-        path.push((pos, dir));
-        let maybe_pos = (pos.0 as isize + dir.0, pos.1 as isize + dir.1);
-        if !in_bounds(&maybe_pos, extents)
-            || (check_cycles && path.iter().filter(|&&x| x == *path.last().unwrap()).count() > 1)
+        positions.push((pos, dir));
+        let next_pos = (
+            pos.0 as isize + directions[dir].0,
+            pos.1 as isize + directions[dir].1,
+        );
+        if next_pos.0 < 0
+            || next_pos.0 >= lab.num_rows as isize
+            || next_pos.1 < 0
+            || next_pos.1 >= lab.num_cols as isize
         {
-            break;
+            return positions;
         }
-        let new_pos = (maybe_pos.0 as usize, maybe_pos.1 as usize);
-        if obstacles.contains(&new_pos) {
-            dir = turn(&dir);
+        if lab.grid[next_pos.0 as usize][next_pos.1 as usize] == '#' {
+            dir = (dir + 1) % 4;
+        }
+        pos = (
+            (pos.0 as isize + directions[dir].0) as usize,
+            (pos.1 as isize + directions[dir].1) as usize,
+        );
+    }
+}
+
+fn has_loop(lab: &Lab) -> bool {
+    let directions = [(-1, 0), (0, 1), (1, 0), (0, -1)];
+    let mut positions: HashSet<(Position, usize)> = HashSet::new();
+    let mut pos = lab.start;
+    let mut dir = lab.direction;
+    let mut turn: bool = false;
+    loop {
+        if turn {
+            if positions.contains(&(pos, dir)) {
+                return true;
+            }
+            positions.insert((pos, dir));
+        }
+        let next_pos = (
+            pos.0 as isize + directions[dir].0,
+            pos.1 as isize + directions[dir].1,
+        );
+        if next_pos.0 < 0
+            || next_pos.0 >= lab.num_rows as isize
+            || next_pos.1 < 0
+            || next_pos.1 >= lab.num_cols as isize
+        {
+            return false;
+        }
+        if lab.grid[next_pos.0 as usize][next_pos.1 as usize] == '#' {
+            dir = (dir + 1) % 4;
+            turn = true;
         } else {
-            pos = new_pos;
+            turn = false;
+            pos = (next_pos.0 as usize, next_pos.1 as usize);
         }
     }
-    path
 }
 
-fn try_obstacle(
-    pos: &(usize, usize),
-    dir: &(isize, isize),
-    extents: &(usize, usize),
-    obstacles: &HashSet<(usize, usize)>,
-    new_obstacle: &(usize, usize),
-) -> bool {
-    let mut new_obstacles = obstacles.clone();
-    new_obstacles.insert(*new_obstacle);
-    let sim_path = walk(pos, dir, extents, &new_obstacles, true);
-    let last_state = sim_path.last().unwrap();
-    let count = sim_path.iter().filter(|&&x| x == *last_state).count();
-    count > 1
-}
-
-fn add_obstacles(
-    path: &[((usize, usize), (isize, isize))],
-    start_pos: &(usize, usize),
-    start_dir: &(isize, isize),
-    extents: &(usize, usize),
-    obstacles: &HashSet<(usize, usize)>,
-) -> HashSet<(usize, usize)> {
-    let mut added_obstacles: HashSet<(usize, usize)> = HashSet::new();
-    for &current_state in path.iter().skip(1) {
-        let new_obstacle = current_state.0;
-        if try_obstacle(start_pos, start_dir, extents, obstacles, &new_obstacle) {
-            added_obstacles.insert(new_obstacle);
+fn num_obstructions(lab: &mut Lab) -> u64 {
+    let positions = guard_positions(lab);
+    let route: HashSet<Position> = positions
+        .into_iter()
+        .map(|p| p.0)
+        .collect::<HashSet<Position>>();
+    let mut loop_pos: HashSet<Position> = HashSet::new();
+    route.iter().for_each(|pos| {
+        lab.grid[pos.0][pos.1] = '#';
+        if has_loop(lab) {
+            loop_pos.insert(*pos);
         }
-    }
-    added_obstacles
+        lab.grid[pos.0][pos.1] = '.';
+    });
+    loop_pos.len() as u64
 }
 
-fn process(contents: &str) -> u32 {
-    let grid = build_grid(contents);
-    let extents = (grid.len(), grid[0].len());
-    let start_pos = match find_start(&grid) {
-        Some(start) => start,
-        None => panic!("start position not found in data!"),
-    };
-    let start_dir = (-1, 0);
-    let obstacles = find_obstacles(&grid);
-    let path = walk(&start_pos, &start_dir, &extents, &obstacles, false);
-    add_obstacles(&path, &start_pos, &start_dir, &extents, &obstacles).len() as u32
+fn process(contents: &str) -> u64 {
+    let mut lab = parse(contents);
+    num_obstructions(&mut lab)
 }
 
 fn calc_runtime(start_time: &SystemTime) -> String {
