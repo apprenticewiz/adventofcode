@@ -1,47 +1,55 @@
 module Main ( main ) where
 
+import Data.Char ( isDigit )
+import Data.List ( isSuffixOf )
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
 
+import Debug.Trace
+
 usage :: IO ()
 usage = do
-  progname <- getProgName
-  putStrLn $ "usage: " ++ progname ++ " <file>"
-  exitFailure
+    progname <- getProgName
+    putStrLn $ "usage: " ++ progname ++ " <file>"
+    exitFailure
+
+parseInput :: String -> [(Int, [Int])]
+parseInput contents =
+    foldl
+        (\acc line ->
+            let nums = words line
+                result = read $ filter isDigit (head nums)
+                operands = reverse $ map read $ drop 1 nums
+            in acc ++ [(result, operands)]
+        )
+        []
+        (lines contents)
+
+validExpr :: (Int, [Int]) -> Bool
+validExpr (total, operands)
+    | length operands == 1 = head operands == total
+    | otherwise =
+        let totalStr = show total
+            headOpStr = show (head operands)
+            canDiv = total `mod` head operands == 0
+            canSub = total >= head operands
+            canCat = headOpStr `isSuffixOf` totalStr
+        in (not (not canDiv && not canSub && not canCat) &&
+            ((canDiv && validExpr (total `div` head operands, tail operands)) ||
+             (canSub && validExpr (total - head operands, tail operands)) ||
+             (canCat && validExpr (read $ "0" ++ take (length totalStr - length headOpStr) totalStr, tail operands))))
 
 process :: String -> Int
 process contents =
-    let splitLine line = ((read $ takeWhile (/= ':') line) :: Int, (words . tail) $ dropWhile (/= ':') line)
-        generateEquations [x] = [show x]
-        generateEquations (x:xs) = [show x ++ " " ++ op ++ " " ++ eqns | op <- ["+", "*", "||"], eqns <- generateEquations xs]
-        solve [] = []
-        solve [x] = x
-        solve (x:op:y:zs) =
-            case op of
-                "+" -> solve (show (read x + read y):zs)
-                "*" -> solve (show (read x * read y):zs)
-                "||" -> solve ((x ++ y):zs)
-                _ -> error "unexpected op"
-        validSolutions =
-            foldl
-                (\valid line ->
-                    let (lhs, rhs) = splitLine line
-                        numberList = map read rhs :: [Int]
-                        solutions = map (read . solve . words) (generateEquations numberList)
-                    in if lhs `elem` solutions
-                        then valid ++ [lhs]
-                        else valid
-                )
-                []
-                (lines contents)
-    in sum validSolutions
+    let input = parseInput contents
+    in sum $ map fst $ filter validExpr input
 
 main :: IO ()
 main = do
-  args <- getArgs
-  case args of
-    [filename] -> do
-      contents <- readFile filename
-      let result = process contents
-      putStrLn $ "result = " ++ show result
-    _ -> usage
+    args <- getArgs
+    case args of
+        [filename] -> do
+            contents <- readFile filename
+            let result = process contents
+            putStrLn $ "result = " ++ show result
+        _ -> usage
