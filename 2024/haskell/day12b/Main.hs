@@ -58,7 +58,6 @@ calcAreaAndSides grid positions = (area, sides)
         sides = countCorners (Set.toList positions)
         countCorners positionList = sum $ map countCornersAt positionList
             where
-                isBoundary (nr, nc) (row, col) = not (inBounds (nr, nc) grid) || grid ! (nr, nc) /= grid ! (row, col)
                 charAt (row, col) = if inBounds (row, col) grid then grid ! (row, col) else '*'
                 countCornersAt (row, col) =
                     let ch = charAt (row, col)
