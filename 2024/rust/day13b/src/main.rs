@@ -37,8 +37,17 @@ fn parse_input(contents: &str) -> Vec<Equations> {
                 px = Some(x + 10000000000000);
                 py = Some(y + 10000000000000);
             }
-            if bax.is_some() && bay.is_some() && bbx.is_some() && bby.is_some() && px.is_some() && py.is_some() {
-                equations.push(((bax.unwrap(), bbx.unwrap(), px.unwrap()), (bay.unwrap(), bby.unwrap(), py.unwrap())));
+            if bax.is_some()
+                && bay.is_some()
+                && bbx.is_some()
+                && bby.is_some()
+                && px.is_some()
+                && py.is_some()
+            {
+                equations.push((
+                    (bax.unwrap(), bbx.unwrap(), px.unwrap()),
+                    (bay.unwrap(), bby.unwrap(), py.unwrap()),
+                ));
                 bax = None;
                 bay = None;
                 bbx = None;
