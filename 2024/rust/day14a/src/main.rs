@@ -27,7 +27,10 @@ fn parse_input(contents: &str) -> Vec<Robot> {
             let py = captures[2].parse::<i32>().unwrap();
             let dx = captures[3].parse::<i32>().unwrap();
             let dy = captures[4].parse::<i32>().unwrap();
-            robots.push(Robot { position: (px, py), velocity: (dx, dy)});
+            robots.push(Robot {
+                position: (px, py),
+                velocity: (dx, dy),
+            });
         }
     }
     robots
@@ -36,9 +39,13 @@ fn parse_input(contents: &str) -> Vec<Robot> {
 fn step(extents: (i32, i32), robots: &[Robot]) -> Vec<Robot> {
     let mut next_robots = vec![];
     for robot in robots {
-        let mut next_robot = Robot { position: (robot.position.0 + robot.velocity.0,
-                                                robot.position.1 + robot.velocity.1),
-                                     velocity: robot.velocity };
+        let mut next_robot = Robot {
+            position: (
+                robot.position.0 + robot.velocity.0,
+                robot.position.1 + robot.velocity.1,
+            ),
+            velocity: robot.velocity,
+        };
         if next_robot.position.0 < 0 {
             next_robot.position.0 += extents.0;
         } else if next_robot.position.0 >= extents.0 {
@@ -73,7 +80,7 @@ fn safety_factor(extents: (i32, i32), robots: &[Robot]) -> u32 {
 }
 
 fn process(contents: &str, extents: (i32, i32)) -> u32 {
-    let mut robots = parse_input(&contents);
+    let mut robots = parse_input(contents);
     for _ in 0..NUM_STEPS {
         robots = step(extents, &robots);
     }
