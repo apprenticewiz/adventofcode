@@ -4,7 +4,7 @@ use std::io::{self, Error, BufRead};
 use std::process;
 
 fn usage(progname: &str) {
-    eprintln!("usage: {} <input file>", progname);
+    eprintln!("usage: {progname} <input file>");
     process::exit(1);
 }
 
@@ -36,9 +36,9 @@ fn main() {
     }
     let filename = &args[1];
     match process_file(filename) {
-        Ok(result) => println!("result = {}", result),
+        Ok(result) => println!("result = {result}"),
         Err(e) => {
-            eprintln!("error while processing file `{}': {}", filename, e);
+            eprintln!("error while processing file `{filename}': {e}");
             process::exit(1);
         }
     }
