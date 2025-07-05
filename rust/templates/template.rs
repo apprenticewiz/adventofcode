@@ -4,12 +4,12 @@ use std::io::{self, BufRead};
 use std::process;
 
 fn usage(progname: &str) {
-    eprintln!("usage: {} <input file>", progname);
+    eprintln!("usage: {progname} <input file>");
     process::exit(1);
 }
 
 fn process_file(filename: &str) -> io::Result<u32> {
-    let file = File::open(filename);
+    let file = File::open(filename)?;
     let reader = io::BufReader::new(file);
     let mut result: u32 = 0;
     for line_result in reader.lines() {
@@ -28,9 +28,9 @@ fn main() {
     }
     let filename = &args[1];
     match process_file(filename) {
-        Ok(result) => println!("result = {}", result),
+        Ok(result) => println!("result = {result}"),
         Err(e) => {
-            eprintln!("error while processing file `{}': {}", filename, e);
+            eprintln!("error while processing file `{filename}': {e}");
             process::exit(1);
         }
     }
