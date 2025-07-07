@@ -5,20 +5,11 @@
 #include <string>
 #include <unordered_set>
 
-typedef struct Position {
-    int32_t x;
-    int32_t y;
+#include "utils/position.h"
 
-    bool operator==(const struct Position& other) const {
-        return x == other.x && y == other.y;
-    }
-} Position;
+typedef struct aoc_utils::Position2D<int32_t> Position;
 
-typedef struct PositionHasher {
-    std::size_t operator()(const struct Position& p) const {
-        return std::hash<int32_t>()(p.x) ^ (std::hash<int>()(p.y) << 1);
-    }
-} PositionHasher;
+typedef struct aoc_utils::Position2DHasher<int32_t> PositionHasher;
 
 void usage(std::string progname) {
     std::cerr << "usage: " << progname << " <input file>" << std::endl;
@@ -66,7 +57,7 @@ uint32_t process(std::string filename) {
             positions.insert(robo_santa);
         }
     }
-    return (uint32_t)positions.size();
+    return static_cast<uint32_t>(positions.size());
 }
 
 int main(int argc, char* argv[]) {
