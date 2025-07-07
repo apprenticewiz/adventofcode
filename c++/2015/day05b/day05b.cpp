@@ -4,14 +4,12 @@
 #include <iostream>
 #include <string>
 
-void usage(std::string progname)
-{
+void usage(std::string progname) {
     std::cerr << "usage: " << progname << " <input file>" << std::endl;
     std::exit(1);
 }
 
-bool prop1(std::string str)
-{
+bool prop1(std::string str) {
     for ( auto ch1 = str.begin(); ch1 != str.end() - 3; ++ch1 ) {
         std::string first;
         first.push_back(*ch1);
@@ -28,8 +26,7 @@ bool prop1(std::string str)
     return false;
 }
 
-bool prop2(std::string str)
-{
+bool prop2(std::string str) {
     for ( auto ch = str.begin(); ch != str.end() - 2; ++ch ) {
         if ( *ch == *(ch + 2) ) {
             return true;
@@ -38,8 +35,7 @@ bool prop2(std::string str)
     return false;
 }
 
-uint32_t process(std::string filename)
-{
+uint32_t process(std::string filename) {
     uint32_t count = 0;
     std::ifstream infile(filename);
     std::string line;
@@ -51,13 +47,11 @@ uint32_t process(std::string filename)
     return count;
 }
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
     std::string progname(argv[0]);
     if ( argc < 2 ) {
         usage(progname);
     }
-
     std::string filename(argv[1]);
     uint32_t result = process(filename);
     std::cout << "result = " << result << std::endl;

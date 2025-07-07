@@ -6,14 +6,12 @@
 
 #include "utils/md5.h"
 
-void usage(std::string progname)
-{
+void usage(std::string progname) {
     std::cerr << "usage: " << progname << " <key>" << std::endl;
     std::exit(1);
 }
 
-uint32_t process(std::string key)
-{
+uint32_t process(std::string key) {
     uint32_t n = 1;
     for ( ; ; ) {
         std::ostringstream key_builder;
@@ -29,13 +27,11 @@ uint32_t process(std::string key)
     return n;
 }
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
     std::string progname(argv[0]);
     if ( argc < 2 ) {
         usage(progname);
     }
-
     std::string key(argv[1]);
     uint32_t result = process(key);
     std::cout << "result = " << result << std::endl;

@@ -20,14 +20,12 @@ typedef struct PositionHasher {
     }
 } PositionHasher;
 
-void usage(std::string progname)
-{
+void usage(std::string progname) {
     std::cerr << "usage: " << progname << " <input file>" << std::endl;
     std::exit(1);
 }
 
-uint32_t process(std::string filename)
-{
+uint32_t process(std::string filename) {
     std::ifstream infile(filename);
     std::string line;
     Position santa{0, 0};
@@ -71,13 +69,11 @@ uint32_t process(std::string filename)
     return (uint32_t)positions.size();
 }
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
     std::string progname(argv[0]);
     if ( argc < 2 ) {
         usage(progname);
     }
-
     std::string filename(argv[1]);
     int32_t result = process(filename);
     std::cout << "result = " << result << std::endl;
