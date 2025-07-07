@@ -14,7 +14,7 @@ fn process_input(key: &str) -> io::Result<u32> {
     loop {
         let mut try_key = String::from(key);
         try_key.push_str(format!("{n}").as_str());
-        let digest = md5::md5(try_key.as_str());
+        let digest = md5::digest(try_key.as_str());
         if digest.as_str().starts_with("000000") {
             return Ok(n);
         }
