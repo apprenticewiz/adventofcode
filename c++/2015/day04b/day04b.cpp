@@ -1,6 +1,5 @@
 #include <cstdint>
 #include <cstdlib>
-#include <iomanip>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -17,14 +16,10 @@ uint32_t process(std::string key)
 {
     uint32_t n = 1;
     for ( ; ; ) {
-        MD5 md5;
-	md5.reset();
         std::ostringstream key_builder;
         key_builder << key << n;
         std::string try_key = key_builder.str();
-        md5.update(try_key);
-        std::ostringstream output_builder;
-	std::string digest = md5.digest();
+	std::string digest = aoc_utils::md5(try_key);
         if ( digest.find("000000") == 0 ) {
             break;
         } else {

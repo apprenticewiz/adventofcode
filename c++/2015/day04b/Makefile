@@ -2,7 +2,7 @@ APP = day04b
 
 OBJS = $(APP).o md5.o
 
-CXXFLAGS = -O2 -std=c++17 -I../..
+CXXFLAGS = -O2 -march=native -std=c++17 -I../..
 
 LDFLAGS =
 
