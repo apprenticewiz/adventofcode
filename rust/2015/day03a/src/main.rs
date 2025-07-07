@@ -4,11 +4,7 @@ use std::fs::File;
 use std::io::{self, BufRead};
 use std::process;
 
-#[derive(Eq, Clone, Copy, Hash, PartialEq)]
-struct Position {
-    x: i32,
-    y: i32,
-}
+use aoc_utils::geometry::Position2D;
 
 fn usage(progname: &str) {
     eprintln!("usage: {progname} <input file>");
@@ -18,8 +14,8 @@ fn usage(progname: &str) {
 fn process_file(filename: &str) -> io::Result<u32> {
     let file = File::open(filename)?;
     let reader = io::BufReader::new(file);
-    let mut positions: HashSet<Position> = HashSet::new();
-    let mut santa = Position { x: 0, y: 0 };
+    let mut positions: HashSet<Position2D<i32>> = HashSet::new();
+    let mut santa = Position2D::<i32>::new(0, 0);
     for line_result in reader.lines() {
         let line = line_result?;
         for ch in line.chars() {
@@ -33,7 +29,6 @@ fn process_file(filename: &str) -> io::Result<u32> {
             positions.insert(santa);
         }
     }
-
     Ok(positions.len() as u32)
 }
 
