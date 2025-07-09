@@ -7,3 +7,4 @@ geometry.jar:
 clean:
 	rm -f *.jar
 	make -C aoc_utils/geometry clean
+	make -C aoc_utils/md5 clean
