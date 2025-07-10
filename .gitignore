@@ -1,0 +1,13 @@
+.git
+*.dSYM
+*.exe
+*.o
+*.class
+*.jar
+*.hi
+.vscode
+input.txt
+manifest.txt
+init.sh
+Cargo.lock
+target
