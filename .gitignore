@@ -5,9 +5,12 @@
 *.class
 *.jar
 *.hi
+*.cabal
+*.project
 .vscode
 input.txt
 manifest.txt
 init.sh
 Cargo.lock
 target
+dist*
