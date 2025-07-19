@@ -16,7 +16,7 @@ main :-
 
 usage :-
     tell(user_error),
-    format("usage: main.pl <input file>~n").
+    format("usage: main.pl <key>~n").
 
 process(Key, N) :-
     between(1, inf, N),
