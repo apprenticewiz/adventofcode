@@ -16,14 +16,11 @@ fn processFile(allocator: std.mem.Allocator, filename: []const u8) !i32 {
     var line_buf = std.ArrayList(u8).init(allocator);
     defer line_buf.deinit();
 
-    while ( try stream.readUntilDelimiterOrEofAlloc(allocator, '\n', 131072)) |line| {
+    while ( try stream.readUntilDelimiterOrEofAlloc(allocator, '\n', 16384) ) |line| {
         defer allocator.free(line);
-        var it = std.unicode.Utf8Iterator {
-            .bytes = line,
-            .i = 0,
-        };
-        while ( it.nextCodepoint() ) |cp| {
-            switch ( cp ) {
+
+        for ( line ) |ch| {
+            switch ( ch ) {
                 '(' => counter += 1,
                 ')' => counter -= 1,
                 else => {},
