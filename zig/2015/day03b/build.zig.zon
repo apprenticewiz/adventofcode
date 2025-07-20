@@ -1,0 +1,16 @@
+.{
+    .name = .day03b,
+    .version = "0.0.0",
+    .fingerprint = 0xe37eddd0bb82e691, // Changing this has security and trust implications.
+    .minimum_zig_version = "0.14.1",
+    .dependencies = .{
+        .geometry = .{
+            .path = "../../utils/geometry",
+        },
+    },
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+    },
+}
