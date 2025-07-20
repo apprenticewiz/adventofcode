@@ -23,11 +23,8 @@ fn prop1(line: &str) -> bool {
 }
 
 fn prop2(line: &str) -> bool {
-    for ch in 'a'..='z' {
-        let mut double_ch = String::new();
-        double_ch.push(ch);
-        double_ch.push(ch);
-        if line.contains(double_ch.as_str()) {
+    for i in 0..(line.len() - 1) {
+        if line.chars().nth(i) == line.chars().nth(i + 1) {
             return true;
         }
     }
