@@ -12,7 +12,7 @@ Module Program
 		Dim pos As Integer = 0
 		Dim content As String = File.ReadAllText(filename)
 		For Each ch As Char In content
-			pos = pos + 1
+			pos += 1
 			If ch = "("c Then
 				counter += 1
 			ElseIf ch = ")"c Then
