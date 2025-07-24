@@ -1,6 +1,6 @@
 # adventofcode
 My solutions to Advent of Code problems in a bunch of different programming
-language.
+languages.
 
 I am fascinated by different programming languages.  I will not claim that
 these solutions are always the best or most canonical way to write code in
