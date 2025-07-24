@@ -17,13 +17,13 @@ sub process {
 
     open ( my $infile, '<', $filename ) or die "cannot open file: $filename: $!";
     while ( my $line = <$infile> ) {
-	    my ($l, $w, $h) = map { $_ + 0 } split(/x/, $line);
-	    my $perim1 = 2 * ($l + $w);
-	    my $perim2 = 2 * ($l + $h);
-	    my $perim3 = 2 * ($w + $h);
-	    my $presentLength = min($perim1, $perim2, $perim3);
-	    my $bowLength = $l * $w * $h;
-	    $totalLength += $presentLength + $bowLength;
+        my ($l, $w, $h) = map { $_ + 0 } split(/x/, $line);
+        my $perim1 = 2 * ($l + $w);
+        my $perim2 = 2 * ($l + $h);
+        my $perim3 = 2 * ($w + $h);
+        my $presentLength = min($perim1, $perim2, $perim3);
+        my $bowLength = $l * $w * $h;
+        $totalLength += $presentLength + $bowLength;
     }
     close($infile);
 
