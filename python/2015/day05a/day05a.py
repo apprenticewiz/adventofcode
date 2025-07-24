@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import re
 import sys
 
 def usage():
@@ -8,17 +9,10 @@ def usage():
     sys.exit(1)
 
 def prop1(line):
-    vowels = 0
-    for ch in line:
-        if ch in "aeiou":
-            vowels += 1
-    return vowels >= 3
+    return len(re.findall(r'[aeiou]', line)) >= 3
 
 def prop2(line):
-    for i in range(len(line) - 1):
-        if line[i] == line[i + 1]:
-            return True
-    return False
+    return bool(re.search(r'(.)\1', line))
 
 def prop3(line):
     return not any(map(lambda x: x in line, ['ab', 'cd', 'pq', 'xy']))

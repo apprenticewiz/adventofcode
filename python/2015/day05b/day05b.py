@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import re
 import sys
 
 def usage():
@@ -8,19 +9,10 @@ def usage():
     sys.exit(1)
 
 def prop1(line):
-    for i in range(len(line) - 3):
-        firstPair = line[i:i+2]
-        for j in range(i + 2, len(line) - 1):
-            secondPair = line[j:j+2]
-            if firstPair == secondPair:
-                return True
-    return False
+    return bool(re.search(r'(..).*\1', line))
 
 def prop2(line):
-    for i in range(len(line) - 2):
-        if line[i] == line[i + 2]:
-            return True
-    return False
+    return bool(re.search(r'(.).\1', line))
 
 def process(filename):
     counter = 0
