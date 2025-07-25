@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <regex>
 #include <string>
 
 void usage(std::string progname) {
@@ -9,30 +10,16 @@ void usage(std::string progname) {
   std::exit(1);
 }
 
-bool is_vowel(char ch) {
-  return ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u';
-}
-
 bool prop1(std::string str) {
-  uint32_t vowels = 0;
-  for (auto ch = str.begin(); ch != str.end(); ++ch) {
-    if (is_vowel(*ch)) {
-      ++vowels;
-    }
-  }
-  return vowels >= 3;
+  std::regex vowels("[aeiou]");
+  auto vowels_begin = std::sregex_iterator(str.begin(), str.end(), vowels);
+  auto vowels_end = std::sregex_iterator();
+  return std::distance(vowels_begin, vowels_end) >= 3;
 }
 
 bool prop2(std::string str) {
-  for (auto ch = 'a'; ch <= 'z'; ++ch) {
-    std::string double_ch;
-    double_ch.push_back(ch);
-    double_ch.push_back(ch);
-    if (str.find(double_ch) != std::string::npos) {
-      return true;
-    }
-  }
-  return false;
+  std::regex re(R"((.)\1)");
+  return std::regex_search(str, re);
 }
 
 bool prop3(std::string str) {
@@ -46,8 +33,8 @@ uint32_t process(std::string filename) {
   uint32_t count = 0;
   std::ifstream infile(filename);
   std::string line;
-  while (std::getline(infile, line)) {
-    if (prop1(line) && prop2(line) && prop3(line)) {
+  while ( std::getline(infile, line) ) {
+    if ( prop1(line) && prop2(line) && prop3(line) ) {
       ++count;
     }
   }

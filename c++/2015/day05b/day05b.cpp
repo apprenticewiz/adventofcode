@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <regex>
 #include <string>
 
 void usage(std::string progname) {
@@ -10,38 +11,22 @@ void usage(std::string progname) {
 }
 
 bool prop1(std::string str) {
-  for (auto ch1 = str.begin(); ch1 != str.end() - 3; ++ch1) {
-    std::string first;
-    first.push_back(*ch1);
-    first.push_back(*(ch1 + 1));
-    for (auto ch2 = ch1 + 2; ch2 != str.end(); ++ch2) {
-      std::string second;
-      second.push_back(*ch2);
-      second.push_back(*(ch2 + 1));
-      if (first == second) {
-        return true;
-      }
-    }
-  }
-  return false;
+  std::regex re(R"((..).*\1)");
+  return std::regex_search(str, re);
 }
 
 bool prop2(std::string str) {
-  for (auto ch = str.begin(); ch != str.end() - 2; ++ch) {
-    if (*ch == *(ch + 2)) {
-      return true;
-    }
-  }
-  return false;
+  std::regex re(R"((.).\1)");
+  return std::regex_search(str, re);
 }
 
 uint32_t process(std::string filename) {
   uint32_t count = 0;
   std::ifstream infile(filename);
   std::string line;
-  while (std::getline(infile, line)) {
-    if (prop1(line) && prop2(line)) {
-      ++count;
+  while ( std::getline(infile, line) ) {
+    if ( prop1(line) && prop2(line) ) {
+      count++;
     }
   }
   return count;
