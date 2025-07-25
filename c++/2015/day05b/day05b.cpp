@@ -24,8 +24,8 @@ uint32_t process(std::string filename) {
   uint32_t count = 0;
   std::ifstream infile(filename);
   std::string line;
-  while ( std::getline(infile, line) ) {
-    if ( prop1(line) && prop2(line) ) {
+  while (std::getline(infile, line)) {
+    if (prop1(line) && prop2(line)) {
       count++;
     }
   }
