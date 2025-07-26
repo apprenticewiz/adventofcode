@@ -18,7 +18,7 @@ function Process(Filename : String) return Integer is
   File    : File_Type;
 begin
   Open(File, In_File, Filename);
-  While not End_Of_File(File) loop
+  while not End_Of_File(File) loop
     Get(File, Ch);
     case Ch is
       when '(' =>
