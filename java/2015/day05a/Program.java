@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.regex.*;
 
 public class Program {
     public static void usage() {
@@ -10,21 +11,18 @@ public class Program {
 
     public static boolean prop1(String line) {
         int vowels = 0;
-        for ( char ch : line.toCharArray() ) {
-            if ( ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u' ) {
-                vowels++;
-            }
+        Pattern vowelPattern = Pattern.compile("[aeiou]");
+        Matcher matcher = vowelPattern.matcher(line);
+        while ( matcher.find() ) {
+            vowels++;
         }
         return vowels >= 3;
     }
 
     public static boolean prop2(String line) {
-        for ( int i = 0; i < line.length() - 1; i++ ) {
-            if ( line.charAt(i) == line.charAt(i + 1) ) {
-                return true;
-            }
-        }
-        return false;
+        Pattern p = Pattern.compile("(.)\\1");
+        Matcher m = p.matcher(line);
+        return m.find();
     }
 
     public static boolean prop3(String line) {

@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.regex.*;
 
 public class Program {
     public static void usage() {
@@ -9,27 +10,15 @@ public class Program {
     }
 
     public static boolean prop1(String line) {
-        for ( int i = 0; i < line.length() - 3; i++ ) {
-            String first = line.substring(i, i + 2);
-            for ( int j = i + 2; j < line.length() - 1; j++ ) {
-                String second = line.substring(j, j + 2);
-                if ( first.equals(second) ) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        Pattern p = Pattern.compile("(..).*\\1");
+        Matcher m = p.matcher(line);
+        return m.find();
     }
 
     public static boolean prop2(String line) {
-        for ( int i = 0; i < line.length() - 2; i++ ) {
-            String first = line.substring(i, i + 1);
-            String second = line.substring(i + 2, i + 3);
-            if ( first.equals(second) ) {
-                return true;
-            }
-        }
-        return false;
+        Pattern p = Pattern.compile("(.).\\1");
+        Matcher m = p.matcher(line);
+        return m.find();
     }
 
     public static int process(String filename) {
