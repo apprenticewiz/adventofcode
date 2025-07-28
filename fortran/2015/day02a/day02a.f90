@@ -31,42 +31,29 @@ CONTAINS
 
   FUNCTION process(filename) RESULT(total_area)
     CHARACTER(LEN=*), INTENT(IN) :: filename
-    CHARACTER :: nl
     INTEGER :: total_area
-    INTEGER :: file, file_size, ios
-    INTEGER :: start_pos, line_len
+    INTEGER :: file_unit, ios
     INTEGER :: first_x, second_x
     INTEGER :: l, w, h
     INTEGER :: area1, area2, area3
-    INTEGER :: surface_area
-    INTEGER :: min_area
-    CHARACTER(LEN=:), ALLOCATABLE :: contents, line
+    INTEGER :: surface_area, min_area
+    CHARACTER(LEN=16) :: line
 
     total_area = 0
 
-    OPEN(NEWUNIT=file, &
+    OPEN(NEWUNIT=file_unit, &
          FILE=TRIM(filename), &
          STATUS='OLD', &
          ACTION='READ', &
-         ACCESS='STREAM', &
-         FORM='unformatted', &
          IOSTAT=ios)
     IF ( ios /= 0 ) THEN
       WRITE(error_unit, *) "Error opening file: " // filename
       CALL EXIT(1)
     END IF
-    INQUIRE(file, SIZE=file_size)
-    ALLOCATE(CHARACTER(LEN=file_size) :: contents)
-    READ(file, IOSTAT=ios) contents
-    CLOSE(file)
 
-    start_pos = 1
-    nl = NEW_LINE('a')
     DO
-      line_len = SCAN(contents(start_pos:), nl)
-      IF ( line_len == 0 ) EXIT
-      ALLOCATE(CHARACTER(LEN=line_len-1) :: line)
-      line = contents(start_pos:start_pos+line_len-1)
+      READ(file_unit, '(A)', iostat=ios) line
+      IF ( ios /= 0 ) EXIT
       first_x = SCAN(line, 'x')
       READ(line(1:first_x-1), *) l
       second_x = SCAN(line(first_x+1:), 'x')
@@ -78,12 +65,9 @@ CONTAINS
       surface_area = (2 * area1) + (2 * area2) + (2 * area3)
       min_area = MIN(area1, area2, area3)
       total_area = total_area + surface_area + min_area
-      DEALLOCATE(line)
-      start_pos = start_pos + line_len
-      IF ( start_pos > file_size ) EXIT
     END DO
 
-    DEALLOCATE(contents)
+    CLOSE(file_unit)
   END FUNCTION process
 
 END PROGRAM day02a
