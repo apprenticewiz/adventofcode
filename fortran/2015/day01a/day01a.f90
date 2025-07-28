@@ -15,6 +15,7 @@ PROGRAM day01a
 
   result = process(filename)
   WRITE (*,'(A,I0)') 'result = ', result
+  DEALLOCATE(filename)
  
 CONTAINS
 
@@ -26,6 +27,7 @@ CONTAINS
     ALLOCATE(CHARACTER(LEN=progname_len) :: progname)
     CALL GET_COMMAND_ARGUMENT(0, VALUE=progname)
     WRITE (error_unit, *) 'usage: ' // TRIM(progname) // ' <input file>' 
+    DEALLOCATE(progname)
     CALL EXIT(1)
   END SUBROUTINE usage
 

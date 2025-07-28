@@ -1,4 +1,4 @@
-PROGRAM day01b
+PROGRAM day02a
 
   USE, INTRINSIC :: ISO_FORTRAN_ENV
   IMPLICIT NONE
@@ -15,7 +15,6 @@ PROGRAM day01b
 
   result = process(filename)
   WRITE (*,'(A,I0)') 'result = ', result
-  DEALLOCATE(filename)
  
 CONTAINS
 
@@ -27,18 +26,16 @@ CONTAINS
     ALLOCATE(CHARACTER(LEN=progname_len) :: progname)
     CALL GET_COMMAND_ARGUMENT(0, VALUE=progname)
     WRITE (error_unit, *) 'usage: ' // TRIM(progname) // ' <input file>' 
-    DEALLOCATE(progname)
     CALL EXIT(1)
   END SUBROUTINE usage
 
-  FUNCTION process(filename) RESULT(pos)
+  FUNCTION process(filename) RESULT(counter)
     CHARACTER(LEN=*), INTENT(IN) :: filename
     INTEGER :: file, ios
-    INTEGER :: counter, pos
+    INTEGER :: counter 
     CHARACTER(LEN=1) :: ch
 
     counter = 0
-    pos = 0
 
     OPEN(NEWUNIT=file, FILE=TRIM(filename), STATUS='OLD', ACTION='READ', IOSTAT=ios)
     IF ( ios /= 0 ) THEN
@@ -49,15 +46,13 @@ CONTAINS
     DO
       READ(file, '(A)', ADVANCE='NO', IOSTAT=ios) ch
       IF ( ios /= 0 ) EXIT
-      pos = pos + 1
       SELECT CASE ( ch )
         CASE ( '(' )
           counter = counter + 1
         CASE ( ')' )
           counter = counter - 1
       END SELECT
-      IF ( counter < 0 ) EXIT
     END DO
   END FUNCTION process
 
-END PROGRAM day01b
+END PROGRAM day02a
