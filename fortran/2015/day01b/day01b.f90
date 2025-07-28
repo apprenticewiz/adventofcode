@@ -49,10 +49,10 @@ CONTAINS
       IF ( ios /= 0 ) EXIT
       pos = pos + 1
       SELECT CASE ( ch )
-      CASE ( '(' )
-        counter = counter + 1
-      CASE ( ')' )
-        counter = counter - 1
+        CASE ( '(' )
+          counter = counter + 1
+        CASE ( ')' )
+          counter = counter - 1
       END SELECT
       IF ( counter < 0 ) EXIT
     END DO

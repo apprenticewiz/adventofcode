@@ -47,10 +47,10 @@ CONTAINS
       READ(file, '(A)', ADVANCE='NO', IOSTAT=ios) ch
       IF ( ios /= 0 ) EXIT
       SELECT CASE ( ch )
-      CASE ( '(' )
-        counter = counter + 1
-      CASE ( ')' )
-        counter = counter - 1
+        CASE ( '(' )
+          counter = counter + 1
+        CASE ( ')' )
+          counter = counter - 1
       END SELECT
     END DO
   END FUNCTION process
