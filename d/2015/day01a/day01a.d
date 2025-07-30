@@ -1,9 +1,6 @@
-import std.conv;
 import std.exception;
 import std.file;
-import std.process;
 import std.stdio;
-import std.string;
 
 void usage(string progname) {
   stderr.writeln("usage: ", progname, " <input file>");
