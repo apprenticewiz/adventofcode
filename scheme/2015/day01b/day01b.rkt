@@ -1,8 +1,8 @@
 #lang racket
 
 (require racket/cmdline
-   racket/port
-   racket/system)
+         racket/port
+         racket/system)
 
 (define (usage progname)
   (displayln (string-append "usage: " progname " <input file>") (current-error-port))
