@@ -29,7 +29,7 @@ int process(string filename) {
         }
     }
 
-  return 0;
+    return 0;
 }
 
 int main(string[] args) {

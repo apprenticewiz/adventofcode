@@ -24,7 +24,7 @@ int process(string filename) {
         }
     }
 
-  return floors;
+    return floors;
 }
 
 int main(string[] args) {
