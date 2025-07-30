@@ -6,24 +6,24 @@ import std.regex;
 import std.stdio;
 
 void usage(string progname) {
-  stderr.writeln("usage: ", progname, " <input file>");
+    stderr.writeln("usage: ", progname, " <input file>");
 }
 
 int process(string filename) {
-  int totalArea = 0;
+    int totalArea = 0;
 
   foreach ( line; File(filename).byLine() ) {
-    auto dims = split(line, regex(`x`));
-    int l = to!int(dims[0]);
-    int w = to!int(dims[1]);
-    int h = to!int(dims[2]);
-    int area1 = l * w;
-    int area2 = l * h;
-    int area3 = w * h;
-    int surfaceArea = 2 * area1 + 2 * area2 + 2 * area3;
-    int minArea = [area1, area2, area3].minElement;
-    totalArea += surfaceArea + minArea;
-  }
+        auto dims = split(line, regex(`x`));
+        int l = to!int(dims[0]);
+        int w = to!int(dims[1]);
+        int h = to!int(dims[2]);
+        int area1 = l * w;
+        int area2 = l * h;
+        int area3 = w * h;
+        int surfaceArea = 2 * area1 + 2 * area2 + 2 * area3;
+        int minArea = [area1, area2, area3].minElement;
+        totalArea += surfaceArea + minArea;
+    }
 
   return totalArea;
 }

@@ -3,31 +3,31 @@ import std.file;
 import std.stdio;
 
 void usage(string progname) {
-  stderr.writeln("usage: ", progname, " <input file>");
+    stderr.writeln("usage: ", progname, " <input file>");
 }
 
 int process(string filename) {
-  int floors = 0;
-  int pos = 0;
+    int floors = 0;
+    int pos = 0;
 
-  foreach ( line; File(filename).byLine() ) {
-      foreach ( ch; line ) {
-          pos += 1;
-          switch ( ch ) {
-              case '(':
-                  floors += 1;
-                  break;
-              case ')':
-                  floors -= 1;
-                  break;
-            default:
-                  break;
-          }
-          if ( floors < 0 ) {
-            return pos;
-          }
-      }
-  }
+    foreach ( line; File(filename).byLine() ) {
+        foreach ( ch; line ) {
+            pos += 1;
+            switch ( ch ) {
+                case '(':
+                    floors += 1;
+                    break;
+                case ')':
+                    floors -= 1;
+                    break;
+                default:
+                    break;
+            }
+            if ( floors < 0 ) {
+                return pos;
+            }
+        }
+    }
 
   return 0;
 }
