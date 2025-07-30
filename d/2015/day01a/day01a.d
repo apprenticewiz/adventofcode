@@ -41,7 +41,7 @@ int main(string[] args) {
         int result = process(filename);
         writeln("result = ", result);
     } catch ( Exception e ) {
-        stderr.writeln("error while processing file `", filename, "`: `", e.msg);
+        stderr.writeln("error while processing file `", filename, "`: ", e.msg);
 	return 1;
     }
 

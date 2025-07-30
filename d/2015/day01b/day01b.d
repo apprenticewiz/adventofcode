@@ -37,7 +37,7 @@ int main(string[] args) {
 
     if ( args.length < 2 ) {
         usage(progname);
-    return 1;
+        return 1;
     }
 
     string filename = args[1];
@@ -46,8 +46,8 @@ int main(string[] args) {
         int result = process(filename);
         writeln("result = ", result);
     } catch ( Exception e ) {
-        stderr.writeln("error while processing file `", filename, "`: `", e.msg);
-    return 1;
+        stderr.writeln("error while processing file `", filename, "`: ", e.msg);
+        return 1;
     }
 
     return 0;
