@@ -28,7 +28,8 @@ int process(char *filename) {
                 break;
         }
 	if ( floor < 0 ) {
-	  return pos;
+            fclose(infile);
+	    return pos;
         }
     }
     fclose(infile);
