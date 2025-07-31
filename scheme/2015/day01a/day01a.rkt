@@ -1,8 +1,8 @@
 #lang racket
 
 (require racket/cmdline
-	 racket/port
-	 racket/system)
+         racket/port
+         racket/system)
 
 (define (usage progname)
   (displayln (string-append "usage: " progname " <input file>") (current-error-port))
@@ -12,9 +12,9 @@
   (foldl
     (lambda (ch acc)
       (match ch
-	     [#\( (+ acc 1)]
-	     [#\) (- acc 1)]
-	     [_ acc]))
+             [#\( (+ acc 1)]
+             [#\) (- acc 1)]
+             [_ acc]))
     0
     (string->list content)))
 
