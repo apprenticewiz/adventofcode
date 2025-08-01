@@ -23,7 +23,7 @@ fun process(content: String) : Int {
         }
     }
 
-    return totalArea;
+    return totalArea
 }
 
 fun main(args: Array<String>) {
