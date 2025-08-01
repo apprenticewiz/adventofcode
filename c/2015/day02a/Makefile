@@ -11,7 +11,7 @@ all: $(APP).exe
 $(APP).exe: $(OBJS)
 	$(CC) -o $@ $(LDFLAGS) $^
 
-%.o: %.cpp
+%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
