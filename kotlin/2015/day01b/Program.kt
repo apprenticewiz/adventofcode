@@ -1,5 +1,4 @@
-import java.io.File;
-import kotlin.system.*;
+import java.io.File
 
 fun usage() {
     System.err.println("usage: java -jar Program.jar <input file>")
@@ -7,8 +6,8 @@ fun usage() {
 }
 
 fun process(content: String) : Int {
-    var floors = 0;
-    var pos = 0;
+    var floors = 0
+    var pos = 0
 
     for ( ch in content ) {
         pos += 1;
@@ -18,11 +17,11 @@ fun process(content: String) : Int {
             else -> {}
         }
         if ( floors < 0 ) {
-            return pos;
+            return pos
         }
     }
 
-    return 0;
+    return 0
 }
 
 fun main(args: Array<String>) {
