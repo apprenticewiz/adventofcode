@@ -1,4 +1,4 @@
-import java.io.File;
+import java.io.File
 
 fun usage() {
     System.err.println("usage: java -jar Program.jar <input file>")
