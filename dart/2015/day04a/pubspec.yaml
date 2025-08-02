@@ -1,0 +1,9 @@
+name: day04a
+
+version: 0.0.1
+
+environment:
+  sdk: ^3.8.0
+
+dependencies:
+  crypto: ^3.0.3
