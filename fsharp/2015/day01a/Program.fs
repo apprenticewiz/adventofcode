@@ -1,8 +1,6 @@
 ﻿open System
 open System.IO
 
-exception PositionFound of int
-
 let usage() =
     Console.Error.WriteLine("usage: dotnet run <input file>")
     Environment.Exit(1)
