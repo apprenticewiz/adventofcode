@@ -47,10 +47,10 @@ BEGIN
     END;
     LOOP
         Ch := ReadChar(InFile);
-        Pos := Pos + 1;
+        INC(Pos);
         CASE Ch OF
-            '(': Floors := Floors + 1; |
-            ')': Floors := Floors - 1;
+            '(': INC(Floors) |
+            ')': DEC(Floors);
         END;
         IF Floors < 0 THEN
             EXIT;

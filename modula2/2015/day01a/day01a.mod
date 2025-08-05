@@ -46,8 +46,8 @@ BEGIN
     REPEAT
         Ch := ReadChar(InFile);
         CASE Ch OF
-            '(': Floors := Floors + 1; |
-            ')': Floors := Floors - 1;
+            '(': INC(Floors); |
+            ')': DEC(Floors);
         END;
     UNTIL EOF(InFile);
     Close(InFile);
