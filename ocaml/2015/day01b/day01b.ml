@@ -10,7 +10,7 @@ let process_file filename =
   let rec check_pos str pos floor =
     if floor < 0 then
       pos
-    else if String.length str = 0 then
+    else if pos >= String.length str then
       0
     else let ch = String.get str pos
          in match ch with
