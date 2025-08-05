@@ -1,4 +1,4 @@
-MODULE day01a;
+MODULE day02a;
 
 FROM FIO      IMPORT Close, EOF, File, IsNoError, OpenToRead, ReadString;
 FROM InOut    IMPORT WriteCard, WriteLn, WriteString;
@@ -109,4 +109,4 @@ BEGIN
     WriteCard(Result, 1);
     WriteLn;
 
-END day01a.
+END day02a.
