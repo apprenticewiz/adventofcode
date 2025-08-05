@@ -40,6 +40,7 @@ BEGIN
     IF NOT IsNoError(InFile) THEN
         WriteString('error: unable to open input file: ');
         WriteString(FileName);
+        WriteLn;
         exit(1);
     END;
     REPEAT
