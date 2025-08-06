@@ -1,0 +1,7 @@
+DEFINITION MODULE CardinalExtras;
+
+EXPORT QUALIFIED MinVal;
+
+PROCEDURE MinVal(X, Y : CARDINAL) : CARDINAL;
+
+END CardinalExtras.

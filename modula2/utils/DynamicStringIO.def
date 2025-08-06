@@ -1,0 +1,10 @@
+DEFINITION MODULE DynamicStringIO;
+
+FROM DynamicStrings IMPORT String;
+
+EXPORT QUALIFIED WriteDynString;
+
+PROCEDURE WriteDynString(S : String);
+
+END DynamicStringIO.
+

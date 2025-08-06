@@ -1,0 +1,9 @@
+DEFINITION MODULE DynamicStringFIO;
+
+FROM DynamicStrings IMPORT String;
+
+EXPORT QUALIFIED ReadDynString;
+
+PROCEDURE ReadDynString(F : File) : String;
+
+END DynamicStringFIO.
