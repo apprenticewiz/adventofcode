@@ -1,0 +1,13 @@
+DEFINITION MODULE Args;
+
+FROM DynamicStrings IMPORT String;
+
+EXPORT QUALIFIED ArgMax, ArgCount, GetArgument;
+
+CONST
+    ArgMax = 4096;
+
+PROCEDURE ArgCount() : CARDINAL;
+PROCEDURE GetArgument(N : CARDINAL) : String;
+
+END Args.
