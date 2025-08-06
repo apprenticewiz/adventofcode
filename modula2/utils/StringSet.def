@@ -1,0 +1,30 @@
+DEFINITION MODULE StringSet;
+
+FROM DynamicStrings IMPORT String;
+
+EXPORT QUALIFIED StringSet, Create, Delete, Insert, Find, Count;
+
+TYPE
+    SetNodePtr = POINTER TO SetNode;
+
+    SetNode = RECORD
+        Key   : String;
+        Left  : SetNodePtr;
+        Right : SetNodePtr;
+    END;
+
+    StringSet = RECORD
+        Root : SetNodePtr;
+    END;
+
+PROCEDURE Create() : StringSet;
+
+PROCEDURE Delete(VAR S : StringSet);
+
+PROCEDURE Insert(VAR S : StringSet; Key : String);
+
+PROCEDURE Find(S : StringSet; Key : String) : BOOLEAN;
+
+PROCEDURE Count(S : StringSet) : CARDINAL;
+
+END StringSet.

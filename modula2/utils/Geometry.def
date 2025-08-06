@@ -1,0 +1,14 @@
+DEFINITION MODULE Geometry;
+
+FROM DynamicStrings IMPORT String;
+
+EXPORT QUALIFIED Position2D, Position2DToString;
+
+TYPE
+    Position2D = RECORD
+        X, Y : INTEGER;
+    END;
+
+PROCEDURE Position2DToString(P : Position2D) : String;
+
+END Geometry.
