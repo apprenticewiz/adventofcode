@@ -1,34 +1,29 @@
-MODULE day01b;
+MODULE day01a;
 
-FROM FIO      IMPORT Close, EOF, File, IsNoError, OpenToRead, ReadChar;
-FROM InOut    IMPORT WriteCard, WriteLn, WriteString;
-FROM libc     IMPORT exit;
-FROM SYSTEM   IMPORT ADDRESS;
-FROM UnixArgs IMPORT GetArgC, GetArgV;
+FROM DynamicStrings IMPORT String;
+FROM FIO            IMPORT File, Close, EOF, IsNoError, ReadChar;
+FROM InOut          IMPORT WriteCard, WriteLn, WriteS, WriteString;
+FROM libc           IMPORT exit;
+FROM SFIO           IMPORT OpenToRead;
 
-TYPE
-    Arg = ARRAY [0..1023] OF CHAR;
-    ArgPointer = POINTER TO Arg;
-    ArgVArray = ARRAY [0..1023] OF ArgPointer;
-    ArgVPointer = POINTER TO ArgVArray;
+FROM Args           IMPORT ArgCount, GetArgument;
 
 VAR
     Argc          : CARDINAL;
-    Argv          : ArgVPointer;
-    ProgName      : Arg;
-    FileName      : Arg;
+    ProgName      : String;
+    FileName      : String;
     Result        : CARDINAL;
 
-PROCEDURE Usage(ProgName : Arg);
+PROCEDURE Usage(ProgName : String);
 BEGIN
     WriteString('usage: ');
-    WriteString(ProgName);
+    ProgName := WriteS(ProgName);
     WriteString(' <input file>');
     WriteLn;
     exit(1);
 END Usage;
 
-PROCEDURE Process(FileName : Arg) : CARDINAL;
+PROCEDURE Process(FileName : String) : CARDINAL;
 VAR
     InFile        : File;
     Floors        : INTEGER;
@@ -36,20 +31,20 @@ VAR
     Ch            : CHAR;
 
 BEGIN
-    Floors := 0;
     Pos := 0;
+    Floors := 0;
     InFile := OpenToRead(FileName);
     IF NOT IsNoError(InFile) THEN
         WriteString('error: unable to open input file: ');
-        WriteString(FileName);
+        FileName := WriteS(FileName);
         WriteLn;
         exit(1);
     END;
     LOOP
-        Ch := ReadChar(InFile);
         INC(Pos);
+        Ch := ReadChar(InFile);
         CASE Ch OF
-            '(': INC(Floors) |
+            '(': INC(Floors); |
             ')': DEC(Floors);
         END;
         IF Floors < 0 THEN
@@ -64,16 +59,15 @@ BEGIN
 END Process;
 
 BEGIN
-    Argc := CARDINAL(GetArgC());
-    Argv := ArgVPointer(GetArgV());
-    ProgName := Argv^[0]^; 
+    Argc := ArgCount();
+    ProgName := GetArgument(0);
     IF Argc < 2 THEN
         Usage(ProgName);
     END;
-    FileName := Argv^[1]^;
+    FileName := GetArgument(1);
     Result := Process(FileName);
     WriteString('result = ');
     WriteCard(Result, 1);
     WriteLn;
 
-END day01b.
+END day01a.
