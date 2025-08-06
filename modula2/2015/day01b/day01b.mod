@@ -1,12 +1,13 @@
 MODULE day01a;
 
-FROM DynamicStrings IMPORT String;
-FROM FIO            IMPORT File, Close, EOF, IsNoError, ReadChar;
-FROM InOut          IMPORT WriteCard, WriteLn, WriteS, WriteString;
-FROM libc           IMPORT exit;
-FROM SFIO           IMPORT OpenToRead;
+FROM DynamicStrings  IMPORT String;
+FROM FIO             IMPORT File, Close, EOF, IsNoError, ReadChar;
+FROM InOut           IMPORT WriteCard, WriteLn, WriteString;
+FROM libc            IMPORT exit;
+FROM SFIO            IMPORT OpenToRead;
 
-FROM Args           IMPORT ArgCount, GetArgument;
+FROM Args            IMPORT ArgCount, GetArgument;
+FROM DynamicStringIO IMPORT WriteDynString;
 
 VAR
     Argc          : CARDINAL;
@@ -17,7 +18,7 @@ VAR
 PROCEDURE Usage(ProgName : String);
 BEGIN
     WriteString('usage: ');
-    ProgName := WriteS(ProgName);
+    WriteDynString(ProgName);
     WriteString(' <input file>');
     WriteLn;
     exit(1);
@@ -31,25 +32,26 @@ VAR
     Ch            : CHAR;
 
 BEGIN
-    Pos := 0;
     Floors := 0;
+    Pos := 0;
     InFile := OpenToRead(FileName);
     IF NOT IsNoError(InFile) THEN
         WriteString('error: unable to open input file: ');
-        FileName := WriteS(FileName);
+        WriteDynString(FileName);
         WriteLn;
         exit(1);
     END;
     LOOP
-        INC(Pos);
         Ch := ReadChar(InFile);
+        INC(Pos);
         CASE Ch OF
             '(': INC(Floors); |
             ')': DEC(Floors);
         END;
         IF Floors < 0 THEN
             EXIT;
-        ELSIF EOF(InFile) THEN
+        END;
+        IF EOF(InFile) THEN
             Pos := 0;
             EXIT;
         END;

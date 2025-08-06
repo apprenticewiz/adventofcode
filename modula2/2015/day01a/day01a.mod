@@ -1,12 +1,13 @@
 MODULE day01a;
 
-FROM DynamicStrings IMPORT String;
-FROM FIO            IMPORT File, Close, EOF, IsNoError, ReadChar;
-FROM InOut          IMPORT WriteInt, WriteLn, WriteS, WriteString;
-FROM libc           IMPORT exit;
-FROM SFIO           IMPORT OpenToRead;
+FROM DynamicStrings  IMPORT String;
+FROM FIO             IMPORT File, Close, EOF, IsNoError, ReadChar;
+FROM InOut           IMPORT WriteInt, WriteLn, WriteString;
+FROM libc            IMPORT exit;
+FROM SFIO            IMPORT OpenToRead;
 
-FROM Args           IMPORT ArgCount, GetArgument;
+FROM Args            IMPORT ArgCount, GetArgument;
+FROM DynamicStringIO IMPORT WriteDynString;
 
 VAR
     Argc          : CARDINAL;
@@ -17,7 +18,7 @@ VAR
 PROCEDURE Usage(ProgName : String);
 BEGIN
     WriteString('usage: ');
-    ProgName := WriteS(ProgName);
+    WriteDynString(ProgName);
     WriteString(' <input file>');
     WriteLn;
     exit(1);
@@ -34,7 +35,7 @@ BEGIN
     InFile := OpenToRead(FileName);
     IF NOT IsNoError(InFile) THEN
         WriteString('error: unable to open input file: ');
-        FileName := WriteS(FileName);
+        WriteDynString(FileName);
         WriteLn;
         exit(1);
     END;

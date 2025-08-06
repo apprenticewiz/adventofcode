@@ -5,17 +5,20 @@ SRCS = $(APP).mod
 M2C = gm2
 M2FLAGS = -O2 -march=native -I../../utils
 
-ARGS_OBJ = Args.o
+UNIT_OBJS := Args.o DynamicStringIO.o
 
 LDFLAGS =
 
 all: $(APP).exe
 
-$(APP).exe: $(SRCS) $(ARGS_OBJ)
+$(APP).exe: $(SRCS) $(UNIT_OBJS)
 	$(M2C) -o $@ $(LDFLAGS) $(M2FLAGS) $^
 
-$(ARGS_OBJ): ../../utils/Args.mod
-	$(M2C) -c $(M2FLAGS) $<
+Args.o: ../../utils/Args.mod
+	$(M2C) $(M2FLAGS) -c $<
+
+DynamicStringIO.o: ../../utils/DynamicStringIO.mod
+	$(M2C) $(M2FLAGS) -c $<
 
 clean:
 	rm -f *.o *.exe
