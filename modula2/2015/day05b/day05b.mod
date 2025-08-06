@@ -31,10 +31,10 @@ VAR
     I, J                 : CARDINAL;
     A, B, C, D           : CHAR;
 BEGIN
-    FOR I := 0 TO (Length(S) - 4) DO
+    FOR I := 0 TO Length(S) - 4 DO
         A := char(S, I);
         B := char(S, I + 1);
-        FOR J := I + 2 TO (Length(S) - 2) DO
+        FOR J := I + 2 TO Length(S) - 2 DO
             C := char(S, J);
             D := char(S, J + 1);
             IF (A = C) AND (B = D) THEN
@@ -49,7 +49,7 @@ PROCEDURE Prop2(S : String) : BOOLEAN;
 VAR
     I                    : CARDINAL;
 BEGIN
-    FOR I := 0 TO (Length(S) - 3) DO
+    FOR I := 0 TO Length(S) - 3 DO
         IF char(S, I) = char(S, I + 2) THEN
             RETURN TRUE;
         END;

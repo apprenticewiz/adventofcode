@@ -31,7 +31,7 @@ VAR
     I, Vowels            : CARDINAL;
 BEGIN
     Vowels := 0;
-    FOR I := 0 TO (Length(S) - 1) DO
+    FOR I := 0 TO Length(S) - 1 DO
         CASE char(S, I) OF
             'a', 'e', 'i', 'o', 'u': INC(Vowels);
         END;
@@ -43,7 +43,7 @@ PROCEDURE Prop2(S : String) : BOOLEAN;
 VAR
     I                    : CARDINAL;
 BEGIN
-    FOR I := 0 TO (Length(S) - 2) DO
+    FOR I := 0 TO Length(S) - 2 DO
         IF char(S, I) = char(S, I + 1) THEN
             RETURN TRUE;
         END;
