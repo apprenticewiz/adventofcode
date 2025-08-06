@@ -1,64 +1,39 @@
 MODULE day02a;
 
-FROM FIO      IMPORT Close, EOF, File, IsNoError, OpenToRead, ReadString;
-FROM InOut    IMPORT WriteCard, WriteLn, WriteString;
-FROM libc     IMPORT exit;
-FROM Strings  IMPORT Extract, FindNext, Length;
-FROM SYSTEM   IMPORT ADDRESS;
-FROM UnixArgs IMPORT GetArgC, GetArgV;
+FROM DynamicStrings   IMPORT String, Index, Slice;
+FROM FIO              IMPORT File, Close, EOF, IsNoError;
+FROM InOut            IMPORT WriteCard, WriteLn, WriteString;
+FROM libc             IMPORT exit;
+FROM SFIO             IMPORT OpenToRead;
+FROM StringConvert    IMPORT StringToCardinal;
 
-TYPE
-    Arg = ARRAY [0..1023] OF CHAR;
-    ArgPointer = POINTER TO Arg;
-    ArgVArray = ARRAY [0..1023] OF ArgPointer;
-    ArgVPointer = POINTER TO ArgVArray;
+FROM Args             IMPORT ArgCount, GetArgument;
+FROM CardinalExtras   IMPORT MinVal;
+FROM DynamicStringFIO IMPORT ReadDynString;
+FROM DynamicStringIO  IMPORT WriteDynString;
 
 VAR
     Argc          : CARDINAL;
-    Argv          : ArgVPointer;
-    ProgName      : Arg;
-    FileName      : Arg;
-    Result        : INTEGER;
+    ProgName      : String;
+    FileName      : String;
+    Result        : CARDINAL;
 
-PROCEDURE Usage(ProgName : Arg);
+PROCEDURE Usage(ProgName : String);
 BEGIN
     WriteString('usage: ');
-    WriteString(ProgName);
+    WriteDynString(ProgName);
     WriteString(' <input file>');
     WriteLn;
     exit(1);
 END Usage;
 
-PROCEDURE ParseCard(S: ARRAY OF CHAR) : CARDINAL;
-VAR
-    I, Result     : CARDINAL;
-
-BEGIN
-    Result := 0;
-    FOR I := 0 TO Length(S) - 1 DO
-       IF (S[I] >= '0') AND (S[I] <= '9') THEN
-           Result := Result * 10 + ORD(S[I]) - ORD('0');
-       END;
-    END;
-    RETURN Result;
-END ParseCard;
-
-PROCEDURE MinVal(X : CARDINAL; Y : CARDINAL) : CARDINAL;
-BEGIN
-    IF X < Y THEN
-        RETURN X;
-    ELSE
-        RETURN Y;
-    END;
-END MinVal;
-
-PROCEDURE Process(FileName : Arg) : CARDINAL;
+PROCEDURE Process(FileName : String) : CARDINAL;
 VAR
     InFile               : File;
     TotalArea            : CARDINAL;
-    Line, Tok            : ARRAY [1..16] OF CHAR;
+    Line, Tok            : String;
     Found                : BOOLEAN;
-    X1, X2               : CARDINAL;
+    X1, X2               : INTEGER;
     L, W, H              : CARDINAL;
     Area1, Area2, Area3  : CARDINAL;
     SurfaceArea, MinArea : CARDINAL;
@@ -68,23 +43,23 @@ BEGIN
     InFile := OpenToRead(FileName);
     IF NOT IsNoError(InFile) THEN
         WriteString('error: unable to open input file: ');
-        WriteString(FileName);
+        WriteDynString(FileName);
         WriteLn;
         exit(1);
     END;
     LOOP
-        ReadString(InFile, Line);
+        Line := ReadDynString(InFile);
         IF EOF(InFile) THEN
             EXIT;
         END;
-        FindNext('x', Line, 1, Found, X1);
-        Extract(Line, 0, X1, Tok);
-        L := ParseCard(Tok);
-        FindNext('x', Line, X1 + 1, Found, X2);
-        Extract(Line, X1 + 1, X2 - X1 - 1, Tok);
-        W := ParseCard(Tok);
-        Extract(Line, X2 + 1, Length(Line) - X2, Tok);
-        H := ParseCard(Tok);
+        X1 := Index(Line, 'x', 0);
+        Tok := Slice(Line, 0, X1);
+        L := StringToCardinal(Tok, 10, Found);
+        X2 := Index(Line, 'x', X1 + 1);
+        Tok := Slice(Line,  X1 + 1, X2);
+        W := StringToCardinal(Tok, 10, Found);
+        Tok := Slice(Line, X2 + 1, 0);
+        H := StringToCardinal(Tok, 10, Found);
         Area1 := L * W;
         Area2 := L * H;
         Area3 := W * H;
@@ -97,13 +72,12 @@ BEGIN
 END Process;
 
 BEGIN
-    Argc := CARDINAL(GetArgC());
-    Argv := ArgVPointer(GetArgV());
-    ProgName := Argv^[0]^; 
+    Argc := ArgCount();
+    ProgName := GetArgument(0);
     IF Argc < 2 THEN
         Usage(ProgName);
     END;
-    FileName := Argv^[1]^;
+    FileName := GetArgument(1);
     Result := Process(FileName);
     WriteString('result = ');
     WriteCard(Result, 1);
