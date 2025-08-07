@@ -1,0 +1,17 @@
+DEFINITION MODULE MD5;
+
+FROM DynamicStrings IMPORT String;
+FROM SYSTEM         IMPORT BYTE;
+
+EXPORT QUALIFIED Digest, CalcDigest, DigestToHexString;
+
+CONST
+    DigestLen = 16;
+
+TYPE
+    Digest = ARRAY [0..(DigestLen - 1)] OF BYTE;
+
+PROCEDURE CalcDigest(S : String; VAR Dig : Digest);
+PROCEDURE DigestToHexString(Dig : Digest) : String;
+
+END MD5.
