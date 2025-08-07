@@ -15,12 +15,12 @@ process <- function(filename) {
         l <- dims[1]
         w <- dims[2]
         h <- dims[3]
-	perim1 <- 2 * (l + w)
-	perim2 <- 2 * (l + h)
-	perim3 <- 2 * (w + h)
-	presentLen <- min(perim1, perim2, perim3)
+        perim1 <- 2 * (l + w)
+        perim2 <- 2 * (l + h)
+        perim3 <- 2 * (w + h)
+        presentLen <- min(perim1, perim2, perim3)
         bowLen <- l * w * h
-	totalLen <- totalLen + presentLen + bowLen
+        totalLen <- totalLen + presentLen + bowLen
     }
     return(totalLen)
 }

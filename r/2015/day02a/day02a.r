@@ -15,12 +15,12 @@ process <- function(filename) {
         l <- dims[1]
         w <- dims[2]
         h <- dims[3]
-	area1 <- l * w
-	area2 <- l * h
-	area3 <- w * h
+        area1 <- l * w
+        area2 <- l * h
+        area3 <- w * h
         surfaceArea <- 2 * area1 + 2 * area2 + 2 * area3
-	minArea <- min(area1, area2, area3)
-	totalArea <- totalArea + surfaceArea + minArea
+        minArea <- min(area1, area2, area3)
+        totalArea <- totalArea + surfaceArea + minArea
     }
     return(totalArea)
 }
