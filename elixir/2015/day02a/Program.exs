@@ -15,6 +15,7 @@ defmodule Program do
         usage()
     end
   end
+
   defp usage do
     IO.puts(:stderr, "usage: Program.exs <input file>")
     System.halt(1)
