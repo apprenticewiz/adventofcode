@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 def usage
     puts "usage: #{PROGRAM_NAME} <input file>"
     exit 1
