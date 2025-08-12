@@ -6,6 +6,7 @@ end
 def process(filename)
     santa = {0, 0}
     positions = Set({Int32, Int32}).new
+    positions.add(santa)
     File.each_line(filename) do |line|
         line.each_char do |ch|
             case ch
