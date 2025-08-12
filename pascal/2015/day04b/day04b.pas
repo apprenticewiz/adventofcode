@@ -28,12 +28,12 @@ BEGIN
     Found := False;
     REPEAT
         N := N + 1;
-	Str(N, NStr);
+        Str(N, NStr);
         TryKey := Concat(Key, NStr);
         Digest := MD5String(RawByteString(TryKey));
-	HexDigest := MD5Print(Digest);
-	IF Copy(HexDigest, 1, 6) = '000000' THEN
-	    Found := True
+        HexDigest := MD5Print(Digest);
+        IF Copy(HexDigest, 1, 6) = '000000' THEN
+            Found := True
     UNTIL Found;
     Process := N
 END;
