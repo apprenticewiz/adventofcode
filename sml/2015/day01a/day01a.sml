@@ -23,12 +23,12 @@ val _ =
   let
     val args = CommandLine.arguments ()
   in
-    if (List.length args) < 3 then
-      (printErr "usage: ./run.sh <input file>\n" ;
+    if (List.length args) < 1 then
+      (printErr ("usage: " ^ CommandLine.name () ^ " <input file>\n") ;
        exit failure)
     else
       let
-        val filename = List.nth (args, 2)
+        val filename = List.hd args
         val result = process filename
       in
         print ("result = " ^ (Int.toString result) ^ "\n")
