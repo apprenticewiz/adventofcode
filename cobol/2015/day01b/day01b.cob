@@ -1,0 +1,75 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. DAY01B.
+
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT INPUT-FILE ASSIGN TO FILENAME
+           ORGANIZATION IS SEQUENTIAL.
+
+       DATA DIVISION.
+       FILE SECTION.
+       FD INPUT-FILE.
+       01 CONTENTS   PIC X(16384).
+       
+       WORKING-STORAGE SECTION.
+       01 ARGC       PIC 9(4).
+       01 ARG-COUNT  PIC Z(1).
+       01 PROGNAME   PIC X(256).
+       01 ARG        PIC X(256) VALUE SPACES.
+       01 EOF-FLAG   PIC X(1) VALUE "N".
+       01 FOUND-FLAG PIC X(1) VALUE "N".
+       01 FLOOR      PIC S9(6) VALUE 0.
+       01 POS        PIC 9(6) VALUE 0.
+       01 I          PIC 9(6).
+       01 RESULT     PIC Z(6).
+
+       PROCEDURE DIVISION.
+
+       ACCEPT ARGC FROM ARGUMENT-NUMBER
+
+       DISPLAY 0 UPON ARGUMENT-NUMBER
+       ACCEPT PROGNAME FROM ARGUMENT-VALUE
+
+       EVALUATE TRUE
+         WHEN ARGC IS LESS THAN 1
+           DISPLAY "usage: " FUNCTION TRIM(PROGNAME) " <input file>"
+           STOP RUN
+       END-EVALUATE
+
+       DISPLAY 1 UPON ARGUMENT-NUMBER
+       ACCEPT ARG FROM ARGUMENT-VALUE
+       MOVE FUNCTION tRIM(ARG) TO FILENAME
+
+       OPEN INPUT INPUT-FILE
+       PERFORM UNTIL EOF-FLAG = "Y"
+         READ INPUT-FILE INTO CONTENTS
+           AT END
+             MOVE "Y" TO EOF-FLAG
+         END-READ
+       END-PERFORM
+       CLOSE INPUT-FILE
+       PERFORM PROCESS-CONTENTS
+
+       MOVE POS TO RESULT
+       DISPLAY "result = " RESULT
+
+       STOP RUN.
+       
+       PROCESS-CONTENTS.
+         PERFORM VARYING I FROM 1 BY 1 UNTIL I > LENGTH OF CONTENTS
+           EVALUATE TRUE
+             WHEN FLOOR IS LESS THAN 0
+               MOVE "Y" TO FOUND-FLAG
+               EXIT PERFORM
+             WHEN CONTENTS(I:1) = "("
+               ADD 1 TO FLOOR
+             WHEN CONTENTS(I:1) = ")"
+               SUBTRACT 1 FROM FLOOR
+           END-EVALUATE
+           ADD 1 TO POS
+         END-PERFORM
+         EVALUATE TRUE
+           WHEN FOUND-FLAG = "N"
+             MOVE 0 TO POS
+         END-EVALUATE.
