@@ -13,16 +13,16 @@
        01 CONTENTS   PIC X(16384).
        
        WORKING-STORAGE SECTION.
-       01 ARGC       PIC 9(4).
-       01 ARG-COUNT  PIC Z(1).
-       01 PROGNAME   PIC X(256).
-       01 ARG        PIC X(256) VALUE SPACES.
-       01 EOF-FLAG   PIC X(1) VALUE "N".
-       01 FOUND-FLAG PIC X(1) VALUE "N".
-       01 FLOOR      PIC S9(6) VALUE 0.
-       01 POS        PIC 9(6) VALUE 0.
-       01 I          PIC 9(6).
-       01 RESULT     PIC Z(6).
+       77 ARGC       PIC 9(4).
+       77 ARG-COUNT  PIC Z(1).
+       77 PROGNAME   PIC X(256).
+       77 ARG        PIC X(256) VALUE SPACES.
+       77 EOF-FLAG   PIC X(1) VALUE "N".
+       77 FOUND-FLAG PIC X(1) VALUE "N".
+       77 FLOOR      PIC S9(6) VALUE 0.
+       77 POS        PIC 9(6) VALUE 0.
+       77 I          PIC 9(6).
+       77 RESULT     PIC Z(6).
 
        PROCEDURE DIVISION.
 
