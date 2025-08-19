@@ -59,7 +59,7 @@
        PROCESS-CONTENTS.
          PERFORM VARYING I FROM 1 BY 1 UNTIL I > LENGTH OF CONTENTS
            EVALUATE TRUE
-             WHEN FLOOR IS LESS THAN 0
+             WHEN FLOOR < 0
                MOVE "Y" TO FOUND-FLAG
                EXIT PERFORM
              WHEN CONTENTS(I:1) = "("
