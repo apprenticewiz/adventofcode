@@ -1,0 +1,111 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. DAY03B.
+
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       SELECT INPUT-FILE ASSIGN TO FILENAME
+           ORGANIZATION IS LINE SEQUENTIAL.
+
+       DATA DIVISION.
+       FILE SECTION.
+       FD INPUT-FILE.
+       01 INPUT-RECORD         PIC X(12288).
+       
+       WORKING-STORAGE SECTION.
+       77 ARGC                 PIC 9(4).
+       77 PROGNAME             PIC X(256).
+       77 ARG                  PIC X(256) VALUE SPACES.
+       77 EOF-FLAG             PIC X(1) VALUE "N".
+       77 INPUT-LEN            PIC 9(6).
+       77 I                    PIC 9(6).
+       77 MOVE-CHAR            PIC X.
+       77 SANTA-X              PIC S9(6) COMP-5 VALUE 5000.
+       77 SANTA-Y              PIC S9(6) COMP-5 VALUE 5000.
+       77 ROBO-SANTA-X         PIC S9(6) COMP-5 VALUE 5000.
+       77 ROBO-SANTA-Y         PIC S9(6) COMP-5 VALUE 5000.
+       77 SANTA-MOVE           PIC X VALUE "Y".
+       77 VISITED-COUNT        PIC 9(6) VALUE 0.
+       77 RESULT               PIC Z(6).
+       01 VISITED.
+           05 VISITED-ROWS OCCURS 10000 TIMES
+              INDEXED BY X-INDEX.
+              10 VISITED-COLS OCCURS 10000 TIMES
+                 INDEXED BY Y-INDEX.
+                  15 HOUSE-VISITED  PIC X VALUE "N".
+
+       PROCEDURE DIVISION.
+       MAIN-ROUTINE.
+
+       ACCEPT ARGC FROM ARGUMENT-NUMBER
+
+       DISPLAY 0 UPON ARGUMENT-NUMBER
+       ACCEPT PROGNAME FROM ARGUMENT-VALUE
+
+       EVALUATE TRUE
+         WHEN ARGC IS LESS THAN 1
+           DISPLAY "usage: " FUNCTION TRIM(PROGNAME) " <input file>"
+           STOP RUN
+       END-EVALUATE
+
+       DISPLAY 1 UPON ARGUMENT-NUMBER
+       ACCEPT ARG FROM ARGUMENT-VALUE
+       MOVE FUNCTION TRIM(ARG) TO FILENAME
+
+       OPEN INPUT INPUT-FILE
+       READ INPUT-FILE INTO INPUT-RECORD
+       CLOSE INPUT-FILE
+
+       COMPUTE INPUT-LEN = FUNCTION LENGTH(FUNCTION TRIM(INPUT-RECORD))
+
+       PERFORM MARK-HOUSE-SANTA.
+
+       PERFORM VARYING I FROM 1 BY 1 UNTIL I > INPUT-LEN
+           MOVE INPUT-RECORD(I:1) TO MOVE-CHAR
+           IF SANTA-MOVE = "Y" THEN
+               PERFORM MOVE-SANTA
+               PERFORM MARK-HOUSE-SANTA
+               MOVE "N" TO SANTA-MOVE
+           ELSE
+               PERFORM MOVE-ROBO-SANTA
+               PERFORM MARK-HOUSE-ROBO
+               MOVE "Y" TO SANTA-MOVE
+           END-IF
+       END-PERFORM
+
+       MOVE VISITED-COUNT TO RESULT
+       DISPLAY "result = " RESULT
+
+       STOP RUN.
+       
+       MOVE-SANTA.
+           EVALUATE MOVE-CHAR
+               WHEN "^" ADD 1 TO SANTA-Y
+               WHEN "v" SUBTRACT 1 FROM SANTA-Y
+               WHEN "<" SUBTRACT 1 FROM SANTA-X
+               WHEN ">" ADD 1 TO SANTA-X
+           END-EVALUATE.
+
+       MARK-HOUSE-SANTA.
+           MOVE SANTA-X TO X-INDEX
+           MOVE SANTA-Y TO Y-INDEX
+           IF HOUSE-VISITED(X-INDEX, Y-INDEX) = "N"
+               MOVE "Y" TO HOUSE-VISITED(X-INDEX, Y-INDEX)
+               ADD 1 TO VISITED-COUNT
+           END-IF.
+
+       MOVE-ROBO-SANTA.
+           EVALUATE MOVE-CHAR
+               WHEN "^" ADD 1 TO ROBO-SANTA-Y
+               WHEN "v" SUBTRACT 1 FROM ROBO-SANTA-Y
+               WHEN "<" SUBTRACT 1 FROM ROBO-SANTA-X
+               WHEN ">" ADD 1 TO ROBO-SANTA-X
+           END-EVALUATE.
+
+       MARK-HOUSE-ROBO.
+           MOVE ROBO-SANTA-X TO X-INDEX
+           MOVE ROBO-SANTA-Y TO Y-INDEX
+           IF HOUSE-VISITED(X-INDEX, Y-INDEX) = "N"
+               MOVE "Y" TO HOUSE-VISITED(X-INDEX, Y-INDEX)
+               ADD 1 TO VISITED-COUNT
+           END-IF.
