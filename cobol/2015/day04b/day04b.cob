@@ -1,0 +1,59 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. DAY04A.
+
+       ENVIRONMENT DIVISION.
+       INPUT-OUTPUT SECTION.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       77 ARGC          PIC 9(4).
+       77 ARG-COUNT     PIC Z(1).
+       77 PROGNAME      PIC X(256).
+       77 ARG           PIC X(256) VALUE SPACES.
+       77 KEY-STRING    PIC X(64).
+       77 TEMP-STRING   PIC X(64).
+       77 DIGEST        PIC X(32).
+       77 N             PIC 9(9) VALUE 0.
+       77 N-VAL         PIC Z(9).
+       77 TRYKEY-STRING PIC X(256).
+       77 FOUND         PIC X(1) VALUE "N".
+       77 RESULT        PIC Z(9).
+
+       PROCEDURE DIVISION.
+
+       ACCEPT ARGC FROM ARGUMENT-NUMBER
+
+       DISPLAY 0 UPON ARGUMENT-NUMBER
+       ACCEPT PROGNAME FROM ARGUMENT-VALUE
+
+       EVALUATE TRUE
+         WHEN ARGC IS LESS THAN 1
+           DISPLAY "usage: " FUNCTION TRIM(PROGNAME) " <key>"
+           STOP RUN
+       END-EVALUATE
+
+       DISPLAY 1 UPON ARGUMENT-NUMBER
+       ACCEPT ARG FROM ARGUMENT-VALUE
+       MOVE FUNCTION TRIM(ARG) TO KEY-STRING
+
+       PERFORM UNTIL FOUND = "Y"
+           ADD 1 TO N
+
+           MOVE KEY-STRING TO TEMP-STRING
+           MOVE N TO N-VAL
+           STRING TEMP-STRING DELIMITED BY SPACE
+               FUNCTION TRIM(N-VAL) DELIMITED BY SIZE
+               INTO TRYKEY-STRING
+           CALL "md5_digest" USING
+               BY REFERENCE FUNCTION TRIM(TRYKEY-STRING)
+               BY REFERENCE DIGEST
+
+           IF DIGEST(1:6) = "000000"
+               MOVE "Y" TO FOUND
+           END-IF
+       END-PERFORM
+
+       MOVE N TO RESULT
+       DISPLAY "result = " RESULT
+
+       STOP RUN.
