@@ -18,7 +18,7 @@
   (if (null? l)
     u
     (let ((x (car l))
-	  (xs (cdr l)))
+          (xs (cdr l)))
       (fold-left op (op u x) xs))))
 
 (define (process filename)
@@ -27,9 +27,9 @@
     (close-input-port input-file)
     (fold-left
       (lambda (current-floor ch)
-	(cond
-	  ((char=? ch #\() (+ current-floor 1))
-	  ((char=? ch #\)) (- current-floor 1))
-	  (else current-floor)))
+        (cond
+          ((char=? ch #\() (+ current-floor 1))
+          ((char=? ch #\)) (- current-floor 1))
+          (else current-floor)))
       0
       (string->list contents))))
