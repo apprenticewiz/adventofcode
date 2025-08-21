@@ -23,9 +23,7 @@ private:
 
 public:
   Grid();
-  void turnOn(const Bounds&);
-  void turnOff(const Bounds&);
-  void toggle(const Bounds&);
+  void perform(const std::string&, const Bounds&);
   uint32_t count() const;
 } Grid;
 
@@ -37,28 +35,16 @@ Grid::Grid() {
   }
 }
 
-void Grid::turnOn(const Bounds& bounds) {
+void Grid::perform(const std::string& action, const Bounds& bounds) {
   for ( auto j = bounds.upper_left.y; j <= bounds.lower_right.y; j++ ) {
     for ( auto i = bounds.upper_left.x; i <= bounds.lower_right.x; i++ ) {
-      grid[j][i] += 1;
-    }
-  }
-}
-
-void Grid::turnOff(const Bounds& bounds) {
-  for ( auto j = bounds.upper_left.y; j <= bounds.lower_right.y; j++ ) {
-    for ( auto i = bounds.upper_left.x; i <= bounds.lower_right.x; i++ ) {
-      if ( grid[j][i] > 0 ) {
-        grid[j][i] -= 1;
+      if ( action == "turn on" ) {
+        grid[j][i] += 1;
+      } else if ( action == "turn off" ) {
+        grid[j][i] = (grid[j][i] > 0) ? (grid[j][i] - 1) : grid[j][i];
+      } else if ( action == "toggle" ) {
+        grid[j][i] += 2;
       }
-    }
-  }
-}
-
-void Grid::toggle(const Bounds& bounds) {
-  for ( auto j = bounds.upper_left.y; j <= bounds.lower_right.y; j++ ) {
-    for ( auto i = bounds.upper_left.x; i <= bounds.lower_right.x; i++ ) {
-      grid[j][i] += 2;
     }
   }
 }
@@ -93,13 +79,7 @@ uint32_t process(std::string filename) {
       bounds.upper_left.y = std::stoul(match[3].str());
       bounds.lower_right.x = std::stoul(match[4].str());
       bounds.lower_right.y = std::stoul(match[5].str());
-      if ( action == "turn on" ) {
-        grid.turnOn(bounds);
-      } else if ( action == "turn off" ) {
-        grid.turnOff(bounds);
-      } else if ( action == "toggle" ) {
-        grid.toggle(bounds);
-      }
+      grid.perform(action, bounds);
     }
   }
   return grid.count();
