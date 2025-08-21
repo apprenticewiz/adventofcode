@@ -78,34 +78,28 @@ void usage(std::string progname) {
   std::exit(1);
 }
 
-Bounds parseBounds(std::smatch match) {
-  Bounds bounds;
-  bounds.upper_left.x = std::stoul(match[1].str());
-  bounds.upper_left.y = std::stoul(match[2].str());
-  bounds.lower_right.x = std::stoul(match[3].str());
-  bounds.lower_right.y = std::stoul(match[4].str());
-  return bounds;
-}
-
 uint32_t process(std::string filename) {
   Grid grid;
-  Bounds bounds;
   std::ifstream infile(filename);
   std::string line;
-  const std::regex turnon_regex(R"(turn on (\d+),(\d+) through (\d+),(\d+))");
-  const std::regex turnoff_regex(R"(turn off (\d+),(\d+) through (\d+),(\d+))");
-  const std::regex toggle_regex(R"(toggle (\d+),(\d+) through (\d+),(\d+))");
+  const std::regex re(R"((turn on|turn off|toggle) (\d+),(\d+) through (\d+),(\d+))");
   std::smatch match;
+  std::string action;
+  Bounds bounds;
   while (std::getline(infile, line)) {
-    if ( std::regex_match(line, match, turnon_regex) ) {
-        bounds = parseBounds(match);
-        grid.turnOn(bounds);
-    } else if ( std::regex_match(line, match, turnoff_regex) ) {
-        bounds = parseBounds(match);
-        grid.turnOff(bounds);
-    } else if ( std::regex_match(line, match, toggle_regex) ) {
-        bounds = parseBounds(match);
-        grid.toggle(bounds);
+    if ( std::regex_match(line, match, re) ) {
+      action = match[1].str();
+      bounds.upper_left.x = std::stoul(match[2].str());
+      bounds.upper_left.y = std::stoul(match[3].str());
+      bounds.lower_right.x = std::stoul(match[4].str());
+      bounds.lower_right.y = std::stoul(match[5].str());
+      if ( action == "turn on" ) {
+          grid.turnOn(bounds);
+      } else if ( action == "turn off" ) {
+          grid.turnOff(bounds);
+      } else if ( action == "toggle" ) {
+          grid.toggle(bounds);
+      }
     }
   }
   return grid.count();
