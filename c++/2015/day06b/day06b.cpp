@@ -41,7 +41,7 @@ void Grid::perform(const std::string& action, const Bounds& bounds) {
       if ( action == "turn on" ) {
         grid[row][col] += 1;
       } else if ( action == "turn off" ) {
-        grid[row][col] = (grid[row][col] > 0) ? (grid[row][col] - 1) : grid[row][col];
+        grid[row][col] = (grid[row][col] > 0) ? (grid[row][col] - 1) : 0;
       } else if ( action == "toggle" ) {
         grid[row][col] += 2;
       }
