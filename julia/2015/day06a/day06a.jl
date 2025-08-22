@@ -17,14 +17,14 @@ function usage()
 end
 
 function perform(grid::BitMatrix, action::String, bounds::Bounds)
-    for j in bounds.upperLeft.y:bounds.lowerRight.y
-        for i in bounds.upperLeft.x:bounds.lowerRight.x
+    for row in bounds.upperLeft.y:bounds.lowerRight.y
+        for col in bounds.upperLeft.x:bounds.lowerRight.x
             if action == "turn on"
-              grid[j, i] = true
+              grid[row, col] = true
             elseif action == "turn off"
-              grid[j, i] = false
+              grid[row, col] = false
             elseif action == "toggle"
-              grid[j, i] = !grid[j, i]
+              grid[row, col] = !grid[row, col]
             end
         end
     end

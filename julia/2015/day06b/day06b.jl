@@ -17,14 +17,14 @@ function usage()
 end
 
 function perform(grid::Array{Int32,2}, action::String, bounds::Bounds)
-    for j in bounds.upperLeft.y:bounds.lowerRight.y
-        for i in bounds.upperLeft.x:bounds.lowerRight.x
+    for row in bounds.upperLeft.y:bounds.lowerRight.y
+        for col in bounds.upperLeft.x:bounds.lowerRight.x
             if action == "turn on"
-                grid[j, i] += 1
+                grid[row, col] += 1
             elseif action == "turn off"
-                grid[j, i] = (grid[j, i] > 0) ? (grid[j, i] - 1) : grid[j, i]
+                grid[row, col] = (grid[row, col] > 0) ? (grid[row, col] - 1) : 0
             elseif action == "toggle"
-                grid[j, i] += 2
+                grid[row, col] += 2
             end
         end
     end
