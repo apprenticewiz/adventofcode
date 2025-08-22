@@ -1,8 +1,8 @@
 #!/usr/bin/env julia
 
 struct Position
-  x :: Int32
-  y :: Int32
+  row :: Int32
+  col :: Int32
 end
 
 struct Bounds
@@ -17,8 +17,8 @@ function usage()
 end
 
 function perform(grid::Array{Int32,2}, action::String, bounds::Bounds)
-    for row in bounds.upperLeft.y:bounds.lowerRight.y
-        for col in bounds.upperLeft.x:bounds.lowerRight.x
+    for row in bounds.upperLeft.row:bounds.lowerRight.row
+        for col in bounds.upperLeft.col:bounds.lowerRight.col
             if action == "turn on"
                 grid[row, col] += 1
             elseif action == "turn off"
