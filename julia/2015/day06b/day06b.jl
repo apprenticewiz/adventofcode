@@ -16,28 +16,16 @@ function usage()
     exit(1)
 end
 
-function turnOn(grid::Array{Int32,2}, bounds::Bounds)
+function perform(grid::Array{Int32,2}, action::String, bounds::Bounds)
     for j in bounds.upperLeft.y:bounds.lowerRight.y
         for i in bounds.upperLeft.x:bounds.lowerRight.x
-            grid[j, i] += 1
-        end
-    end
-end
-
-function turnOff(grid::Array{Int32,2}, bounds::Bounds)
-    for j in bounds.upperLeft.y:bounds.lowerRight.y
-        for i in bounds.upperLeft.x:bounds.lowerRight.x
-            if grid[j, i] > 0
-                grid[j, i] -= 1
-            end
-        end
-    end
-end
-
-function toggle(grid::Array{Int32,2}, bounds::Bounds)
-    for j in bounds.upperLeft.y:bounds.lowerRight.y
-        for i in bounds.upperLeft.x:bounds.lowerRight.x
+            if action == "turn on"
+                grid[j, i] += 1
+            elseif action == "turn off"
+                grid[j, i] = (grid[j, i] > 0) ? (grid[j, i] - 1) : grid[j, i]
+            elseif action == "toggle"
                 grid[j, i] += 2
+            end
         end
     end
 end
@@ -47,18 +35,12 @@ function process(content::String)::Int32
     for line in split(content, '\n', keepempty=false)
         matches = match(r"(turn on|turn off|toggle) (\d+),(\d+) through (\d+),(\d+)", line)
         if matches != nothing
-            action = matches.captures[1]
+            action :: String = matches.captures[1]
             bounds = Bounds(Position(parse(Int32, matches.captures[2]) + 1,
                                      parse(Int32, matches.captures[3]) + 1),
                             Position(parse(Int32, matches.captures[4]) + 1,
                                      parse(Int32, matches.captures[5]) + 1))
-            if action == "turn on"
-                turnOn(grid, bounds)
-            elseif action == "turn off"
-                turnOff(grid, bounds)
-            elseif action == "toggle"
-                toggle(grid, bounds)
-            end
+            perform(grid, action, bounds)
         end
     end
     return sum(grid)

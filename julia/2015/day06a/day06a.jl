@@ -16,26 +16,16 @@ function usage()
     exit(1)
 end
 
-function turnOn(grid::BitMatrix, bounds::Bounds)
+function perform(grid::BitMatrix, action::String, bounds::Bounds)
     for j in bounds.upperLeft.y:bounds.lowerRight.y
         for i in bounds.upperLeft.x:bounds.lowerRight.x
-            grid[j, i] = true
-        end
-    end
-end
-
-function turnOff(grid::BitMatrix, bounds::Bounds)
-    for j in bounds.upperLeft.y:bounds.lowerRight.y
-        for i in bounds.upperLeft.x:bounds.lowerRight.x
-            grid[j, i] = false
-        end
-    end
-end
-
-function toggle(grid::BitMatrix, bounds::Bounds)
-    for j in bounds.upperLeft.y:bounds.lowerRight.y
-        for i in bounds.upperLeft.x:bounds.lowerRight.x
-                grid[j, i] = !grid[j, i]
+            if action == "turn on"
+              grid[j, i] = true
+            elseif action == "turn off"
+              grid[j, i] = false
+            elseif action == "toggle"
+              grid[j, i] = !grid[j, i]
+            end
         end
     end
 end
@@ -45,18 +35,12 @@ function process(content::String)::Int32
     for line in split(content, '\n', keepempty=false)
         matches = match(r"(turn on|turn off|toggle) (\d+),(\d+) through (\d+),(\d+)", line)
         if matches != nothing
-            action = matches.captures[1]
+            action :: String = matches.captures[1]
             bounds = Bounds(Position(parse(Int32, matches.captures[2]) + 1,
                                      parse(Int32, matches.captures[3]) + 1),
                             Position(parse(Int32, matches.captures[4]) + 1,
                                      parse(Int32, matches.captures[5]) + 1))
-            if action == "turn on"
-                turnOn(grid, bounds)
-            elseif action == "turn off"
-                turnOff(grid, bounds)
-            elseif action == "toggle"
-                toggle(grid, bounds)
-            end
+            perform(grid, action, bounds)
         end
     end
     return count(==(true), grid)
