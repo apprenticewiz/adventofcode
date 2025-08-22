@@ -7,8 +7,8 @@
 
 #include "position.h"
 
-const uint32_t X_MAX = 1000;
-const uint32_t Y_MAX = 1000;
+const uint32_t ROW_MAX = 1000;
+const uint32_t COL_MAX = 1000;
 
 typedef struct aoc_utils::Position2D<int32_t> Position;
 
@@ -19,7 +19,7 @@ typedef struct Bounds {
 
 typedef class Grid {
 private:
-  uint32_t grid[X_MAX][Y_MAX];
+  uint32_t grid[ROW_MAX][COL_MAX];
 
 public:
   Grid();
@@ -28,22 +28,22 @@ public:
 } Grid;
 
 Grid::Grid() {
-  for ( auto j = 0; j < Y_MAX; j++ ) {
-    for ( auto i = 0; i < X_MAX; i++ ) {
-      grid[j][i] = 0;
+  for ( auto row = 0; row < ROW_MAX; row++ ) {
+    for ( auto col = 0; col < COL_MAX; col++ ) {
+      grid[row][col] = 0;
     }
   }
 }
 
 void Grid::perform(const std::string& action, const Bounds& bounds) {
-  for ( auto j = bounds.upper_left.y; j <= bounds.lower_right.y; j++ ) {
-    for ( auto i = bounds.upper_left.x; i <= bounds.lower_right.x; i++ ) {
+  for ( auto row = bounds.upper_left.y; row <= bounds.lower_right.y; row++ ) {
+    for ( auto col = bounds.upper_left.x; col <= bounds.lower_right.x; col++ ) {
       if ( action == "turn on" ) {
-        grid[j][i] += 1;
+        grid[row][col] += 1;
       } else if ( action == "turn off" ) {
-        grid[j][i] = (grid[j][i] > 0) ? (grid[j][i] - 1) : grid[j][i];
+        grid[row][col] = (grid[row][col] > 0) ? (grid[row][col] - 1) : grid[row][col];
       } else if ( action == "toggle" ) {
-        grid[j][i] += 2;
+        grid[row][col] += 2;
       }
     }
   }
@@ -51,9 +51,9 @@ void Grid::perform(const std::string& action, const Bounds& bounds) {
 
 uint32_t Grid::count() const {
   uint32_t count = 0;
-  for ( auto j = 0; j < Y_MAX; j++ ) {
-    for ( auto i = 0; i < X_MAX; i++ ) {
-        count += grid[j][i];
+  for ( auto row = 0; row < ROW_MAX; row++ ) {
+    for ( auto col = 0; col < COL_MAX; col++ ) {
+        count += grid[row][col];
     }
   }
   return count;
