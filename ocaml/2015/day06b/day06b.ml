@@ -5,22 +5,22 @@ let usage progname =
   eprintf "usage: %s <input file>\n" progname;
   exit 1
 
-let perform grid action (x1, y1, x2, y2) =
-  for j = y1 to y2 do
-    for i = x1 to x2 do
+let perform grid action (r1, c1, r2, c2) =
+  for row = r1 to r2 do
+    for col = c1 to c2 do
       match action with
-      | "turn on" -> grid.(j).(i) <- grid.(j).(i) + 1
-      | "turn off" -> grid.(j).(i) <- if grid.(j).(i) > 0 then grid.(j).(i) - 1 else grid.(j).(i)
-      | "toggle" -> grid.(j).(i) <- grid.(j).(i) + 2
+      | "turn on" -> grid.(row).(col) <- grid.(row).(col) + 1
+      | "turn off" -> grid.(row).(col) <- if grid.(row).(col) > 0 then grid.(row).(col) - 1 else 0
+      | "toggle" -> grid.(row).(col) <- grid.(row).(col) + 2
       | _ -> ()
     done
   done
 
 let sum grid =
   let total = ref 0 in
-  for j = 0 to 999 do
-    for i = 0 to 999 do
-        total := !total + grid.(j).(i)
+  for row = 0 to 999 do
+    for col = 0 to 999 do
+        total := !total + grid.(row).(col)
      done
   done ;
   !total
@@ -33,11 +33,11 @@ let process_file filename =
     Seq.iter (fun line ->
       if Str.string_match re line 0 then
         let action = Str.matched_group 1 line in
-        let x1 = int_of_string (Str.matched_group 2 line) in
-        let y1 = int_of_string (Str.matched_group 3 line) in
-        let x2 = int_of_string (Str.matched_group 4 line) in
-        let y2 = int_of_string (Str.matched_group 5 line) in
-        perform grid action (x1, y1, x2, y2)
+        let r1 = int_of_string (Str.matched_group 2 line) in
+        let c1 = int_of_string (Str.matched_group 3 line) in
+        let r2 = int_of_string (Str.matched_group 4 line) in
+        let c2 = int_of_string (Str.matched_group 5 line) in
+        perform grid action (r1, c1, r2, c2)
     ) (List.to_seq lines) ;
     sum grid
   with
