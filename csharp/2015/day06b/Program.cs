@@ -20,37 +20,37 @@ class Grid
 {
     int[,] grid;
 
-    public const int X_MAX = 1000;
-    public const int Y_MAX = 1000;
+    public const int ROW_MAX = 1000;
+    public const int COL_MAX = 1000;
 
     public Grid()
     {
-        grid = new int[X_MAX, Y_MAX];
-        for ( int j = 0; j < Y_MAX; j++ )
+        grid = new int[ROW_MAX, COL_MAX];
+        for ( int row = 0; row < ROW_MAX; row++ )
         {
-            for ( int i = 0; i < X_MAX; i++ )
+            for ( int col = 0; col < COL_MAX; col++ )
             {
-                grid[j, i] = 0;
+                grid[row, col] = 0;
             }
         }
     }
 
     public void Perform(string action, Bounds bounds)
     {
-        for ( int j = bounds.UpperLeft.Y; j <= bounds.LowerRight.Y; j++ )
+        for ( int row = bounds.UpperLeft.X; row <= bounds.LowerRight.X; row++ )
         {
-            for ( int i = bounds.UpperLeft.X; i <= bounds.LowerRight.X; i++ )
+            for ( int col = bounds.UpperLeft.Y; col <= bounds.LowerRight.Y; col++ )
             {
                 switch ( action )
                 {
                     case "turn on":
-                        grid[j, i] += 1;
+                        grid[row, col] += 1;
                         break;
                     case "turn off":
-                        grid[j, i] = (grid[j, i] > 0) ? grid[j, i] - 1 : grid[j, i];
+                        grid[row, col] = (grid[row, col] > 0) ? grid[row, col] - 1 : 0;
                         break;
                     case "toggle":
-                        grid[j, i] += 2;
+                        grid[row, col] += 2;
                         break;
                 }
             }
@@ -60,11 +60,11 @@ class Grid
     public int Sum()
     {
         int sum = 0;
-        for ( int j = 0; j < Y_MAX; j++ )
+        for ( int row = 0; row < COL_MAX; row++ )
         {
-            for ( int i = 0; i < X_MAX; i++ )
+            for ( int col = 0; col < ROW_MAX; col++ )
             {
-                sum += grid[j, i];
+                sum += grid[row, col];
             }
         }
         return sum;

@@ -20,37 +20,37 @@ class Grid
 {
     bool[,] grid;
 
-    public const int X_MAX = 1000;
-    public const int Y_MAX = 1000;
+    public const int ROW_MAX = 1000;
+    public const int COL_MAX = 1000;
 
     public Grid()
     {
-        grid = new bool[X_MAX, Y_MAX];
-        for ( int j = 0; j < Y_MAX; j++ )
+        grid = new bool[ROW_MAX, COL_MAX];
+        for ( int row = 0; row < ROW_MAX; row++ )
         {
-            for ( int i = 0; i < X_MAX; i++ )
+            for ( int col = 0; col < ROW_MAX; col++ )
             {
-                grid[j, i] = false;
+                grid[row, col] = false;
             }
         }
     }
 
     public void Perform(string action, Bounds bounds)
     {
-        for ( int j = bounds.UpperLeft.Y; j <= bounds.LowerRight.Y; j++ )
+        for ( int row = bounds.UpperLeft.X; row <= bounds.LowerRight.X; row++ )
         {
-            for ( int i = bounds.UpperLeft.X; i <= bounds.LowerRight.X; i++ )
+            for ( int col = bounds.UpperLeft.Y; col <= bounds.LowerRight.Y; col++ )
             {
                 switch ( action )
                 {
                     case "turn on":
-                        grid[j, i] = true;
+                        grid[row, col] = true;
                         break;
                     case "turn off":
-                        grid[j, i] = false;
+                        grid[row, col] = false;
                         break;
                     case "toggle":
-                        grid[j, i] = !grid[j, i];
+                        grid[row, col] = !grid[row, col];
                         break;
                 }
             }
@@ -60,11 +60,11 @@ class Grid
     public int Count()
     {
         int count = 0;
-        for ( int j = 0; j < Y_MAX; j++ )
+        for ( int row = 0; row < ROW_MAX; row++ )
         {
-            for ( int i = 0; i < X_MAX; i++ )
+            for ( int col = 0; col < COL_MAX; col++ )
             {
-                if ( grid[j, i] )
+                if ( grid[row, col] )
                 {
                     count++;
                 }
