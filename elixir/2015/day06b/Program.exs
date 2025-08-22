@@ -30,7 +30,7 @@ defmodule Program do
             Map.put(curr_grid, coord, current + 1)
           "turn off" ->
             current = Map.get(curr_grid, coord, 0)
-            Map.put(curr_grid, coord, if current != 0 do current - 1 else 0 end)
+            Map.put(curr_grid, coord, if current > 0 do current - 1 else 0 end)
           "toggle" ->
             current = Map.get(curr_grid, coord, 0)
             Map.put(curr_grid, coord, current + 2)
