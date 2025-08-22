@@ -19,29 +19,29 @@ void usage(char *progname) {
 
 void grid_init(int grid[ROW_MAX][COL_MAX])
 {
-    int i, j;
+    int row, col;
 
-    for ( j = 0; j < ROW_MAX; j++ ) {
-        for ( i = 0; i < COL_MAX; i++ ) {
-            grid[j][i] = 0;
+    for ( row = 0; row < ROW_MAX; row++ ) {
+        for ( col = 0; col < COL_MAX; col++ ) {
+            grid[row][col] = 0;
         }
     }
 }
 
 void grid_perform(int grid[ROW_MAX][COL_MAX], int action, int r1, int c1, int r2, int c2) {
-    int i, j;
+    int row, col;
 
-    for ( j = r1; j <= r2; j++ ) {
-        for ( i = c1; i <= c2; i++ ) {
+    for ( row = r1; row <= r2; row++ ) {
+        for ( col = c1; col <= c2; col++ ) {
             switch ( action ) {
             case ACTION_TURN_ON:
-                grid[j][i] += 1;
+                grid[row][col] += 1;
                 break;
             case ACTION_TURN_OFF:
-                grid[j][i] = (grid[j][i] > 0) ? grid[j][i] - 1 : 0;
+                grid[row][col] = (grid[row][col] > 0) ? grid[row][col] - 1 : 0;
                 break;
             case ACTION_TOGGLE:
-                grid[j][i] += 2;
+                grid[row][col] += 2;
                 break;
             }
         }
@@ -49,12 +49,12 @@ void grid_perform(int grid[ROW_MAX][COL_MAX], int action, int r1, int c1, int r2
 }
 
 int grid_sum(int grid[ROW_MAX][COL_MAX]) {
-    int i, j;
+    int row, col;
     int sum = 0;
 
-    for ( j = 0; j < ROW_MAX; j++ ) {
-        for ( i = 0; i < COL_MAX; i++ ) {
-            sum += grid[j][i];
+    for ( row = 0; row < ROW_MAX; row++ ) {
+        for ( col = 0; col < COL_MAX; col++ ) {
+            sum += grid[row][col];
         }
     }
     return sum;
