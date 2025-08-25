@@ -47,7 +47,7 @@ process(Filename) ->
               nomatch -> skip
             end
         end,
-	#{},
+        #{},
         Lines),
       Result = maps:fold(fun (_, Val, Acc) -> Acc + Val end, 0, Grid),
       {ok, Result};
