@@ -96,18 +96,18 @@ BEGIN
     BEGIN
         ReadLn(InFile, LineStr);
         IF RegExp.Exec(LineStr) THEN
-	BEGIN
-	    Action := RegExp.Match[1];
-	    Val(RegExp.Match[2], Num, Code);
-	    R1 := Num;
-	    Val(RegExp.Match[3], Num, Code);
-	    C1 := Num;
-	    Val(RegExp.Match[4], Num, Code);
-	    R2 := Num;
-	    Val(RegExp.Match[5], Num, Code);
-	    C2 := Num;
-	    Perform(Grid, Action, R1, C1, R2, C2)
-	END
+        BEGIN
+            Action := RegExp.Match[1];
+            Val(RegExp.Match[2], Num, Code);
+            R1 := Num;
+            Val(RegExp.Match[3], Num, Code);
+            C1 := Num;
+            Val(RegExp.Match[4], Num, Code);
+            R2 := Num;
+            Val(RegExp.Match[5], Num, Code);
+            C2 := Num;
+            Perform(Grid, Action, R1, C1, R2, C2)
+        END
     END;
     Close(InFile);
     RegExp.Free;
