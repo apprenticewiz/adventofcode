@@ -15,7 +15,7 @@ def perform(grid, action, r1, c1, r2, c2)
                 when "turn on"
                     grid[row*1000 + col] += 1
                 when "turn off"
-                  grid[row*1000 + col] = [0, grid[row*1000 + col] - 1].max
+                    grid[row*1000 + col] = [0, grid[row*1000 + col] - 1].max
                 when "toggle"
                     grid[row*1000 + col] += 2
             end
