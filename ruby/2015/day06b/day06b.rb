@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'set'
-
 def usage
     progname = File.basename($0)
     puts "usage: #{progname} <input file>"
