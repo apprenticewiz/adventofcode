@@ -39,7 +39,6 @@ process content =
                          ["toggle", upperLeft, "through", lowerRight] ->
                              perform currGrid Toggle (parseCoord upperLeft) (parseCoord lowerRight)
                          _ -> error ("malformed input line: " ++ line)
-
                 )
                 (Array.array ((0, 0), (999, 999)) [((row, col), False) | row <- [0..999], col <- [0..999]])
                 (lines content)
