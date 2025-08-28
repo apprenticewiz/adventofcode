@@ -21,15 +21,15 @@
   (let ((grid (make-vector (* 1000 1000) #f)))
     (for-each
       (lambda (line)
-	(let ((caps (regexp-match #px"(turn on|turn off|toggle) (\\d+),(\\d+) through (\\d+),(\\d+)" line)))
+        (let ((caps (regexp-match #px"(turn on|turn off|toggle) (\\d+),(\\d+) through (\\d+),(\\d+)" line)))
             (if caps
-	      (let* ((action (list-ref caps 1))
-	             (r1 (string->number (list-ref caps 2)))
-		     (c1 (string->number (list-ref caps 3)))
-		     (r2 (string->number (list-ref caps 4)))
-		     (c2 (string->number (list-ref caps 5))))
-	        (perform! grid action r1 c1 r2 c2))
-	      (displayln (string-append "warning: malformed input line: " line) (current-error-port)))))
+              (let* ((action (list-ref caps 1))
+                     (r1 (string->number (list-ref caps 2)))
+                     (c1 (string->number (list-ref caps 3)))
+                     (r2 (string->number (list-ref caps 4)))
+                     (c2 (string->number (list-ref caps 5))))
+                (perform! grid action r1 c1 r2 c2))
+              (displayln (string-append "warning: malformed input line: " line) (current-error-port)))))
       (string-split content "\n"))
     (for/sum ((x (in-vector grid))) (if x 1 0))))
 

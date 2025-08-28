@@ -12,7 +12,7 @@
   (for ((row (in-range r1 (add1 r2))))
     (for ((col (in-range c1 (add1 c2))))
       (let* ((idx (+ (* row 1000) col))
-	     (old-val (vector-ref grid idx)))
+             (old-val (vector-ref grid idx)))
         (cond
           ((string=? action "turn on") (vector-set! grid idx (+ old-val 1)))
           ((string=? action "turn off") (vector-set! grid idx (max 0 (- old-val 1))))
@@ -22,15 +22,15 @@
   (let ((grid (make-vector (* 1000 1000) 0)))
     (for-each
       (lambda (line)
-	(let ((caps (regexp-match #px"(turn on|turn off|toggle) (\\d+),(\\d+) through (\\d+),(\\d+)" line)))
+        (let ((caps (regexp-match #px"(turn on|turn off|toggle) (\\d+),(\\d+) through (\\d+),(\\d+)" line)))
             (if caps
-	      (let* ((action (list-ref caps 1))
-	             (r1 (string->number (list-ref caps 2)))
-		     (c1 (string->number (list-ref caps 3)))
-		     (r2 (string->number (list-ref caps 4)))
-		     (c2 (string->number (list-ref caps 5))))
-	        (perform! grid action r1 c1 r2 c2))
-	      (displayln (string-append "warning: malformed input line: " line) (current-error-port)))))
+              (let* ((action (list-ref caps 1))
+                     (r1 (string->number (list-ref caps 2)))
+                     (c1 (string->number (list-ref caps 3)))
+                     (r2 (string->number (list-ref caps 4)))
+                     (c2 (string->number (list-ref caps 5))))
+                (perform! grid action r1 c1 r2 c2))
+              (displayln (string-append "warning: malformed input line: " line) (current-error-port)))))
       (string-split content "\n"))
     (for/sum ((x (in-vector grid))) x)))
 
