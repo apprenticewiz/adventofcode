@@ -41,23 +41,42 @@ object Program {
 
   def process(filename: String): Int = {
     val operations: HashMap[String, Op] = new HashMap
-    val assignRegex: Regex = raw"(\d+|\w+) -> (\w+)".r
-    val notRegex: Regex = raw"NOT (\d+|\w+) -> (\w+)".r
-    val andOrRegex: Regex = raw"(\d+|\w+) (AND|OR) (\d+|\w+) -> (\w+)".r
-    val shiftRegex: Regex = raw"(\d+|\w+) (LSHIFT|RSHIFT) (\d+) -> (\w+)".r
+    val assignHandler: List[String] => Unit = groups => {
+      val List(src, dest) = groups
+      operations += (dest -> Assign(src))
+    }
+    val notHandler: List[String] => Unit = groups => {
+      val List(src, dest) = groups
+      operations += (dest -> Not(src))
+    }
+    val andOrHandler: List[String] => Unit = groups => {
+      val List(src1, op, src2, dest) = groups
+      operations += (dest -> (if (op == "AND") And(src1, src2) else Or(src1, src2)))
+    }
+    val shiftHandler: List[String] => Unit = groups => {
+      val List(src, op, amt, dest) = groups
+      operations += (dest -> (if (op == "LSHIFT") LeftShift(src, amt.toInt) else RightShift(src, amt.toInt)))
+    }
+    val regexes: List[(Regex, List[String] => Unit)] = List(
+      (raw"(\d+|\w+) -> (\w+)".r, assignHandler),
+      (raw"NOT (\d+|\w+) -> (\w+)".r, notHandler),
+      (raw"(\d+|\w+) (AND|OR) (\d+|\w+) -> (\w+)".r, andOrHandler),
+      (raw"(\d+|\w+) (LSHIFT|RSHIFT) (\d+) -> (\w+)".r, shiftHandler),
+    )
     Using(Source.fromFile(filename)) { source =>
       for ( line <- source.getLines() ) {
-        line match {
-          case assignRegex(value, dest) => operations += (dest -> Assign(value))
-          case notRegex(src, dest) => operations += (dest -> Not(src))
-          case andOrRegex(src1, op, src2, dest) =>
-            operations += (dest -> (if ( op == "AND" ) And(src1, src2) else Or(src1, src2)))
-          case shiftRegex(src, op, amtStr, dest) =>
-            val amt = amtStr.toInt
-            operations += (dest -> (if (op == "LSHIFT" ) LeftShift(src, amt) else RightShift(src, amt)))
-          case _ =>
-            Console.err.println(s"error: malformed input line: $line")
-            sys.exit(1)
+        val matched = regexes.exists { case(re, handler) =>
+          re.unapplySeq(line) match {
+            case Some(groups) =>
+              handler(groups)
+              true
+            case None =>
+              false
+          }
+        }
+        if ( !matched ) {
+          Console.err.println(s"error: malformed input line: $line")
+          sys.exit(1)
         }
       }
     }
