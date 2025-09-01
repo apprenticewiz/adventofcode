@@ -174,8 +174,8 @@ class Program {
         }
 
         int a = Eval(operations, new Dictionary<string, int>(), "a");
-	operations["b"] = new Assign(a.ToString());
-	return Eval(operations, new Dictionary<string, int>(), "a");
+        operations["b"] = new Assign(a.ToString());
+        return Eval(operations, new Dictionary<string, int>(), "a");
     }
 
     static void Main(string[] args)
