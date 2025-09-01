@@ -113,10 +113,53 @@ class Program {
     static int Process(string filename)
     {
         Dictionary<string, Op> operations = new Dictionary<string, Op>();
-        Regex assignRegex = new Regex(@"^(\d+|\w+) -> (\w+)$");
-        Regex notRegex = new Regex(@"^NOT (\d+|\w+) -> (\w+)$");
-        Regex andOrRegex = new Regex(@"^(\d+|\w+) (AND|OR) (\d+|\w+) -> (\w+)$");
-        Regex shiftRegex = new Regex(@"^(\d+|\w+) (LSHIFT|RSHIFT) (\d+) -> (\w+)$");
+        List<(Regex, Action<Match>)> regexes = new List<(Regex, Action<Match>)>
+        {
+            (
+                new Regex(@"^(\d+|\w+) -> (\w+)$"),
+                match =>
+                {
+                    string val = match.Groups[1].Value;
+                    string dest = match.Groups[2].Value;
+                    operations[dest] = new Assign(val);
+                }
+            ),
+            (
+                new Regex(@"^NOT (\d+|\w+) -> (\w+)$"),
+                match =>
+                {
+                    string src = match.Groups[1].Value;
+                    string dest = match.Groups[2].Value;
+                    operations[dest] = new Not(src);
+                }
+            ),
+            (
+                new Regex(@"^(\d+|\w+) (AND|OR) (\d+|\w+) -> (\w+)$"),
+                match =>
+                {
+                    string src1 = match.Groups[1].Value;
+                    string op = match.Groups[2].Value;
+                    string src2 = match.Groups[3].Value;
+                    string dest = match.Groups[4].Value;
+                    operations[dest] = op == "AND"
+                        ? new And(src1, src2)
+                        : new Or(src1, src2);
+                }
+            ),
+            (
+                new Regex(@"^(\d+|\w+) (LSHIFT|RSHIFT) (\d+) -> (\w+)$"),
+                match =>
+                {
+                    string src = match.Groups[1].Value;
+                    string op = match.Groups[2].Value;
+                    int amt = int.Parse(match.Groups[3].Value);
+                    string dest = match.Groups[4].Value;
+                    operations[dest] = op == "LSHIFT"
+                        ? new LeftShift(src, amt)
+                        : new RightShift(src, amt);
+                }
+            )
+        };
 
         try
         {
@@ -125,41 +168,18 @@ class Program {
                 string? line;
                 while ( (line = reader.ReadLine()) != null )
                 {
-                    if ( assignRegex.IsMatch(line) )
+                    bool matched = false;
+                    foreach (var (regex, handler) in regexes)
                     {
-                        Match match = assignRegex.Match(line);
-                        string val = match.Groups[1].Value;
-                        string dest = match.Groups[2].Value;
-                        operations[dest] = new Assign(val);
+                        var match = regex.Match(line);
+                        if ( match.Success )
+                        {
+                            handler(match);
+                            matched = true;
+                            break;
+                        }
                     }
-                    else if ( notRegex.IsMatch(line) )
-                    {
-                        Match match = notRegex.Match(line);
-                        string src = match.Groups[1].Value;
-                        string dest = match.Groups[2].Value;
-                        operations[dest] = new Not(src);
-                    }
-                    else if ( andOrRegex.IsMatch(line) )
-                    {
-                        Match match = andOrRegex.Match(line);
-                        string src1 = match.Groups[1].Value;
-                        string op = match.Groups[2].Value;
-                        string src2 = match.Groups[3].Value;
-                        string dest = match.Groups[4].Value;
-                        operations[dest] = op == "AND" ? new And(src1, src2) : new Or(src1, src2);
-                    }
-                    else if ( shiftRegex.IsMatch(line) )
-                    {
-                        Match match = shiftRegex.Match(line);
-                        string src = match.Groups[1].Value;
-                        string op = match.Groups[2].Value;
-                        int.TryParse(match.Groups[3].Value, out int shiftAmt);
-                        string dest = match.Groups[4].Value;
-                        operations[dest] = op == "LSHIFT"
-                            ? new LeftShift(src, shiftAmt)
-                            : new RightShift(src, shiftAmt);
-                    }
-                    else
+                    if ( !matched )
                     {
                         Console.Error.WriteLine("error: malformed input line: " + line);
                         Environment.Exit(1);
