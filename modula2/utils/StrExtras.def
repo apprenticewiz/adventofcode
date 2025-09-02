@@ -1,0 +1,20 @@
+DEFINITION MODULE StrExtras;
+
+EXPORT QUALIFIED StrCompare, StrIndex, StrSlice, StrToCard;
+
+PROCEDURE StrCompare(Str1, Str2 : ARRAY OF CHAR) : INTEGER;
+
+PROCEDURE StrIndex(Haystack  : ARRAY OF CHAR;
+                   Needle    : ARRAY OF CHAR;
+                   VAR Found : BOOLEAN) : CARDINAL;
+
+PROCEDURE StrSlice(Src      : ARRAY OF CHAR;
+                   VAR Dest : ARRAY OF CHAR;
+                   From     : CARDINAL;
+                   Length   : CARDINAL);
+
+PROCEDURE StrToCard(Src         : ARRAY OF CHAR;
+                    VAR Dest    : CARDINAL;
+                    VAR Success : BOOLEAN);
+
+END StrExtras.
