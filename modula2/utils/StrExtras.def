@@ -1,6 +1,9 @@
 DEFINITION MODULE StrExtras;
 
-EXPORT QUALIFIED StrCompare, StrIndex, StrSlice, StrToCard;
+EXPORT QUALIFIED CardToStr, StrCompare, StrIndex, StrSlice, StrToCard;
+
+PROCEDURE CardToStr(Src      : CARDINAL;
+                    VAR Dest : ARRAY OF CHAR);
 
 PROCEDURE StrCompare(Str1, Str2 : ARRAY OF CHAR) : INTEGER;
 

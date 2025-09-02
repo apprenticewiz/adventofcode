@@ -2,6 +2,33 @@ IMPLEMENTATION MODULE StrExtras;
 
 FROM StrLib IMPORT StrLen;
 
+PROCEDURE CardToStr(Src      : CARDINAL;
+                    VAR Dest : ARRAY OF CHAR);
+VAR
+    TempBuf : ARRAY [0..7] OF CHAR;
+    I, N    : CARDINAL;
+    Length  : CARDINAL;
+    Digit   : CARDINAL;
+
+BEGIN
+    I := 0;
+    N := Src;
+    LOOP
+        Digit := N MOD 10;
+        TempBuf[I] := CHR(ORD('0') + Digit);
+        N := N DIV 10;
+        INC(I);
+        IF N = 0 THEN
+            EXIT;
+        END;
+    END;
+    Length := I;
+    FOR I := 0 TO (Length - 1) DO
+        Dest[I] := TempBuf[Length - 1 - I];
+    END;
+    Dest[Length] := 0C;
+END CardToStr;
+
 PROCEDURE StrCompare(Str1, Str2 : ARRAY OF CHAR) : INTEGER;
 VAR
     I : CARDINAL;
