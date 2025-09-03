@@ -86,14 +86,14 @@ FUNCTION OpsFindKey(BYREF Ops AS OperationTable, CurrRoot AS Integer, Key AS Str
     ELSEIF Ops.Entries(CurrRoot).Key = Key THEN
         RETURN CurrRoot
     ELSE
-	LeftIdx = OpsFindKey(Ops, Ops.Entries(CurrRoot).LeftChild, Key)
-	IF LeftIdx <> -1 THEN
-	    RETURN LeftIdx
-	END IF
-	RightIdx = OpsFindKey(Ops, Ops.Entries(CurrRoot).RightChild, Key)
-	IF RightIdx <> -1 THEN
-	    RETURN RightIdx
-	END IF
+        LeftIdx = OpsFindKey(Ops, Ops.Entries(CurrRoot).LeftChild, Key)
+        IF LeftIdx <> -1 THEN
+            RETURN LeftIdx
+        END IF
+        RightIdx = OpsFindKey(Ops, Ops.Entries(CurrRoot).RightChild, Key)
+        IF RightIdx <> -1 THEN
+            RETURN RightIdx
+        END IF
         RETURN -1
     END IF
 END FUNCTION
@@ -159,14 +159,14 @@ FUNCTION CacheFindKey(BYREF Cache AS CacheTable, CurrRoot AS Integer, Key AS Str
     ELSEIF Cache.Entries(CurrRoot).Key = Key THEN
         RETURN CurrRoot
     ELSE
-	LeftIdx = CacheFindKey(Cache, Cache.Entries(CurrRoot).LeftChild, Key)
-	IF LeftIdx <> -1 THEN
-	    RETURN LeftIdx
-	END IF
-	RightIdx = CacheFindKey(Cache, Cache.Entries(CurrRoot).RightChild, Key)
-	IF RightIdx <> -1 THEN
-	    RETURN RightIdx
-	END IF
+        LeftIdx = CacheFindKey(Cache, Cache.Entries(CurrRoot).LeftChild, Key)
+        IF LeftIdx <> -1 THEN
+            RETURN LeftIdx
+        END IF
+        RightIdx = CacheFindKey(Cache, Cache.Entries(CurrRoot).RightChild, Key)
+        IF RightIdx <> -1 THEN
+            RETURN RightIdx
+        END IF
         RETURN -1
     END IF
 END FUNCTION
@@ -181,43 +181,43 @@ FUNCTION Eval(BYREF Ops AS OperationTable, BYREF Cache AS CacheTable, Expr AS St
         RETURN VALINT(Expr)
     ELSEIF CacheContainsKey(Cache, Cache.Root, Expr) THEN
         I = CacheFindKey(Cache, Cache.Root, Expr)
-	RETURN Cache.Entries(I).Value
+        RETURN Cache.Entries(I).Value
     ELSE
         I = OpsFindKey(Ops, Ops.Root, Expr)
-	SELECT CASE Ops.Entries(I).Value.Op
+        SELECT CASE Ops.Entries(I).Value.Op
             CASE Operation.OperatorType.ASSIGN_OP
-		Result = Eval(Ops, Cache, Ops.Entries(I).Value.Source1)
-		InsertCacheNode(Cache, Cache.Root, Expr, Result)
-		RETURN Result
+                Result = Eval(Ops, Cache, Ops.Entries(I).Value.Source1)
+                InsertCacheNode(Cache, Cache.Root, Expr, Result)
+                RETURN Result
             CASE Operation.OperatorType.NOT_OP
-		Result = (NOT Eval(Ops, Cache, Ops.Entries(I).Value.Source1)) AND &Hffff
-		InsertCacheNode(Cache, Cache.Root, Expr, Result)
-		RETURN Result
+                Result = (NOT Eval(Ops, Cache, Ops.Entries(I).Value.Source1)) AND &Hffff
+                InsertCacheNode(Cache, Cache.Root, Expr, Result)
+                RETURN Result
             CASE Operation.OperatorType.AND_OP
-		Val1 = Eval(Ops, Cache, Ops.Entries(I).Value.Source1)
-		Val2 = Eval(Ops, Cache, Ops.Entries(I).Value.Source2)
-		Result = (Val1 AND Val2) AND &Hffff
-		InsertCacheNode(Cache, Cache.Root, Expr, Result)
-		RETURN Result
+                Val1 = Eval(Ops, Cache, Ops.Entries(I).Value.Source1)
+                Val2 = Eval(Ops, Cache, Ops.Entries(I).Value.Source2)
+                Result = (Val1 AND Val2) AND &Hffff
+                InsertCacheNode(Cache, Cache.Root, Expr, Result)
+                RETURN Result
             CASE Operation.OperatorType.OR_OP
-		Val1 = Eval(Ops, Cache, Ops.Entries(I).Value.Source1)
-		Val2 = Eval(Ops, Cache, Ops.Entries(I).Value.Source2)
-		Result = (Val1 OR Val2) AND &Hffff
-		InsertCacheNode(Cache, Cache.Root, Expr, Result)
-		RETURN Result
+                Val1 = Eval(Ops, Cache, Ops.Entries(I).Value.Source1)
+                Val2 = Eval(Ops, Cache, Ops.Entries(I).Value.Source2)
+                Result = (Val1 OR Val2) AND &Hffff
+                InsertCacheNode(Cache, Cache.Root, Expr, Result)
+                RETURN Result
             CASE Operation.OperatorType.LSHIFT_OP
-		Val1 = Eval(Ops, Cache, Ops.Entries(I).Value.Source1)
-		Val2 = Ops.Entries(I).Value.Amount
-		Result = (Val1 SHL Val2) AND &Hffff
-		InsertCacheNode(Cache, Cache.Root, Expr, Result)
-		RETURN Result
+                Val1 = Eval(Ops, Cache, Ops.Entries(I).Value.Source1)
+                Val2 = Ops.Entries(I).Value.Amount
+                Result = (Val1 SHL Val2) AND &Hffff
+                InsertCacheNode(Cache, Cache.Root, Expr, Result)
+                RETURN Result
             CASE Operation.OperatorType.RSHIFT_OP
-		Val1 = Eval(Ops, Cache, Ops.Entries(I).Value.Source1)
-		Val2 = Ops.Entries(I).Value.Amount
-		Result = (Val1 SHR Val2) AND &Hffff
-		InsertCacheNode(Cache, Cache.Root, Expr, Result)
-		RETURN Result
-	END SELECT
+                Val1 = Eval(Ops, Cache, Ops.Entries(I).Value.Source1)
+                Val2 = Ops.Entries(I).Value.Amount
+                Result = (Val1 SHR Val2) AND &Hffff
+                InsertCacheNode(Cache, Cache.Root, Expr, Result)
+                RETURN Result
+        END SELECT
     END IF
 END FUNCTION
 
