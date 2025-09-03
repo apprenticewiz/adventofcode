@@ -57,7 +57,7 @@ void put_op(op_node_t **root, char *key, operation_t *value) {
     if ( *root == NULL ) {
         nodeptr = (op_node_t *)malloc(sizeof(op_node_t));
         memcpy(nodeptr->key, key, strlen(key));
-	nodeptr->key[strlen(key)] = '\0';
+        nodeptr->key[strlen(key)] = '\0';
         nodeptr->value = value;
         nodeptr->left = NULL;
         nodeptr->right = NULL;
@@ -98,7 +98,7 @@ void put_cache(cache_node_t **root, char *key, int value) {
     if ( *root == NULL ) {
         nodeptr = (cache_node_t *)malloc(sizeof(cache_node_t));
         memcpy(nodeptr->key, key, strlen(key));
-	nodeptr->key[strlen(key)] = '\0';
+        nodeptr->key[strlen(key)] = '\0';
         nodeptr->value = value;
         nodeptr->left = NULL;
         nodeptr->right = NULL;
@@ -154,32 +154,32 @@ int eval(op_table_t *ops, cache_table_t *cache, char *expr) {
         return *n;
     } else {
         op = find_op(ops->root, expr);
-	switch ( op->operator ) {
-	case ASSIGN_OP:
-	    result = eval(ops, cache, op->source1);
+        switch ( op->operator ) {
+        case ASSIGN_OP:
+            result = eval(ops, cache, op->source1);
             put_cache(&(cache->root), expr, result);
-	    return result;
-	case NOT_OP:
-	    result = ~eval(ops, cache, op->source1) & 0xffff;
+            return result;
+        case NOT_OP:
+            result = ~eval(ops, cache, op->source1) & 0xffff;
             put_cache(&(cache->root), expr, result);
-	    return result;
-	case AND_OP:
-	    result = (eval(ops, cache, op->source1) & eval(ops, cache, op->source2.str)) & 0xffff;
+            return result;
+        case AND_OP:
+            result = (eval(ops, cache, op->source1) & eval(ops, cache, op->source2.str)) & 0xffff;
             put_cache(&(cache->root), expr, result);
-	    return result;
-	case OR_OP:
-	    result = (eval(ops, cache, op->source1) | eval(ops, cache, op->source2.str)) & 0xffff;
+            return result;
+        case OR_OP:
+            result = (eval(ops, cache, op->source1) | eval(ops, cache, op->source2.str)) & 0xffff;
             put_cache(&(cache->root), expr, result);
-	    return result;
-	case LSHIFT_OP:
-	    result = (eval(ops, cache, op->source1) << op->source2.amt) & 0xffff;
+            return result;
+        case LSHIFT_OP:
+            result = (eval(ops, cache, op->source1) << op->source2.amt) & 0xffff;
             put_cache(&(cache->root), expr, result);
-	    return result;
-	case RSHIFT_OP:
-	    result = (eval(ops, cache, op->source1) >> op->source2.amt) & 0xffff;
+            return result;
+        case RSHIFT_OP:
+            result = (eval(ops, cache, op->source1) >> op->source2.amt) & 0xffff;
             put_cache(&(cache->root), expr, result);
-	    return result;
-	}
+            return result;
+        }
     }
 }
 
