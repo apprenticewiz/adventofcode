@@ -103,7 +103,7 @@ public class Program {
         try {
             int r = Integer.parseInt(expr);
             return r;
-        } catch ( NumberFormatException e) {}
+        } catch ( NumberFormatException e ) {}
         if ( cache.containsKey(expr) ) {
             return cache.get(expr);
         } else {
