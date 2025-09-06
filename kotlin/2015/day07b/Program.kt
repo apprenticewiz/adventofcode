@@ -81,12 +81,12 @@ fun eval(ops: HashMap<String, Operation>, cache: HashMap<String, Int>, expr: Str
             is Operation.Not -> eval(ops, cache, op.src).inv()
             is Operation.And -> eval(ops, cache, op.src1) and eval(ops, cache, op.src2)
             is Operation.Or -> eval(ops, cache, op.src1) or eval(ops, cache, op.src2)
-	    is Operation.LeftShift -> eval(ops, cache, op.src) shl op.amt
-	    is Operation.RightShift -> eval(ops, cache, op.src) shr op.amt
+            is Operation.LeftShift -> eval(ops, cache, op.src) shl op.amt
+            is Operation.RightShift -> eval(ops, cache, op.src) shr op.amt
         }
-	val masked = r and 0xffff
-	cache[expr] = masked
-	return masked
+        val masked = r and 0xffff
+        cache[expr] = masked
+        return masked
     }
 }
 
