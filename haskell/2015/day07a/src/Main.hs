@@ -1,5 +1,6 @@
 module Main ( main ) where
 
+import Control.Monad.State
 import Data.Bits
 import Data.Char (isDigit)
 import Data.Int (Int32)
@@ -14,41 +15,35 @@ data Operation = AssignOp String
                | OrOp String String
                | LeftShiftOp String Int
                | RightShiftOp String Int
+               deriving (Show)
+
+type Cache = Map.Map String Word
+type EvalState = State Cache
 
 usage :: String -> IO ()
 usage progname = do
     hPutStrLn stderr $ "usage: " ++ progname ++ " <input file>"
     exitFailure
 
-evaluate :: (Map.Map String Operation) -> (Map.Map String Word) -> String -> (Word, Map.Map String Word)
-evaluate ops cache expr =
-    if all (\c -> isDigit c) expr
-        then (read expr, cache)
-        else if Map.member expr cache
-            then (cache Map.! expr, cache)
-            else
+evaluate :: Map.Map String Operation -> String -> EvalState Word
+evaluate ops expr
+    | all isDigit expr = pure (read expr)
+    | otherwise = do
+        cache <- get
+        case Map.lookup expr cache of
+            Just v -> pure v
+            Nothing -> do
                 let op = ops Map.! expr
-                    (r, cache''') = case op of
-                                      AssignOp src -> evaluate ops cache src
-                                      NotOp src -> 
-                                          let (a, cache') = evaluate ops cache src
-                                          in (complement a, cache')
-                                      AndOp src1 src2 ->
-                                          let (a, cache') = evaluate ops cache src1
-                                              (b, cache'') = evaluate ops cache' src2
-                                          in (a .&. b, cache'')
-                                      OrOp src1 src2 ->
-                                          let (a, cache') = evaluate ops cache src1
-                                              (b, cache'') = evaluate ops cache' src2
-                                          in (a .|. b, cache'')
-                                      LeftShiftOp src amt ->
-                                          let (a, cache') = evaluate ops cache src
-                                          in (shift a amt, cache')
-                                      RightShiftOp src amt ->
-                                          let (a, cache') = evaluate ops cache src
-                                          in (shift a (-amt), cache')
-                    masked = r .&. 0xffff
-                in (masked, Map.insert expr masked cache''')
+                v <- case op of
+                        AssignOp src          -> evaluate ops src
+                        NotOp src             -> complement <$> evaluate ops src
+                        AndOp src1 src2       -> (.&.) <$> evaluate ops src1 <*> evaluate ops src2
+                        OrOp src1 src2        -> (.|.) <$> evaluate ops src1 <*> evaluate ops src2
+                        LeftShiftOp src amt   -> (`shift` amt) <$> evaluate ops src
+                        RightShiftOp src amt  -> (`shift` (-amt)) <$> evaluate ops src
+                let masked = v .&. 0xffff
+                modify (Map.insert expr masked)
+                pure masked
 
 process :: String -> Int32
 process content =
@@ -67,7 +62,8 @@ process content =
                 )
                 Map.empty
                 (lines content)
-    in fromIntegral $ toInteger $ fst $ evaluate operations (Map.empty) "a"
+        a = evalState (evaluate operations "a") Map.empty
+    in fromIntegral a
 
 main :: IO ()
 main = do
