@@ -45,24 +45,20 @@ evaluate ops expr
                 modify (Map.insert expr masked)
                 pure masked
 
+parseLine :: String -> (String, Operation)
+parseLine line = case words line of
+    [src, "->", dest] -> (dest, AssignOp src)
+    ["NOT", src, "->", dest] -> (dest, NotOp src)
+    [src1, "AND", src2, "->", dest] -> (dest, AndOp src1 src2)
+    [src1, "OR", src2, "->", dest] -> (dest, OrOp src1 src2)
+    [src, "LSHIFT", amt, "->", dest] -> (dest, LeftShiftOp src (read amt))
+    [src, "RSHIFT", amt, "->", dest] -> (dest, RightShiftOp src (read amt))
+    _ -> error ("malformed input line: " ++ line)
+
 process :: String -> Int32
 process content =
-    let operations =
-            foldl
-                (\acc line ->
-                    let parts = words line
-                    in case parts of
-                        [src, "->", dest] -> (Map.insert dest (AssignOp src) acc)
-                        ["NOT", src, "->", dest] -> (Map.insert dest (NotOp src) acc)
-                        [src1, "AND", src2, "->", dest] -> (Map.insert dest (AndOp src1 src2) acc)
-                        [src1, "OR", src2, "->", dest] -> (Map.insert dest (OrOp src1 src2) acc)
-                        [src, "LSHIFT", amt, "->", dest] -> (Map.insert dest (LeftShiftOp src (read amt)) acc)
-                        [src, "RSHIFT", amt, "->", dest] -> (Map.insert dest (RightShiftOp src (read amt)) acc)
-                        _ -> error ("malformed input line: " ++ line)
-                )
-                Map.empty
-                (lines content)
-        a = evalState (evaluate operations "a") Map.empty
+    let ops = foldl (\acc line -> let (dest, op) = parseLine line in Map.insert dest op acc) Map.empty (lines content)
+        a = evalState (evaluate ops "a") Map.empty
     in fromIntegral a
 
 main :: IO ()
