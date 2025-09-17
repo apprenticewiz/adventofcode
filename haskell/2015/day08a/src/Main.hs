@@ -4,43 +4,30 @@ import Data.Int (Int32)
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
-import Text.Parsec
-import Text.Parsec.String (Parser)
 
 usage :: String -> IO ()
 usage progname = do
     hPutStrLn stderr $ "usage: " ++ progname ++ " <input file>"
     exitFailure
 
-escaped :: Parser Char
-escaped = do
-    _ <- char '\\'
-    choice
-        [ char '\\' >> return '\\'
-        , char '"' >> return '"'
-        , char 'x' >> count 2 hexDigit >> return '?'
-        ]
-
-normalChar :: Parser Char
-normalChar = noneOf "\\\""
-
-charP :: Parser Char
-charP = escaped <|> normalChar
-
-stringLiteralP :: Parser String
-stringLiteralP = between (char '"') (char '"') (many charP)
-
-parseLine :: String -> String
-parseLine line =
-    case parse stringLiteralP "" line of
-        Left err -> error (show err)
-        Right s -> s
+memLength :: String -> Int
+memLength line =
+    let betweenQuotes = (init . drop 1) line
+        countEscaped i [] = i
+        countEscaped i [_] = i + 1
+        countEscaped i (x:y:xs) =
+            case [x, y] of
+                "\\\\" -> countEscaped (i + 1) xs
+                "\\\"" -> countEscaped (i + 1) xs
+                "\\x" -> countEscaped (i + 1) (drop 2 xs)
+                _ -> countEscaped (i + 1) (y:xs)
+    in countEscaped 0 betweenQuotes
 
 process :: String -> Int32
 process content =
     let contentLines = lines content
         codeLens = map length contentLines
-        memLens = map (length . parseLine) contentLines
+        memLens = map memLength contentLines
         diffs = zipWith (-) codeLens memLens
     in fromIntegral $ sum diffs
 
