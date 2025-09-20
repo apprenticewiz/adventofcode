@@ -9,20 +9,21 @@ fn min(a: u32, b: u32) u32 {
     return if (a < b) a else b;
 }
 
-fn processFile(allocator: std.mem.Allocator, filename: []const u8) !u32 {
+fn processFile(filename: []const u8) !u32 {
     var file = try std.fs.cwd().openFile(filename, .{});
     defer file.close();
 
-    var reader = std.io.bufferedReader(file.reader());
-    var stream = reader.reader();
+    var read_buf: [131072]u8 = undefined;
+    var reader = file.reader(&read_buf);
+    var r_interface = &reader.interface;
 
     var total_area: u32 = 0;
-    var line_buf = std.ArrayList(u8).init(allocator);
-    defer line_buf.deinit();
 
-    while ( try stream.readUntilDelimiterOrEofAlloc(allocator, '\n', 16) ) |line| {
-        defer allocator.free(line);
-
+    while ( true ) {
+        const line = r_interface.takeDelimiterExclusive('\n') catch |err| switch (err) {
+            error.EndOfStream => break,
+            else => return err,
+        };
         var parts_iter = std.mem.splitScalar(u8, line, 'x');
         var parts_count: usize = 0;
         var dims: [3]u32 = undefined;
@@ -47,8 +48,10 @@ fn processFile(allocator: std.mem.Allocator, filename: []const u8) !u32 {
 }
 
 pub fn main() !void {
+    var stdout_buffer: [1024]u8 = undefined;
     const allocator = std.heap.page_allocator;
-    const stdout = std.io.getStdOut().writer();
+    var stdout_writer = std.fs.File.stdout().writer(&stdout_buffer);
+    var stdout = &stdout_writer.interface;
     const args = try std.process.argsAlloc(allocator);
     defer std.process.argsFree(allocator, args);
 
@@ -58,10 +61,11 @@ pub fn main() !void {
 
     const filename = args[1];
 
-    const result = processFile(allocator, filename) catch |err| {
+    const result = processFile(filename) catch |err| {
         std.debug.print("error while processing file `{s}': {s}\n", .{filename, @errorName(err)});
         std.process.exit(1);
     };
 
     try stdout.print("result = {}\n", .{result});
+    try stdout.flush();
 }
