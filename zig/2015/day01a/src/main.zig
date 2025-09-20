@@ -9,7 +9,7 @@ fn processFile(filename: []const u8) !i32 {
     var file = try std.fs.cwd().openFile(filename, .{});
     defer file.close();
 
-    var read_buf: [1000000]u8 = undefined;
+    var read_buf: [131072]u8 = undefined;
     var reader = file.reader(&read_buf);
     var r_interface = &reader.interface;
 
