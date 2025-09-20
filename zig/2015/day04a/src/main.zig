@@ -8,7 +8,7 @@ fn usage(progname: []const u8) void {
 fn processFile(allocator: std.mem.Allocator, key: []const u8) !u32 {
     var n: u32 = 1;
 
-    var buf = std.ArrayList(u8).init(allocator);
+    var buf = std.array_list.Managed(u8).init(allocator);
     defer buf.deinit();
 
     while ( true ) {
@@ -19,7 +19,7 @@ fn processFile(allocator: std.mem.Allocator, key: []const u8) !u32 {
         var out: [md5.digest_length]u8 = undefined;
         md5.hash(b, &out, .{});
 
-        const hex = try std.fmt.allocPrint(allocator, "{}", .{std.fmt.fmtSliceHexLower(&out)});
+        const hex = try std.fmt.allocPrint(allocator, "{x}", .{out});
         defer allocator.free(hex);
 
         if ( std.mem.startsWith(u8, hex, "00000") ) {
@@ -32,8 +32,10 @@ fn processFile(allocator: std.mem.Allocator, key: []const u8) !u32 {
 }
 
 pub fn main() !void {
+    var stdout_buffer: [1024]u8 = undefined;
     const allocator = std.heap.page_allocator;
-    const stdout = std.io.getStdOut().writer();
+    var stdout_writer = std.fs.File.stdout().writer(&stdout_buffer);
+    var stdout = &stdout_writer.interface;
     const args = try std.process.argsAlloc(allocator);
     defer std.process.argsFree(allocator, args);
 
@@ -49,4 +51,5 @@ pub fn main() !void {
     };
 
     try stdout.print("result = {}\n", .{result});
+    try stdout.flush();
 }
