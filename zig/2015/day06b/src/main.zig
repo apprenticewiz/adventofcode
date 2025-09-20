@@ -6,47 +6,49 @@ const Action = enum {
     Toggle,
 };
 
+var grid:[1000*1000]i32 = .{0} ** (1000*1000); 
+
 fn usage(progname: []const u8) void {
     std.debug.print("usage: {s} <input file>\n", .{progname});
     std.process.exit(1);
 }
 
-fn perform(grid: *[1000*1000]i32, action: Action, r1: u32, c1: u32, r2: u32, c2: u32) void {
+fn perform(action: Action, r1: u32, c1: u32, r2: u32, c2: u32) void {
     for (r1..(r2+1)) |row| {
         for (c1..(c2+1)) |col| {
             switch ( action ) {
-                Action.TurnOn => grid.*[row*1000 + col] += 1,
-                Action.TurnOff => grid.*[row*1000 + col] =
-                    if (grid.*[row*1000 + col] > 0) (grid.*[row*1000 + col] - 1) else 0,
-                Action.Toggle => grid.*[row*1000 + col] += 2,
+                Action.TurnOn => grid[row*1000 + col] += 1,
+                Action.TurnOff => grid[row*1000 + col] =
+                    if (grid[row*1000 + col] > 0) (grid[row*1000 + col] - 1) else 0,
+                Action.Toggle => grid[row*1000 + col] += 2,
             }
         }
     }
 }
 
-fn sum(grid: *[1000*1000]i32) u32 {
+fn sum() u32 {
     var total: u32 = 0;
     for (0..1000) |row| {
         for (0..1000) |col| {
-            total += @intCast(grid.*[row*1000 + col]);
+            total += @intCast(grid[row*1000 + col]);
         }
     }
     return total;
 }
 
-fn processFile(allocator: std.mem.Allocator, filename: []const u8) !u32 {
-    var grid: [1000*1000]i32 = .{0} ** (1000*1000);
+fn processFile(filename: []const u8) !u32 {
     var file = try std.fs.cwd().openFile(filename, .{});
     defer file.close();
 
-    var reader = std.io.bufferedReader(file.reader());
-    var stream = reader.reader();
+    var read_buf: [131072]u8 = undefined;
+    var reader = file.reader(&read_buf);
+    var r_interface = &reader.interface;
 
-    var line_buf = std.ArrayList(u8).init(allocator);
-    defer line_buf.deinit();
-    
-    while ( try stream.readUntilDelimiterOrEofAlloc(allocator, '\n', 256) ) |line| {
-        defer allocator.free(line);
+    while ( true ) {
+        const line = r_interface.takeDelimiterExclusive('\n') catch |err| switch(err) {
+            error.EndOfStream => break,
+            else => return err,
+        };
 
         var action: Action = undefined;
         var coordIdx: usize = 0;
@@ -73,15 +75,17 @@ fn processFile(allocator: std.mem.Allocator, filename: []const u8) !u32 {
         const comma2Idx = std.mem.indexOf(u8, coord2, ",").?;
         const r2 = try std.fmt.parseInt(u32, coord2[0..comma2Idx], 10);
         const c2 = try std.fmt.parseInt(u32, coord2[comma2Idx+1..], 10);
-        perform(&grid, action, r1, c1, r2, c2);
+        perform(action, r1, c1, r2, c2);
     }
 
-    return sum(&grid);
+    return sum();
 }
 
 pub fn main() !void {
+    var stdout_buffer: [1024]u8 = undefined;
     const allocator = std.heap.page_allocator;
-    const stdout = std.io.getStdOut().writer();
+    var stdout_writer = std.fs.File.stdout().writer(&stdout_buffer);
+    var stdout = &stdout_writer.interface;
     const args = try std.process.argsAlloc(allocator);
     defer std.process.argsFree(allocator, args);
 
@@ -91,10 +95,11 @@ pub fn main() !void {
 
     const filename = args[1];
 
-    const result = processFile(allocator, filename) catch |err| {
+    const result = processFile(filename) catch |err| {
         std.debug.print("error while processing file `{s}': {s}\n", .{filename, @errorName(err)});
         std.process.exit(1);
     };
 
     try stdout.print("result = {}\n", .{result});
+    try stdout.flush();
 }
