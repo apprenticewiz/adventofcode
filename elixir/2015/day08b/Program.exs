@@ -1,0 +1,56 @@
+#!/usr/bin/env elixir
+
+defmodule Program do
+  def main(args) do
+    case args do
+      [filename] ->
+        case process(filename) do
+          {:ok, result} ->
+            IO.puts("result = #{result}")
+          {:error, reason} ->
+            IO.puts(:stderr, "error while processing file `#{filename}': #{reason}")
+            System.halt(1)
+        end
+      _ ->
+        usage()
+    end
+  end
+
+  defp usage do
+    IO.puts(:stderr, "usage: Program.exs <input file>")
+    System.halt(1)
+  end
+
+  defp process(filename) do
+    case File.read(filename) do
+      {:ok, content} ->
+        total_area =
+          content
+          |> String.split()
+          |> Enum.reduce(0, fn
+            line, acc ->
+              code_len = String.length(line)
+              enc_len = scan_line(0, line)
+              acc + 2 + (enc_len - code_len)
+          end)
+        {:ok, total_area}
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  defp scan_line(i, line) do
+    line_len = String.length(line)
+    if line_len == 0 do
+      i
+    else
+      case String.at(line, 0) do
+        "\\" -> scan_line(i + 2, String.slice(line, 1..line_len))
+        "\"" -> scan_line(i + 2, String.slice(line, 1..line_len))
+        _ -> scan_line(i + 1, String.slice(line, 1..line_len))
+      end
+    end
+  end
+end
+
+Program.main(System.argv())
