@@ -11,20 +11,20 @@ fn processFile(allocator: std.mem.Allocator, filename: []const u8) !u32 {
     var file = try std.fs.cwd().openFile(filename, .{});
     defer file.close();
 
-    var reader = std.io.bufferedReader(file.reader());
-    var stream = reader.reader();
-
-    var line_buf = std.ArrayList(u8).init(allocator);
-    defer line_buf.deinit();
+    var read_buf: [131072]u8 = undefined;
+    var reader = file.reader(&read_buf);
+    var r_interface = &reader.interface;
 
     var santa = geometry.Position2D(i32).init(0, 0);
     var positions = std.AutoHashMap(geometry.Position2D(i32), void).init(allocator);
     defer positions.deinit();
     try positions.put(santa, {});
 
-    while ( try stream.readUntilDelimiterOrEofAlloc(allocator, '\n', 16384) ) |line| {
-        defer allocator.free(line);
-
+    while ( true ) {
+        const line = r_interface.takeDelimiterExclusive('\n') catch |err| switch(err) {
+            error.EndOfStream => break,
+            else => return err,
+        };
         for ( line ) |ch| {
             switch ( ch ) {
                 '^' => santa.y += 1,
@@ -41,8 +41,10 @@ fn processFile(allocator: std.mem.Allocator, filename: []const u8) !u32 {
 }
 
 pub fn main() !void {
+    var stdout_buffer: [1024]u8 = undefined;
     const allocator = std.heap.page_allocator;
-    const stdout = std.io.getStdOut().writer();
+    var stdout_writer = std.fs.File.stdout().writer(&stdout_buffer);
+    var stdout = &stdout_writer.interface;
     const args = try std.process.argsAlloc(allocator);
     defer std.process.argsFree(allocator, args);
 
@@ -58,4 +60,5 @@ pub fn main() !void {
     };
 
     try stdout.print("result = {}\n", .{result});
+    try stdout.flush();
 }
