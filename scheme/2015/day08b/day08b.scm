@@ -1,0 +1,35 @@
+(module day08b
+  (main main))
+
+(define (main args)
+  (let* ((argc (length args))
+         (progname (car args)))
+    (if (< argc 2)
+      (usage progname))
+      (let* ((filename (cadr args))
+             (result (process filename)))
+        (printf "result = ~a\n" (number->string result)))))
+
+(define (usage progname)
+  (fprintf (current-error-port) "usage: ~a <input file>\n" progname)
+  (exit 1))
+
+(define (scan-chars chars i)
+  (cond ((null? chars) i)
+        (#t (let ((ch (car chars)))
+              (cond ((char=? ch #\\) (scan-chars (cdr chars) (+ i 2)))
+                    ((char=? ch #\") (scan-chars (cdr chars) (+ i 2)))
+                    (#t (scan-chars (cdr chars) (+ i 1))))))))
+
+(define (process filename)
+  (let* ((input-file (open-input-file filename))
+         (lines (read-lines input-file)))
+    (close-input-port input-file)
+    (define result 0)
+    (for-each
+      (lambda (line)
+        (let* ((code-len (string-length line))
+               (enc-len (scan-chars (string->list line) 0)))
+          (set! result (+ result 2 (- enc-len code-len)))))
+      lines)
+    result))
