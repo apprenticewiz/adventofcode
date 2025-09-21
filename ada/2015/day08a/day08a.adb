@@ -30,18 +30,18 @@ begin
     while I < Length(Line) loop
       case Element(Line, I) is
         when '\' =>
-	  case Element(Line, I + 1) is
-	    when '\' =>
-	      I := I + 2;
-	    when '"' =>
-	      I := I + 2;
-	    when 'x' =>
-	      I := I + 4;
-	    when others =>
-	      I := I + 1;
-	  end case;
+          case Element(Line, I + 1) is
+            when '\' =>
+              I := I + 2;
+            when '"' =>
+              I := I + 2;
+            when 'x' =>
+              I := I + 4;
+            when others =>
+              I := I + 1;
+          end case;
         when others =>
-	  I := I + 1;
+          I := I + 1;
       end case;
       Mem_Len := Mem_Len + 1;
     end loop;

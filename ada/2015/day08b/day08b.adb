@@ -28,11 +28,11 @@ begin
     for I in 1 .. Length(Line) loop
       case Element(Line, I) is
         when '\' => 
-	  Enc_Len := Enc_Len + 2;
-	when '"' =>
-	  Enc_Len := Enc_Len + 2;
-	when others =>
-	  Enc_Len := Enc_Len + 1;
+          Enc_Len := Enc_Len + 2;
+        when '"' =>
+          Enc_Len := Enc_Len + 2;
+        when others =>
+          Enc_Len := Enc_Len + 1;
       end case;
     end loop;
     Result := Result + 2 + (Enc_Len - Code_Len);
