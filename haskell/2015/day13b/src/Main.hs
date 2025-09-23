@@ -3,6 +3,7 @@ module Main (main) where
 import Data.Int (Int32)
 import Data.List
 import qualified Data.Map.Strict as Map
+import qualified Data.Set as Set
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
@@ -36,38 +37,27 @@ line = do
        return (person1, person2, amount)
 
 buildHapTable :: [(String, String, Int)] -> HappinessTable
-buildHapTable = foldl (\acc (p1, p2, h) -> Map.insert (p1, p2) h acc) Map.empty
+buildHapTable = foldl' (\acc (p1, p2, h) -> Map.insert (p1, p2) h acc) Map.empty
 
 injectSelf :: HappinessTable -> [String] -> HappinessTable
 injectSelf hapTable people =
-    foldl (\acc person -> Map.insert ("Self", person) 0 (Map.insert (person, "Self") 0 acc)) hapTable people
+    foldl' (\acc person -> Map.insert ("Self", person) 0 (Map.insert (person, "Self") 0 acc)) hapTable people
 
 computeScore :: HappinessTable -> [String] -> Int
-computeScore hapTable people = computeSeats 0 0
+computeScore hapTable people =
+    sum [ hapTable Map.! (p, l) + hapTable Map.! (p, r) | (p, l, r) <- triples people ]
   where
-    computeSeats n score
-      | n == length people = score
-      | otherwise          = 
-            let person = people !! n
-                left = if n == 0
-                           then people !! (length people - 1)
-                           else people !! (n - 1)
-                right = if n == (length people - 1)
-                           then people !! 0
-                           else people !! (n + 1)
-                leftScore = hapTable Map.! (person, left)
-                rightScore = hapTable Map.! (person, right)
-            in computeSeats (n + 1) (score + leftScore + rightScore)
+    triples xs = zip3 xs (last xs : init xs) (tail xs ++ [head xs])
 
 process :: String -> Int32
 process content =
     case parse file "" content of
         Left err -> error (show err)
         Right arrangements ->
-            let people = nub $ map (\(x, _, _) -> x) arrangements
+            let people = Set.toList $ Set.fromList [ p1 | (p1, _, _) <- arrangements ]
                 hapTable = injectSelf (buildHapTable arrangements) people
-                people' = people ++ ["Self"]
-            in fromIntegral $ maximum $ map (computeScore hapTable) $ permutations people'
+                (fixed:rest) = people ++ ["Self"]
+            in fromIntegral $ maximum $ map (computeScore hapTable . (fixed:)) (permutations rest)
 
 main :: IO ()
 main = do
