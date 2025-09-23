@@ -25,7 +25,7 @@ line = do
        person1 <- many1 letter
        _ <- string " would "
        action <- string "gain" <|> string "lose"
-       spaces
+       _ <- string " "
        amountTxt <- many1 digit
        _ <- string " happiness units by sitting next to "
        person2 <- many1 letter
@@ -40,7 +40,8 @@ buildHapTable :: [(String, String, Int)] -> HappinessTable
 buildHapTable = foldl' (\acc (p1, p2, h) -> Map.insert (p1, p2) h acc) Map.empty
 
 computeScore :: HappinessTable -> [String] -> Int
-computeScore hapTable people = sum [ hapTable Map.! (p, l) + hapTable Map.! (p, r) | (p, l, r) <- triples people ]
+computeScore hapTable people =
+    sum [ hapTable Map.! (p, l) + hapTable Map.! (p, r) | (p, l, r) <- triples people ]
   where
     triples xs = zip3 xs (last xs : init xs) (tail xs ++ [head xs])
 

@@ -25,7 +25,7 @@ line = do
        person1 <- many1 letter
        _ <- string " would "
        action <- string "gain" <|> string "lose"
-       spaces
+       _ <- string " "
        amountTxt <- many1 digit
        _ <- string " happiness units by sitting next to "
        person2 <- many1 letter
