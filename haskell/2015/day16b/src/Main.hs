@@ -6,7 +6,7 @@ import qualified Data.Set as Set
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
-import Text.Parsec hiding (State)
+import Text.Parsec
 import Text.Parsec.String
 
 type Sue = Map.Map String Int
@@ -68,22 +68,12 @@ process :: String -> Int32
 process content =
     case parse file "" content of
         Left err -> error (show err)
-        Right sues ->
-            let ints = childrenSet `Set.intersection` catsSet `Set.intersection` samoyedsSet `Set.intersection`
-                       pomeraniansSet `Set.intersection` akitasSet `Set.intersection` vizslasSet `Set.intersection`
-                       goldfishSet `Set.intersection` treesSet `Set.intersection` carsSet `Set.intersection`
-                       perfumesSet
-                childrenSet = possibleSet sues "children" 3
-                catsSet = possibleSet sues "cats" 7
-                samoyedsSet = possibleSet sues "samoyeds" 2
-                pomeraniansSet = possibleSet sues "pomeranians" 3
-                akitasSet = possibleSet sues "akitas" 0
-                vizslasSet = possibleSet sues "vizslas" 0
-                goldfishSet = possibleSet sues "goldfish" 5
-                treesSet = possibleSet sues "trees" 3
-                carsSet = possibleSet sues "cars" 2
-                perfumesSet = possibleSet sues "perfumes" 1
-            in fromIntegral $ Set.elemAt 0 ints
+        Right sues -> fromIntegral $ Set.elemAt 0 $
+            foldl'
+                (\acc (thing, amount) -> acc `Set.intersection` (possibleSet sues thing amount))
+                (Set.fromList [1..500])
+                [("children", 3), ("cats", 7), ("samoyeds", 2), ("pomeranians", 3), ("akitas", 0),
+                 ("vizslas", 0), ("goldfish", 5), ("trees", 3), ("cars", 2), ("perfumes", 1)]
 
 main :: IO ()
 main = do
