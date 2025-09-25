@@ -89,7 +89,7 @@ process content =
   where
     loadouts :: [[Item]]
     loadouts = [ w : a ++ rs | w <- weapons,
-                               a <- ([] : map (:[]) armors),
+                               a <- filter ((<= 1) . length) (subsequences armors),
                                rs <- filter ((<= 2) . length) (subsequences rings) ]
 
     winningLoadouts :: Player -> [[Item]]
