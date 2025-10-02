@@ -12,30 +12,22 @@ fn usage(progname: &str) {
     process::exit(1);
 }
 
-fn parse_file(filename: &str) -> io::Result<Vec<(String, String, u32)>> {
+fn parse_file(filename: &str) -> io::Result<HashMap<(String, String), u32>> {
     let line_re = Regex::new(r"([A-Za-z]+) to ([A-Za-z]+) = (\d+)").unwrap();
     let file = File::open(filename)?;
     let reader = io::BufReader::new(file);
-    let mut input_data: Vec<(String, String, u32)> = vec![];
+    let mut distances: HashMap<(String, String), u32> = HashMap::new();
     for line_result in reader.lines() {
         let line = line_result?;
         if let Some(caps) = line_re.captures(&line) {
             let from = String::from(&caps[1]);
             let to = String::from(&caps[2]);
             let dist = caps[3].parse::<u32>().unwrap();
-            input_data.push((from, to, dist));
+            distances.insert((from.clone(), to.clone()), dist);
+            distances.insert((to.clone(), from.clone()), dist);
         }
     }
-    Ok(input_data)
-}
-
-fn build_map(edges: &[(String, String, u32)]) -> HashMap<(String, String), u32> {
-    let mut distances: HashMap<(String, String), u32> = HashMap::new();
-    edges.iter().for_each(|(c1, c2, d)| {
-        distances.insert((c1.clone(), c2.clone()), *d);
-        distances.insert((c2.clone(), c1.clone()), *d);
-    });
-    distances
+    Ok(distances)
 }
 
 fn path_len(distances: &HashMap<(String, String), u32>, path: &[&String]) -> u32 {
@@ -58,8 +50,7 @@ fn longest_route(cities: &[String], distances: &HashMap<(String, String), u32>) 
 }
 
 fn process_file(filename: &str) -> io::Result<u32> {
-    let edges = parse_file(filename)?;
-    let distances = build_map(&edges);
+    let distances = parse_file(filename)?;
     let mut tmp_set: HashSet<String> = HashSet::new();
     distances.keys().for_each(|(c1, c2)| {
         tmp_set.insert(c1.clone());
