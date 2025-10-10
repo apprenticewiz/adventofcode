@@ -285,12 +285,12 @@ fn loadout_cost(loadout: &[Item]) -> i32 {
 fn process_file(filename: &str) -> io::Result<i32> {
     let boss = parse_file(filename)?;
     let store = init_store();
-    let lowest_cost = losing_loadouts(&store, &boss)
+    let highest_cost = losing_loadouts(&store, &boss)
         .iter()
         .map(|loadout| loadout_cost(loadout))
         .max()
         .unwrap();
-    Ok(lowest_cost)
+    Ok(highest_cost)
 }
 
 fn main() {
