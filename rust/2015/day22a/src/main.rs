@@ -127,7 +127,6 @@ fn castable(gs: &GameState, book: &SpellBook) -> Vec<String> {
     book.iter()
         .filter_map(|(name, sp)| {
             if sp.cost <= gs.player.mana {
-                // find remaining duration if present
                 let remaining = gs
                     .active_spells
                     .iter()
