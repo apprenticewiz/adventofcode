@@ -37,6 +37,7 @@ insideBrackets = do
 outsideBrackets :: Parser String
 outsideBrackets = many1 letter
 
+process :: String -> Int
 process content =
     case parse file "" content of
         Left err -> error (show err)
