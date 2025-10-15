@@ -7,8 +7,6 @@ import System.IO
 import Text.Parsec
 import Text.Parsec.String
 
-import Debug.Trace
-
 usage :: String -> IO ()
 usage progname = do
     hPutStrLn stderr $ "usage: " ++ progname ++ " <input file>"
