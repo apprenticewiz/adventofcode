@@ -16,7 +16,7 @@ decompressedLength ('(':xs) =
         afterMarker = drop 1 rest
         (l, _:r) = span (/= 'x') marker
         (seqLen, rep) = (read l :: Int, read r :: Int)
-        (segment, remainder) = splitAt  seqLen afterMarker
+        (segment, remainder) = splitAt seqLen afterMarker
     in (rep * decompressedLength segment) + decompressedLength remainder
 decompressedLength (_:xs) = 1 + decompressedLength xs
 
