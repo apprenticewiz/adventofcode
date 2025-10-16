@@ -24,7 +24,7 @@ file :: Parser [Operation]
 file = (line `sepEndBy` newline) <* eof
 
 line :: Parser Operation
-line = choice [ try rect <|> try rotateRow <|> rotateCol ]
+line = try rect <|> try rotateRow <|> rotateCol
 
 rect :: Parser Operation
 rect = do
