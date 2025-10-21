@@ -2,8 +2,8 @@ module Main ( main ) where
 
 import qualified Control.Applicative as App
 import Data.List
-import qualified Data.Map as Map
-import Data.Map (Map)
+import qualified Data.Map.Strict as Map
+import Data.Map.Strict (Map)
 import Data.Maybe
 import qualified Data.Sequence as Seq
 import qualified Data.Set as Set
