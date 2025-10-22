@@ -22,7 +22,7 @@ endPos = (31, 39)
 
 usage :: String -> IO ()
 usage progname = do
-    hPutStrLn stderr $ "usage: " ++ progname ++ " <input file>"
+    hPutStrLn stderr $ "usage: " ++ progname ++ " <n>"
     exitFailure
 
 coordToCell :: Int -> Coordinate -> Cell
