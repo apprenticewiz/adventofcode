@@ -9,7 +9,7 @@ diskLen = 35651584
 
 usage :: String -> IO ()
 usage progname = do
-    hPutStrLn stderr $ "usage: " ++ progname ++ " <input file>"
+    hPutStrLn stderr $ "usage: " ++ progname ++ " <input data>"
     exitFailure
 
 process :: String -> String
