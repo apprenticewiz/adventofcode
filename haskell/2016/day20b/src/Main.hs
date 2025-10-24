@@ -5,8 +5,6 @@ import System.Environment
 import System.Exit
 import System.IO
 
-import Debug.Trace
-
 usage :: String -> IO ()
 usage progname = do
     hPutStrLn stderr $ "usage: " ++ progname ++ " <filename>"
