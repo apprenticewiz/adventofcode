@@ -6,7 +6,7 @@ import qualified Data.Map.Strict as Map
 import Data.Map (Map)
 import qualified Data.Set as Set
 import Data.Set (Set)
-import System.Environment   ( getArgs, getProgName )
+import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
 import System.IO ( hPutStrLn, stderr )
 
