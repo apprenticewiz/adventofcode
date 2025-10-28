@@ -102,7 +102,6 @@ runProgram = do
             Immediate val -> modify (\(cpu', prog, s) -> (setReg cpu' dst val, prog, s))
             Register src  -> modify (\(cpu', prog, s) -> (setReg cpu' dst (getReg cpu' src), prog, s))
         modify (\(cpu', prog, s) -> (cpu' { pc = pc cpu' + 1 }, prog, s))
-
     execute (Inc (Register r)) = do
         (cpu, prog, s) <- get
         let currPC = pc cpu
