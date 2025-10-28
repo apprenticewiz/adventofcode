@@ -81,7 +81,7 @@ runProgram :: State (Cpu, Program, Signals) Bool
 runProgram = do
     (cpu, program, signals) <- get
     let (start, end) = bounds program
-        maxSignals = 20  -- how many alternating outputs we check
+        maxSignals = 20
     if pc cpu < start || pc cpu > end
         then return False
         else if length signals >= maxSignals
@@ -91,13 +91,11 @@ runProgram = do
                 execute instr
                 runProgram
   where
-    -- Check for alternating 0/1 pattern
     isAlternating :: [Int] -> Bool
     isAlternating [] = True
     isAlternating [_] = True
     isAlternating (x:y:rest) = x /= y && isAlternating (y:rest)
 
-    -- Instruction execution
     execute :: Instruction -> State (Cpu, Program, Signals) ()
     execute (Cpy op (Register dst)) = do
         case op of
@@ -105,7 +103,6 @@ runProgram = do
             Register src  -> modify (\(cpu', prog, s) -> (setReg cpu' dst (getReg cpu' src), prog, s))
         modify (\(cpu', prog, s) -> (cpu' { pc = pc cpu' + 1 }, prog, s))
 
-    -- Optimized increment with multiply detection
     execute (Inc (Register r)) = do
         (cpu, prog, s) <- get
         let currPC = pc cpu
@@ -114,7 +111,6 @@ runProgram = do
           then do
               let instWindow = [prog ! n | n <- [currPC .. currPC + 4]]
               case instWindow of
-                -- detect pattern: inc X; dec Y; jnz Y -2; dec Z; jnz Z -5
                 (Inc (Register x)
                  : Dec (Register y1)
                  : Jnz (Register y2) (Immediate (-2))
@@ -133,11 +129,9 @@ runProgram = do
           else do
               modify (\(cpu', p, s') -> (setReg cpu' r (getReg cpu' r + 1), p, s'))
               modify (\(cpu', p, s') -> (cpu' { pc = pc cpu' + 1 }, p, s'))
-
     execute (Dec (Register r)) = do
         modify (\(cpu', prog, s) -> (setReg cpu' r (getReg cpu' r - 1), prog, s))
         modify (\(cpu', prog, s) -> (cpu' { pc = pc cpu' + 1 }, prog, s))
-
     execute (Jnz op1 op2) = do
         (cpu, prog, s) <- get
         let cond = case op1 of
@@ -149,17 +143,14 @@ runProgram = do
         if cond /= 0
             then modify (\(cpu', prog', s') -> (cpu' { pc = pc cpu' + offset }, prog', s'))
             else modify (\(cpu', prog', s') -> (cpu' { pc = pc cpu' + 1 }, prog', s'))
-
     execute (Out op) = do
         (cpu, prog, s) <- get
         let val = case op of
                         Immediate n -> n
                         Register r  -> getReg cpu r
         modify (\(cpu', prog', s') -> (cpu' { pc = pc cpu' + 1 }, prog', s' ++ [val]))
-
     execute _ = modify (\(cpu', prog', s) -> (cpu' { pc = pc cpu' + 1 }, prog', s))
 
-    -- Register utilities
     getReg cpu 'a' = a cpu
     getReg cpu 'b' = b cpu
     getReg cpu 'c' = c cpu
