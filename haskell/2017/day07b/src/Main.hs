@@ -49,8 +49,8 @@ computeWeights programs = go Map.empty
           in Map.insert n w acc'
 
 findImbalance :: Map String Program -> Map String Int -> String -> Maybe Int
-findImbalance programs weights n =
-  let p = programs Map.! n
+findImbalance programs weights root =
+  let p = programs Map.! root
       childWeights = [ (c, weights Map.! c) | c <- children p ]
       badChild [] = Nothing
       badChild ws =
