@@ -24,8 +24,7 @@ process = go False 0 0
                     '{' -> go False (level + 1) score xs
                     '}' -> go False (level - 1) (score + level) xs
                     '<' -> go True level score xs
-                    _   -> go False level score xs
-                    )
+                    _   -> go False level score xs)
 
 main :: IO ()
 main = do
