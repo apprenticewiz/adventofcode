@@ -80,8 +80,7 @@ run numSteps machine = do
         (cursor, currentState, tape) <- get
         let currentVal = IntMap.findWithDefault 0 cursor tape
             rules = m Map.! currentState
-            (val, dir, nextState) =
-                if currentVal == 0 then zero rules else one rules
+            (val, dir, nextState) = if currentVal == 0 then zero rules else one rules
             tape' = IntMap.insert cursor val tape
             cursor' = case dir of
                 L -> cursor - 1
