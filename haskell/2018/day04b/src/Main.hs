@@ -65,8 +65,8 @@ process content =
             Left err -> error (show err)
             Right events ->
                 let (sleepTable, _, _) = foldl' step (Map.empty, -1, -1) events
-                    bestMinutes = Map.mapWithKey (\_ gt -> fst $ maximumBy (\(_, c1) (_, c2) -> compare c1 c2) (Map.toList gt)) sleepTable
-                    (guard, maxMinute) = maximumBy (\(_, mm1) (_, mm2) -> compare mm1 mm2) (Map.toList bestMinutes)
+                    bestMinutes = Map.map (maximumBy (\(_, c1) (_, c2) -> compare c1 c2) . Map.toList) sleepTable
+                    (guard, (maxMinute, _)) = maximumBy (\(_, (_, c1)) (_, (_, c2)) -> compare c1 c2) (Map.toList bestMinutes)
                 in guard * maxMinute
   where
     step :: (Map Int (Map Int Int), Int, Int) -> Event -> (Map Int (Map Int Int), Int, Int)
