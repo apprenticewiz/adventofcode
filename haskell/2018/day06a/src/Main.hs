@@ -1,4 +1,3 @@
-{- HLINT ignore "Redundant bracket" -}
 module Main ( main ) where
 
 import Data.Bifunctor
@@ -28,7 +27,7 @@ bounds coords =
     in ((minX, minY), (maxX, maxY))
 
 manhattanDistance :: Position -> Position -> Int
-manhattanDistance (x1, y1) (x2, y2) = (abs (x2 - x1)) + (abs (y2 - y1))
+manhattanDistance (x1, y1) (x2, y2) = abs (x2 - x1) + abs (y2 - y1)
 
 mapOwners :: [Position] -> (Position, Position) -> Map Position (Maybe Int)
 mapOwners points extents =
