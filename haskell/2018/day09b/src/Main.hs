@@ -7,9 +7,6 @@ import System.Environment
 import System.Exit
 import System.IO
 
-data Node = Node { children :: [Node], metadata :: [Int] }
-            deriving (Show)
-
 usage :: String -> IO ()
 usage progname = do
     hPutStrLn stderr $ "usage: " ++ progname ++ " <input file>"
