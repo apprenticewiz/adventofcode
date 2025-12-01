@@ -4,21 +4,23 @@ import System.Environment
 import System.Exit
 import System.IO
 
+type Turn = Either Int Int
+
 process :: String -> Int
 process content =
     let turns = map parseTurn (lines content)
-        (_, zeros) = foldl' step (50, 0) turns
-    in zeros
+    in snd $ foldl' step (initDial, 0) turns
 
   where
-    parseTurn :: String -> Either Int Int
-    parseTurn s =
-        case s of
-            'L' : n -> Left (read n)
-            'R' : n -> Right (read n)
-            _ -> error "malformed input: expected L<n> or R<n>"
+    initDial :: Int
+    initDial = 50
 
-    step :: (Int, Int) -> Either Int Int -> (Int, Int)
+    parseTurn :: String -> Turn
+    parseTurn ('L':n) = Left (read n)
+    parseTurn ('R':n) = Right (read n)
+    parseTurn _ = error "malformed input: expected L<n> or R<n>"
+
+    step :: (Int, Int) -> Turn -> (Int, Int)
     step (dial, zeros) turn 
         | turn == Left 0 || turn == Right 0 = (dial, zeros)
         | dial == 0 = case turn of
