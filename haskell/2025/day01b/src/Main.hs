@@ -4,9 +4,6 @@ import System.Environment
 import System.Exit
 import System.IO
 
-data Direction = L Int | R Int
-                 deriving (Eq, Show)
-
 process :: String -> Int
 process content =
     let turns = map parseTurn (lines content)
@@ -14,28 +11,22 @@ process content =
     in zeros
 
   where
-    parseTurn :: String -> Direction
+    parseTurn :: String -> Either Int Int
     parseTurn s =
         case s of
-            'L' : n -> L (read n)
-            'R' : n -> R (read n)
+            'L' : n -> Left (read n)
+            'R' : n -> Right (read n)
             _ -> error "malformed input: expected L<n> or R<n>"
 
-    step :: (Int, Int) -> Direction -> (Int, Int)
-    step (dial, zeros) turn =
-        let (dial', zeros') = go (dial, zeros) turn
-        in (dial', zeros')
-
-      where
-        go :: (Int, Int) -> Direction -> (Int, Int)
-        go (d, z) t
-            | t == L 0 || t == R 0 = (d, z)
-            | d == 0 = case t of
-                L n -> go ((d - 1) `mod` 100, z + 1) (L (n - 1))
-                R n -> go ((d + 1) `mod` 100, z + 1) (R (n - 1))
-            | otherwise = case t of
-                L n -> go ((d - 1) `mod` 100, z) (L (n - 1))
-                R n -> go ((d + 1) `mod` 100, z) (R (n - 1))
+    step :: (Int, Int) -> Either Int Int -> (Int, Int)
+    step (dial, zeros) turn 
+        | turn == Left 0 || turn == Right 0 = (dial, zeros)
+        | dial == 0 = case turn of
+            Left n -> step ((dial - 1) `mod` 100, zeros + 1) (Left (n - 1))
+            Right n -> step ((dial + 1) `mod` 100, zeros + 1) (Right (n - 1))
+        | otherwise = case turn of
+            Left n -> step ((dial - 1) `mod` 100, zeros) (Left (n - 1))
+            Right n -> step ((dial + 1) `mod` 100, zeros) (Right (n - 1))
 
 usage :: String -> IO ()
 usage progname = do

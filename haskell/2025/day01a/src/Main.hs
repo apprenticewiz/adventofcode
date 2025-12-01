@@ -4,27 +4,24 @@ import System.Environment
 import System.Exit
 import System.IO
 
-data Direction = L Int | R Int
-                 deriving (Eq, Show)
-
 process :: String -> Int
 process content =
     let turns = map parseTurn (lines content)
         (_, zeros) = foldl' step (50, 0) turns
     in zeros
   where
-    parseTurn :: String -> Direction
+    parseTurn :: String -> Either Int Int
     parseTurn s =
         case s of
-            'L' : n -> L (read n)
-            'R' : n -> R (read n)
+            'L' : n -> Left (read n)
+            'R' : n -> Right (read n)
             _ -> error "malformed input: expected L<n> or R<n>"
 
-    step :: (Int, Int) -> Direction -> (Int, Int)
+    step :: (Int, Int) -> Either Int Int -> (Int, Int)
     step (dial, zeros) turn =
         let dial' = case turn of
-                        L n -> (dial - n) `mod` 100
-                        R n -> (dial + n) `mod` 100
+                        Left n -> (dial - n) `mod` 100
+                        Right n -> (dial + n) `mod` 100
             zeros' = if dial' == 0 then zeros + 1 else zeros
         in (dial', zeros')
 
