@@ -28,7 +28,6 @@ process content =
             zeros' = if dial' == 0 then zeros + 1 else zeros
         in (dial', zeros')
 
-
 usage :: String -> IO ()
 usage progname = do
     hPutStrLn stderr $ "usage: " ++ progname ++ " <input file>"
