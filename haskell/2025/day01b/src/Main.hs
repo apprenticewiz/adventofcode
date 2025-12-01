@@ -4,31 +4,24 @@ import System.Environment
 import System.Exit
 import System.IO
 
-type Turn = Either Int Int
-
 process :: String -> Int
 process content =
     let turns = map parseTurn (lines content)
-    in snd $ foldl' step (initDial, 0) turns
+    in snd $ foldl' step (50, 0) turns
 
   where
-    initDial :: Int
-    initDial = 50
-
-    parseTurn :: String -> Turn
-    parseTurn ('L':n) = Left (read n)
-    parseTurn ('R':n) = Right (read n)
+    parseTurn :: String -> Int
+    parseTurn ('L':n) = negate (read n)
+    parseTurn ('R':n) = read n
     parseTurn _ = error "malformed input: expected L<n> or R<n>"
 
-    step :: (Int, Int) -> Turn -> (Int, Int)
-    step (dial, zeros) turn 
-        | turn == Left 0 || turn == Right 0 = (dial, zeros)
-        | dial == 0 = case turn of
-            Left n -> step ((dial - 1) `mod` 100, zeros + 1) (Left (n - 1))
-            Right n -> step ((dial + 1) `mod` 100, zeros + 1) (Right (n - 1))
-        | otherwise = case turn of
-            Left n -> step ((dial - 1) `mod` 100, zeros) (Left (n - 1))
-            Right n -> step ((dial + 1) `mod` 100, zeros) (Right (n - 1))
+    step :: (Int, Int) -> Int -> (Int, Int)
+    step (dial, zeros) delta =
+        let newDial = (dial + delta) `mod` 100
+            crossings = if delta >= 0
+                        then (dial + delta) `div` 100 - dial `div` 100
+                        else (dial - 1) `div` 100 - (dial + delta - 1) `div` 100
+        in (newDial, zeros + crossings)
 
 usage :: String -> IO ()
 usage progname = do
