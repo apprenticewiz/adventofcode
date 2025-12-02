@@ -32,10 +32,23 @@ process content =
 
     isInvalid :: Int -> Bool
     isInvalid n =
-        let s = show n
-            mid = length s `div` 2
-            (firstHalf, secondHalf) = splitAt mid s
-        in firstHalf == secondHalf
+        let len = digitLen n
+        in even len && halfRepeat n len
+
+    halfRepeat :: Int -> Int -> Bool
+    halfRepeat n len =
+        let m     = len `div` 2
+            scale = 10 ^ m
+            hi    = n `quot` scale
+            lo    = n `mod`  scale
+        in hi == lo
+
+    digitLen :: Int -> Int
+    digitLen x = go x 0
+      where
+        go 0 0 = 1
+        go 0 c = c
+        go y c = go (y `quot` 10) (c+1)
 
 usage :: String -> IO ()
 usage progname = do
