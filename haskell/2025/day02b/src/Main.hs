@@ -32,11 +32,11 @@ process =
 
     hasPeriod :: Int -> Int -> Int -> Bool
     hasPeriod n len m
-        | len `mod` m /= 0 = False
-        | otherwise =
-            let k = len `div` m
-                p = prefix n m
-            in assemble p k m == n
+      | len `mod` m /= 0 = False
+      | otherwise =
+        let k = len `div` m
+            p = prefix n m
+        in assemble p k m == n
 
     digitLen :: Int -> Int
     digitLen x = go x 0

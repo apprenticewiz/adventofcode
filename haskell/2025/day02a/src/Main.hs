@@ -48,7 +48,7 @@ process content =
       where
         go 0 0 = 1
         go 0 c = c
-        go y c = go (y `quot` 10) (c+1)
+        go y c = go (y `quot` 10) (c + 1)
 
 usage :: String -> IO ()
 usage progname = do
