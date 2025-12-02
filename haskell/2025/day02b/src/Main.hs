@@ -43,7 +43,7 @@ process =
       where
         go 0 0 = 1
         go 0 c = c
-        go y c = go (y `quot` 10) (c+1)
+        go y c = go (y `quot` 10) (c + 1)
 
     prefix :: Int -> Int -> Int
     prefix n m = n `quot` (10 ^ (digitLen n - m))
@@ -53,7 +53,7 @@ process =
       where
         pow = 10 ^ m
         go 0 acc = acc
-        go r acc = go (r-1) (acc * pow + p)
+        go r acc = go (r - 1) (acc * pow + p)
 
 usage :: String -> IO ()
 usage progname = do
