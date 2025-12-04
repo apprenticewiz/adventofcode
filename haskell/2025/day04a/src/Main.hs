@@ -1,33 +1,47 @@
 module Main ( main ) where
 
-import Data.Array.Unboxed
+import Control.DeepSeq
+import Data.Ix
+import qualified Data.Set as Set
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 
-type Grid = UArray (Int, Int) Char
-
 process :: String -> Int
 process content =
     let ls = lines content
-        rows = length ls
-        cols = length (ls !! 0)
-        grid = array ((0, 0), (rows - 1, cols - 1)) [ ((r, c), ls !! r !! c) | r <- [0 .. rows - 1], c <- [0 .. cols - 1] ] :: Grid
-        neighbors (r, c) =
-            [ (r + dr, c + dc) | (dr, dc) <- [ (-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1) ]
-                               , (bounds grid) `inRange` (r + dr, c + dc)
-            ]
-        rolls = filter (\(r, c) -> grid ! (r, c) == '@') (indices grid)
-        accessible = [ roll | roll <- rolls
-                            , let neighborRolls = [ neighbor | neighbor <- neighbors roll, grid ! neighbor == '@' ]
-                            , length neighborRolls < 4
-                     ]
-    in length accessible
+    in case ls of
+        [] -> error "empty input"
+        (first:_) ->
+            let rows = length ls
+                cols = length first
+                bounds = ((0, 0), (rows - 1, cols - 1))
+                rolls = Set.fromList[ (r, c) | r <- [0 .. rows - 1], c <- [0 .. cols - 1], ls !! r !! c == '@' ]
+                neighbors (r, c) =
+                    [ neighbor | (dr, dc) <- [ (-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1) ]
+                               , let neighbor = (r + dr, c + dc)
+                               , bounds `inRange` (r + dr, c + dc)
+                               , neighbor `Set.member` rolls
+                    ]
+                accessible = Set.filter (\roll -> length (neighbors roll) < 4) rolls
+            in length accessible
 
 usage :: String -> IO ()
 usage progname = do
     hPutStrLn stderr $ "usage: " ++ progname ++ " <input file>"
     exitFailure
+
+showTime :: TimeSpec -> String
+showTime elapsed =
+    let ns = fromIntegral (toNanoSecs elapsed) :: Double
+    in if ns < 1000
+       then show ns ++ " ns"
+       else if ns < 1000000
+       then show (ns / 1000.0) ++ " μs"
+       else if ns < 10000000000
+            then show (ns / 1000000.0) ++ " ms"
+            else show (ns / 1000000000.0) ++ " s"
 
 main :: IO ()
 main = do
@@ -35,7 +49,12 @@ main = do
     progname <- getProgName
     case args of
         [filename] -> do
+            start <- getTime Monotonic
             content <- readFile filename
             let result = process content
+            result `deepseq` return ()
+            end <- getTime Monotonic
+            let elapsed = diffTimeSpec start end
             putStrLn $ "result = " ++ show result
+            putStrLn $ "elapsed time: " ++ showTime elapsed
         _ -> usage progname

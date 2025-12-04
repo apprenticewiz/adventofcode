@@ -64,7 +64,7 @@ executable day04a
     -- other-extensions:
 
     -- Other library packages from which modules are imported.
-    build-depends:    array, base ^>=4.21.0.0
+    build-depends:    base ^>=4.21.0.0, clock, containers, deepseq
 
     -- Directories containing source files.
     hs-source-dirs:   src

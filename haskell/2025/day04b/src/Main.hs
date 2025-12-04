@@ -1,41 +1,65 @@
 module Main ( main ) where
 
-import Data.Array.Unboxed
+import Control.DeepSeq
+import Data.Ix
+import Data.IntSet ( IntSet )
+import qualified Data.IntSet as IntSet
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 
-type Grid = UArray (Int, Int) Char
+
+decode :: Int -> (Int, Int)
+decode n = (n `div` 1000, n `mod` 1000)
+
+encode :: (Int, Int) -> Int
+encode (r, c) = r * 1000 + c
 
 process :: String -> Int
 process content =
-    let ls = lines content
-        rows = length ls
-        cols = length (ls !! 0)
-        grid = array ((0, 0), (rows - 1, cols - 1)) [ ((r, c), ls !! r !! c) | r <- [0 .. rows - 1], c <- [0 .. cols - 1] ] :: Grid
-    in go grid 0
+    case lines content of
+        [] -> error "empty input"
+        ls@(row0:_) ->
+            let rows = length ls
+                cols = length row0
+                bounds = ((0, 0), (rows - 1, cols - 1))
+                rolls = IntSet.fromList [ encode (r, c) | (r, line) <- zip [0..] ls
+                                                        , (c, ch)  <- zip [0..] line
+                                                        , ch == '@'
+                                        ]
+            in prune rolls bounds
   where
-    go :: Grid -> Int -> Int
-    go grid removed =
-        let neighbors (r, c) =
-                [ (r + dr, c + dc) | (dr, dc) <- [ (-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1) ]
-                                   , (bounds grid) `inRange` (r + dr, c + dc)
-                ]
-            rolls = filter (\(r, c) -> grid ! (r, c) == '@') (indices grid)
-            accessible = [ roll | roll <- rolls
-                                , let neighborRolls = [ neighbor | neighbor <- neighbors roll, grid ! neighbor == '@' ]
-                                , length neighborRolls < 4
-                         ]
-        in if null accessible
-               then removed
-               else let removed' = removed + length accessible
-                        grid' = grid // [ ((r, c), '.') | (r, c) <- accessible ]
-                    in go grid' removed'
+    prune :: IntSet -> ((Int, Int), (Int, Int)) -> Int
+    prune rolls bounds =
+        let neighbors (r, c) = [ (nr, nc) | dr <- [-1, 0, 1] 
+                                         , dc <- [-1, 0, 1]
+                                         , (dr, dc) /= (0, 0)
+                                         , let nr = r + dr
+                                         , let nc = c + dc
+                                         , inRange bounds (nr, nc)
+                                         , encode (nr, nc) `IntSet.member` rolls
+                              ]
+            removable = IntSet.filter (\pt -> length (neighbors (decode pt)) < 4) rolls
+        in if IntSet.null removable
+           then IntSet.size rolls
+           else prune (rolls `IntSet.difference` removable) bounds
 
 usage :: String -> IO ()
 usage progname = do
     hPutStrLn stderr $ "usage: " ++ progname ++ " <input file>"
     exitFailure
+
+showTime :: TimeSpec -> String
+showTime elapsed =
+    let ns = fromIntegral (toNanoSecs elapsed) :: Double
+    in if ns < 1000
+       then show ns ++ " ns"
+       else if ns < 1000000
+       then show (ns / 1000.0) ++ " μs"
+       else if ns < 10000000000
+            then show (ns / 1000000.0) ++ " ms"
+            else show (ns / 1000000000.0) ++ " s"
 
 main :: IO ()
 main = do
@@ -43,7 +67,12 @@ main = do
     progname <- getProgName
     case args of
         [filename] -> do
+            start <- getTime Monotonic
             content <- readFile filename
             let result = process content
+            result `deepseq` return ()
+            end <- getTime Monotonic
+            let elapsed = diffTimeSpec start end
             putStrLn $ "result = " ++ show result
+            putStrLn $ "elapsed time: " ++ showTime elapsed
         _ -> usage progname
