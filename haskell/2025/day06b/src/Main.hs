@@ -1,8 +1,8 @@
 module Main ( main ) where
 
 import Control.DeepSeq
-import Data.Map.Strict ( Map )
-import qualified Data.Map.Strict as Map
+import Data.Array.Unboxed ( UArray )
+import qualified Data.Array.Unboxed as A
 import System.Clock
 import System.Environment
 import System.Exit
@@ -12,15 +12,16 @@ process :: String -> Int
 process content =
     let ls   = lines content
         rows = length ls
-        cols = length (head ls)
-        grid = Map.fromList [ ((i, j), c) | i <- [0..rows - 1], j <- [0..cols - 1], let c = ls !! i !! j ]
+        cols = if null ls then 0 else length (ls !! 0)
+        grid = A.listArray ((0, 0), (rows - 1, cols - 1)) (concat ls) :: UArray (Int, Int) Char
     in go grid [] (cols - 1) 0
   where
-    go :: Map (Int, Int) Char -> [Int] -> Int -> Int -> Int
+    go :: UArray (Int, Int) Char -> [Int] -> Int -> Int -> Int
     go _    _     (-1) acc = acc
     go grid stack col  acc =
-        let cs = [ ch | ((_, j), ch) <- Map.assocs grid, j == col ]
-        in if all ((==) ' ') cs
+        let ((minRow, _), (maxRow, _)) = A.bounds grid
+            cs = [ grid A.! (i, col) | i <- [minRow..maxRow] ]
+        in if all (' ' ==) cs
                then go grid [] (col - 1) acc
                else if last cs `elem` "+*"
                         then let op = last cs
