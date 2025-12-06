@@ -2,7 +2,7 @@ module Main ( main ) where
 
 import Control.DeepSeq
 import Data.Array.Unboxed ( UArray )
-import qualified Data.Array.Unboxed as A
+import qualified Data.Array.Unboxed as Array
 import System.Clock
 import System.Environment
 import System.Exit
@@ -13,14 +13,14 @@ process content =
     let ls   = lines content
         rows = length ls
         cols = if null ls then 0 else length (ls !! 0)
-        grid = A.listArray ((0, 0), (rows - 1, cols - 1)) (concat ls) :: UArray (Int, Int) Char
+        grid = Array.listArray ((0, 0), (rows - 1, cols - 1)) (concat ls) :: UArray (Int, Int) Char
     in go grid [] (cols - 1) 0
   where
     go :: UArray (Int, Int) Char -> [Int] -> Int -> Int -> Int
     go _    _     (-1) acc = acc
     go grid stack col  acc =
-        let ((minRow, _), (maxRow, _)) = A.bounds grid
-            cs = [ grid A.! (i, col) | i <- [minRow..maxRow] ]
+        let ((minRow, _), (maxRow, _)) = Array.bounds grid
+            cs = [ grid Array.! (i, col) | i <- [minRow..maxRow] ]
         in if all (' ' ==) cs
                then go grid [] (col - 1) acc
                else if last cs `elem` "+*"
