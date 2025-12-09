@@ -84,20 +84,20 @@ process content =
             raw = foldl' addEdge IntMap.empty edges
         in IntMap.map sort raw
 
+    mergeSegments :: [(Int,Int)] -> [(Int,Int)]
+    mergeSegments segs =
+        let s = sortOn fst segs
+            go [] acc = reverse acc
+            go ((a,b):xs) [] = go xs [(a,b)]
+            go ((a,b):xs) ((c,d):rest)
+              | a <= d + 1 = go xs ((c, max d b):rest)
+              | otherwise  = go xs ((a,b):(c,d):rest)
+        in go s []
+
 usage :: String -> IO ()
 usage progname = do
     hPutStrLn stderr $ "usage: " ++ progname ++ " <input file>"
     exitFailure
-
-mergeSegments :: [(Int,Int)] -> [(Int,Int)]
-mergeSegments segs =
-    let s = sortOn fst segs
-        go [] acc = reverse acc
-        go ((a,b):xs) [] = go xs [(a,b)]
-        go ((a,b):xs) ((c,d):rest)
-          | a <= d + 1 = go xs ((c, max d b):rest)
-          | otherwise  = go xs ((a,b):(c,d):rest)
-    in go s []
 
 showTime :: TimeSpec -> String
 showTime elapsed =
