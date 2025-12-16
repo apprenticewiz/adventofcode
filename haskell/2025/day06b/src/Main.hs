@@ -50,7 +50,7 @@ showTime elapsed =
        then show ns ++ " ns"
        else if ns < 1000000
        then show (ns / 1000.0) ++ " μs"
-       else if ns < 10000000000
+       else if ns < 1000000000
             then show (ns / 1000000.0) ++ " ms"
             else show (ns / 1000000000.0) ++ " s"
 

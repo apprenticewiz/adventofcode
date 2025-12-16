@@ -117,7 +117,7 @@ buildNullspaceBasis rows pivots frees = map buildVector frees
         let xWithFree = foldl (setFree f) 0 frees
         in foldl (setPivot f) xWithFree pivots
       where
-        setFree f acc freeCol = if freeCol == f then setBit acc freeCol else acc
+        setFree x acc freeCol = if freeCol == x then setBit acc freeCol else acc
 
         setPivot freeCol acc pivotCol =
             let coeff = findCoeff pivotCol freeCol
