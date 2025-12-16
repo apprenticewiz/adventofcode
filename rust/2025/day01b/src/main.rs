@@ -13,22 +13,18 @@ fn process_file(filename: &str) -> io::Result<i64> {
     let contents = fs::read_to_string(filename)?;
     let mut dial: i64 = 50;
     let mut zeros: i64 = 0;
-    
     for line in contents.lines() {
         if line.is_empty() {
             continue;
         }
-        
         let bytes = line.as_bytes();
         let dir = bytes[0];
         let amt_str = &line[1..];
-        
         let delta = match dir {
             b'L' => -amt_str.parse::<i64>().unwrap(),
             b'R' => amt_str.parse::<i64>().unwrap(),
             _ => 0,
         };
-        
         let steps = delta.abs();
         let dist = if dial == 0 {
             100
