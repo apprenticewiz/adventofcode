@@ -20,20 +20,22 @@ fn process_file(filename: &str) -> io::Result<i64> {
         let mut start_idx = 0;
         for i in 0..NUM_DIGITS {
             let end_idx = len - (NUM_DIGITS - i - 1);
-            let (rel_idx, &max_byte) = bytes[start_idx..end_idx]
-                .iter()
-                .enumerate()
-                .max_by_key(|&(_, &b)| b)
-                .unwrap();
+            if start_idx >= end_idx {
+                break;
+            }
+            let slice = &bytes[start_idx..end_idx];
+            let &max_byte = slice.iter().max().unwrap();            
+            let rel_idx = slice.iter().position(|&b| b == max_byte).unwrap();
             let digit = (max_byte - b'0') as i64;
             digits.push(digit);
             start_idx += rel_idx + 1;
         }
-        let number = digits.iter().fold(0, |acc, &d| acc * 10 + d);
+        let number = digits.iter().fold(0i64, |acc, &d| acc * 10 + d);
         result += number;
     }
     Ok(result)
 }
+
 
 fn display_duration(duration: u128) {
     print!("elapsed time: ");
