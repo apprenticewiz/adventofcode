@@ -21,7 +21,7 @@ fn process_file(filename: &str) -> io::Result<i64> {
         let delta = match dir {
             'L' => -amt_str.parse::<i64>().unwrap(),
             'R' => amt_str.parse::<i64>().unwrap(),
-            _ => 0
+            _ => 0,
         };
         dial = (dial + delta) % 100;
         if dial == 0 {
