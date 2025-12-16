@@ -24,7 +24,7 @@ fn process_file(filename: &str) -> io::Result<i64> {
                 break;
             }
             let slice = &bytes[start_idx..end_idx];
-            let &max_byte = slice.iter().max().unwrap();            
+            let &max_byte = slice.iter().max().unwrap();
             let rel_idx = slice.iter().position(|&b| b == max_byte).unwrap();
             let digit = (max_byte - b'0') as i64;
             digits.push(digit);
