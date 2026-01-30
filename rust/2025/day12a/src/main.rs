@@ -84,23 +84,19 @@ fn parse_input(content: &str) -> (HashMap<usize, Shape>, Vec<Region>) {
     let lines: Vec<&str> = content.lines().collect();
     let mut shapes: HashMap<usize, Shape> = HashMap::new();
     let mut regions: Vec<Region> = Vec::new();
-
     let mut i = 0;
-    // Parse shapes until we hit a region line (WxH: format)
     while i < lines.len() {
         let line = lines[i];
         if line.is_empty() {
             i += 1;
             continue;
         }
-        // Check if this looks like a region line
         if line.contains('x') && line.contains(':') {
             let parts: Vec<&str> = line.split(':').collect();
             if parts.len() >= 2 && parts[0].contains('x') {
                 break;
             }
         }
-        // Check if this is a shape header (number followed by colon)
         if let Some((idx_str, _)) = line.split_once(':') {
             if idx_str.chars().all(|c| c.is_ascii_digit()) {
                 let mut shape_lines = vec![line];
@@ -124,8 +120,6 @@ fn parse_input(content: &str) -> (HashMap<usize, Shape>, Vec<Region>) {
         }
         i += 1;
     }
-
-    // Parse regions
     while i < lines.len() {
         let line = lines[i];
         if !line.is_empty() {
@@ -135,7 +129,6 @@ fn parse_input(content: &str) -> (HashMap<usize, Shape>, Vec<Region>) {
         }
         i += 1;
     }
-
     (shapes, regions)
 }
 
@@ -158,12 +151,10 @@ fn transformations(shape: &Shape) -> Vec<Shape> {
     for _ in 0..3 {
         rots.push(rot90(rots.last().unwrap()));
     }
-
     let mut all_trans: Vec<Shape> = rots.iter().cloned().collect();
     for rot in &rots {
         all_trans.push(flip_h(rot));
     }
-
     let mut seen: HashSet<Shape> = HashSet::new();
     let mut unique = Vec::new();
     for s in all_trans {
@@ -183,39 +174,31 @@ fn try_place_helper(
     occupied: &mut [bool],
     trans_cache: &[Vec<Shape>],
 ) -> bool {
-    // Find next shape to place (starting from shape_idx)
     let mut idx = shape_idx;
     while idx < counts.len() && counts[idx] == 0 {
         idx += 1;
     }
-    
     if idx >= counts.len() {
-        return true; // All shapes placed
+        return true;
     }
-
     let orientations = &trans_cache[idx];
-    
     for orientation in orientations {
         for r in 0..h as i32 {
             for c in 0..w as i32 {
                 if is_valid_placement(w, h, occupied, orientation, r, c) {
                     place_shape(w, occupied, orientation, r, c);
                     counts[idx] -= 1;
-
                     if try_place_helper(w, h, counts, idx, occupied, trans_cache) {
-                        // Restore state before returning (for correctness if caller needs it)
                         counts[idx] += 1;
                         unplace_shape(w, occupied, orientation, r, c);
                         return true;
                     }
-
                     counts[idx] += 1;
                     unplace_shape(w, occupied, orientation, r, c);
                 }
             }
         }
     }
-
     false
 }
 
@@ -226,12 +209,9 @@ fn try_place(w: usize, h: usize, shapes: &HashMap<usize, Shape>, present_counts:
         .enumerate()
         .filter_map(|(idx, &c)| shapes.get(&idx).map(|s| c * s.len()))
         .sum();
-
     if required_area > total_area {
         return false;
     }
-
-    // Build transformation cache indexed by shape index
     let max_idx = present_counts.len();
     let trans_cache: Vec<Vec<Shape>> = (0..max_idx)
         .map(|idx| {
@@ -245,7 +225,6 @@ fn try_place(w: usize, h: usize, shapes: &HashMap<usize, Shape>, present_counts:
 
     let mut occupied = vec![false; w * h];
     let mut counts = present_counts.to_vec();
-    
     try_place_helper(w, h, &mut counts, 0, &mut occupied, &trans_cache)
 }
 
