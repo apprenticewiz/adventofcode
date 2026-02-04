@@ -40,6 +40,7 @@ showTime elapsed =
        else if ns < 1000000000
             then show (ns / 1000000.0) ++ " ms"
             else show (ns / 1000000000.0) ++ " s"
+
 main :: IO ()
 main = do
     args <- getArgs
