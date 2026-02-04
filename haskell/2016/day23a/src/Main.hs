@@ -7,6 +7,8 @@ import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import Text.Parsec hiding (State)
 import Text.Parsec.String (Parser)
+import Control.DeepSeq
+import System.Clock
 
 data Cpu = Cpu
     { a  :: Int
@@ -157,13 +159,29 @@ process content =
     where
         initialCpu = Cpu { a = 7, b = 0, c = 0, d = 0, pc = 0 }
 
+
+showTime :: TimeSpec -> String
+showTime elapsed =
+    let ns = fromIntegral (toNanoSecs elapsed) :: Double
+    in if ns < 1000
+       then show ns ++ " ns"
+       else if ns < 1000000
+       then show (ns / 1000.0) ++ " μs"
+       else if ns < 1000000000
+            then show (ns / 1000000.0) ++ " ms"
+            else show (ns / 1000000000.0) ++ " s"
 main :: IO ()
 main = do
     args <- getArgs
     progname <- getProgName
     case args of
         [filename] -> do
+            start <- getTime Monotonic
             content <- readFile filename
             let result = process content
+            result `deepseq` return ()
+            end <- getTime Monotonic
+            let elapsed = diffTimeSpec start end
             putStrLn $ "result = " ++ show result
+            putStrLn $ "elapsed time: " ++ showTime elapsed
         _ -> usage progname

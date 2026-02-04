@@ -8,6 +8,8 @@ import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import Text.Parsec
 import Text.Parsec.String
+import Control.DeepSeq
+import System.Clock
 
 type Sue = Map.Map String Int
 
@@ -63,13 +65,29 @@ process content =
                    [("children", 3), ("cats", 7), ("samoyeds", 2), ("pomeranians", 3), ("akitas", 0),
                     ("vizslas", 0), ("goldfish", 5), ("trees", 3), ("cars", 2), ("perfumes", 1)]
 
+
+showTime :: TimeSpec -> String
+showTime elapsed =
+    let ns = fromIntegral (toNanoSecs elapsed) :: Double
+    in if ns < 1000
+       then show ns ++ " ns"
+       else if ns < 1000000
+       then show (ns / 1000.0) ++ " μs"
+       else if ns < 1000000000
+            then show (ns / 1000000.0) ++ " ms"
+            else show (ns / 1000000000.0) ++ " s"
 main :: IO ()
 main = do
     args <- getArgs
     progname <- getProgName
     case args of
         [filename] -> do
+            start <- getTime Monotonic
             content <- readFile filename
             let result = process content
+            result `deepseq` return ()
+            end <- getTime Monotonic
+            let elapsed = diffTimeSpec start end
             putStrLn $ "result = " ++ show result
+            putStrLn $ "elapsed time: " ++ showTime elapsed
         _ -> usage progname

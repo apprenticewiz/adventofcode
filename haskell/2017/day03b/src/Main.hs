@@ -4,6 +4,8 @@ import qualified Data.Map.Strict as Map
 import System.Environment
 import System.Exit
 import System.IO
+import Control.DeepSeq
+import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -28,12 +30,28 @@ process target = go (0, 0) (Map.singleton (0, 0) 1) directions 1
     go _ _ [] _ = error "Ran out of directions, which should be impossible."
 
 
+
+showTime :: TimeSpec -> String
+showTime elapsed =
+    let ns = fromIntegral (toNanoSecs elapsed) :: Double
+    in if ns < 1000
+       then show ns ++ " ns"
+       else if ns < 1000000
+       then show (ns / 1000.0) ++ " μs"
+       else if ns < 1000000000
+            then show (ns / 1000000.0) ++ " ms"
+            else show (ns / 1000000000.0) ++ " s"
 main :: IO ()
 main = do
     args <- getArgs
     progname <- getProgName
     case args of
         [n] -> do
+            start <- getTime Monotonic
             let result = process (read n)
+            result `deepseq` return ()
+            end <- getTime Monotonic
+            let elapsed = diffTimeSpec start end
             putStrLn $ "result = " ++ show result
+            putStrLn $ "elapsed time: " ++ showTime elapsed
         _ -> usage progname

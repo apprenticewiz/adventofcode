@@ -10,6 +10,8 @@ import Data.Ord
 import System.Environment
 import System.Exit
 import System.IO
+import Control.DeepSeq
+import System.Clock
 
 gridDimensions :: (Int, Int)
 gridDimensions = (300, 300)
@@ -79,6 +81,17 @@ process serial =
         (x, y, s, _) = maximumBy (comparing (\(_ ,_ ,_ ,p) -> p)) candidates
     in (x, y, s)
 
+
+showTime :: TimeSpec -> String
+showTime elapsed =
+    let ns = fromIntegral (toNanoSecs elapsed) :: Double
+    in if ns < 1000
+       then show ns ++ " ns"
+       else if ns < 1000000
+       then show (ns / 1000.0) ++ " μs"
+       else if ns < 1000000000
+            then show (ns / 1000000.0) ++ " ms"
+            else show (ns / 1000000000.0) ++ " s"
 main :: IO ()
 main = do
     args <- getArgs
@@ -86,6 +99,11 @@ main = do
     case args of
         [input] -> do
             let serial = read input
+            start <- getTime Monotonic
                 result = process serial
+            result `deepseq` return ()
+            end <- getTime Monotonic
+            let elapsed = diffTimeSpec start end
             putStrLn $ "result = " ++ show result
+            putStrLn $ "elapsed time: " ++ showTime elapsed
         _ -> usage progname

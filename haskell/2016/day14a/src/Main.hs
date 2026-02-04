@@ -9,6 +9,8 @@ import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import Text.Printf (printf)
+import Control.DeepSeq
+import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -53,12 +55,28 @@ process salt =
     let keys = findKeys salt
     in keys !! 63
 
+
+showTime :: TimeSpec -> String
+showTime elapsed =
+    let ns = fromIntegral (toNanoSecs elapsed) :: Double
+    in if ns < 1000
+       then show ns ++ " ns"
+       else if ns < 1000000
+       then show (ns / 1000.0) ++ " μs"
+       else if ns < 1000000000
+            then show (ns / 1000000.0) ++ " ms"
+            else show (ns / 1000000000.0) ++ " s"
 main :: IO ()
 main = do
     args <- getArgs
     progname <- getProgName
     case args of
         [salt] -> do
+            start <- getTime Monotonic
             let result = process salt
+            result `deepseq` return ()
+            end <- getTime Monotonic
+            let elapsed = diffTimeSpec start end
             putStrLn $ "result = " ++ show result
+            putStrLn $ "elapsed time: " ++ showTime elapsed
         _ -> usage progname

@@ -8,6 +8,8 @@ import Data.Set (Set)
 import System.Environment
 import System.Exit
 import System.IO
+import Control.DeepSeq
+import System.Clock
 
 type Coordinate = (Int, Int)
 
@@ -53,12 +55,28 @@ process n = bfs (Seq.singleton (startPos, 0)) (Set.singleton startPos)
     getNeighbors :: Coordinate -> [Coordinate]
     getNeighbors (x, y) = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
 
+
+showTime :: TimeSpec -> String
+showTime elapsed =
+    let ns = fromIntegral (toNanoSecs elapsed) :: Double
+    in if ns < 1000
+       then show ns ++ " ns"
+       else if ns < 1000000
+       then show (ns / 1000.0) ++ " μs"
+       else if ns < 1000000000
+            then show (ns / 1000000.0) ++ " ms"
+            else show (ns / 1000000000.0) ++ " s"
 main :: IO ()
 main = do
     args <- getArgs
     progname <- getProgName
     case args of
         [n] -> do
+            start <- getTime Monotonic
             let result = process (read n :: Int)
+            result `deepseq` return ()
+            end <- getTime Monotonic
+            let elapsed = diffTimeSpec start end
             putStrLn $ "result = " ++ show result
+            putStrLn $ "elapsed time: " ++ showTime elapsed
         _ -> usage progname
