@@ -1,12 +1,12 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Int (Int32)
 import Data.List (group)
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, readFile, stderr)
-import Control.DeepSeq
-import System.Clock
 
 type RLE = [(Char, Int)]
 
@@ -28,7 +28,6 @@ process = (fromIntegral . iterateSteps 40)
   where
     iterateSteps n inputStr = totalLength (iterate lookAndSay (encode inputStr) !! n)
     totalLength = sum . map snd
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

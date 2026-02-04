@@ -1,14 +1,14 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad.State
 import Data.Bits
 import Data.Vector (Vector, (!), (//))
 import qualified Data.Vector as Vector
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 data Cpu = Cpu
     { registers :: Vector Int
@@ -131,7 +131,6 @@ process content =
     in case evalState (runProgram program) (cpu, 0) of
         Nothing -> error "program terminated without hitting comparison instruction"
         Just instCount -> instCount
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

@@ -1,16 +1,16 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad (forM_)
 import Control.Monad.ST (ST)
 import Data.Array.ST (STUArray, newArray, readArray, runSTUArray, writeArray)
 import Data.Array.Unboxed (elems)
+import Data.Int (Int32)
+import Data.Word (Word8)
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
-import Data.Int (Int32)
-import Data.Word (Word8)
-import Control.DeepSeq
-import System.Clock
 
 data Action = TurnOn | TurnOff | Toggle
 
@@ -46,7 +46,6 @@ process content =
                         _ -> error ("malformed input line: " ++ line)
                 return grid
     in sum $ map fromIntegral (elems final)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

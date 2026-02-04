@@ -1,10 +1,10 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 diskLen :: Int
 diskLen = 35651584
@@ -35,7 +35,6 @@ process inputData =
         pairwiseChecksum (x:y:rest)
             | x == y    = '1' : pairwiseChecksum rest
             | otherwise = '0' : pairwiseChecksum rest
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

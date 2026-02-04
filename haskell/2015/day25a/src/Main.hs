@@ -1,12 +1,12 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, readFile, stderr)
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -36,7 +36,6 @@ process content =
     case parse file "" content of
         Left err -> error (show err)
         Right (row, col) -> generate (row, col)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

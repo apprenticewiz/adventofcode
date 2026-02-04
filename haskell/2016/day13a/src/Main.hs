@@ -1,15 +1,15 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Bits
-import qualified Data.Sequence as Seq
 import Data.Sequence (Seq)
-import qualified Data.Set as Set
 import Data.Set (Set)
+import qualified Data.Sequence as Seq
+import qualified Data.Set as Set
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 type Coordinate = (Int, Int)
 
@@ -54,7 +54,6 @@ process n = bfs (Seq.singleton (startPos, 0)) (Set.singleton startPos)
 
     getNeighbors :: Coordinate -> [Coordinate]
     getNeighbors (x, y) = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

@@ -1,12 +1,12 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Sequence (Seq, (|>))
 import qualified Data.Sequence as Seq
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do

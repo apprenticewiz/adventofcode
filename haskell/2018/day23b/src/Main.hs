@@ -1,15 +1,15 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Ord
 import Data.PQueue.Max ( MaxQueue )
 import qualified Data.PQueue.Max as MaxQueue
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 data Bot = Bot
   { bx :: Int
@@ -121,7 +121,6 @@ process content =
                 pq0 = MaxQueue.insert (QItem initialP initial) MaxQueue.empty
                 (_, bestPoint) = search pq0 bots
             in manhattan bestPoint (0, 0, 0)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

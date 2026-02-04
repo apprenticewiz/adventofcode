@@ -1,13 +1,13 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.List
 import Data.Map.Strict ( Map )
 import qualified Data.Map.Strict as Map
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 type Position = (Int, Int)
 
@@ -123,7 +123,6 @@ process :: String -> (Int, Int)
 process content =
     let (track, carts) = parseInput content
     in findCrash track carts
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

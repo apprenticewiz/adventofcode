@@ -1,13 +1,13 @@
 module Main (main) where
 
+import Control.DeepSeq
 import Data.Int (Int32)
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import Text.Parsec hiding (State)
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 data Ingredient = Ingredient
   { capacity   :: Int
@@ -83,7 +83,6 @@ process content =
     case parse file "" content of
         Left err -> error (show err)
         Right ingredients -> fromIntegral $ maxScore ingredients
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

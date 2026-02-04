@@ -1,16 +1,16 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Char
 import Data.List
-import qualified Data.Map.Strict as Map
 import Data.Ord
+import qualified Data.Map.Strict as Map
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -77,7 +77,6 @@ process content =
         Right rooms ->
             let realRooms = filter isReal rooms
             in findRoom realRooms
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

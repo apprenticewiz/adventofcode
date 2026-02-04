@@ -1,19 +1,19 @@
 module Main ( main ) where
 
-import qualified Control.Applicative as App
+import Control.DeepSeq
 import Data.List
-import qualified Data.Map.Strict as Map
 import Data.Map.Strict (Map)
 import Data.Maybe
+import qualified Control.Applicative as App
+import qualified Data.Map.Strict as Map
 import qualified Data.Sequence as Seq
 import qualified Data.Set as Set
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec hiding (State)
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 data Object = Generator String | Microchip String
               deriving (Eq, Ord, Show)
@@ -136,7 +136,6 @@ process content =
     case parse file "" content of
         Left err -> error (show err)
         Right initSt -> bfs initSt
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

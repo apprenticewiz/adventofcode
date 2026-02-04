@@ -1,12 +1,12 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import Data.Int (Int32)
 import Data.List (any, elemIndices, isInfixOf)
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, readFile, stderr)
-import Data.Int (Int32)
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -33,7 +33,6 @@ process :: String -> Int32
 process content =
     let contentLines = lines content
     in sum $ map (\x -> if prop1 x && prop2 x && prop3 x then 1 else 0) contentLines
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

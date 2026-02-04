@@ -1,19 +1,19 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad.State.Strict
-import qualified Crypto.Hash.MD5 as MD5
-import qualified Data.ByteString as ByteString
 import Data.ByteString.Builder (toLazyByteString, word8HexFixed)
-import qualified Data.ByteString.Lazy as LazyByteString
 import Data.Char (ord)
-import qualified Data.IntMap.Strict as IntMap
 import Data.IntMap.Strict (IntMap)
 import Data.List (isInfixOf)
+import qualified Crypto.Hash.MD5 as MD5
+import qualified Data.ByteString as ByteString
+import qualified Data.ByteString.Lazy as LazyByteString
+import qualified Data.IntMap.Strict as IntMap
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
-import Control.DeepSeq
-import System.Clock
 
 type Cache = IntMap String
 type HashM = State Cache
@@ -71,7 +71,6 @@ findKeys salt = go 0 []
 
 process :: String -> Int
 process salt = evalState (findKeys salt) IntMap.empty !! 63
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

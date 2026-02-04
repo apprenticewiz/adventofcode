@@ -1,11 +1,11 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import qualified Data.Set as Set
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -20,7 +20,6 @@ process content = step Set.empty 0 $ cycle $ map (read . filter (/= '+')) $ line
         if Set.member freq seen
             then freq
             else step (Set.insert freq seen) (freq + n) ns
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

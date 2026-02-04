@@ -1,11 +1,11 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.List.Split
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 type Component = (Int, Int)
 
@@ -38,7 +38,6 @@ process :: String -> Int
 process content =
     let components = scanComponents content
     in (snd . maximum) [ (length bridge, strength bridge) | bridge <- buildBridges components 0 ]
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

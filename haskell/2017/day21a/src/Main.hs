@@ -1,16 +1,16 @@
 module Main ( main ) where
 
 import Control.Applicative
+import Control.DeepSeq
 import Data.List
 import Data.List.Split
 import Data.Map.Strict ( Map )
-import qualified Data.Map.Strict as Map
 import Data.Maybe
+import qualified Data.Map.Strict as Map
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 type Grid = [String]
 
@@ -70,7 +70,6 @@ process content =
         start = [".#.","..#","###"]
         final = iterateEnhance 5 rules start
     in countLit final
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

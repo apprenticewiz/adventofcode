@@ -1,13 +1,13 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Array.Unboxed ( UArray )
 import qualified Data.Array.Unboxed as Array
 import qualified Data.Sequence as Seq
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -41,7 +41,6 @@ process content =
                 circle' = Seq.insertAt nextPos currentMarble circle
                 nextPlayer = (currentPlayer + 1) `mod` numPlayers
             in simulate nextPos nextPlayer numPlayers (currentMarble + 1) lastMarble circle' scores
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

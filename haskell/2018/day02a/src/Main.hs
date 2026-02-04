@@ -1,11 +1,11 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.List
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -18,7 +18,6 @@ process content =
         twos = length [ l | l <- ls, any (\x -> length x == 2) $ group $ sort l ]
         threes = length [ l | l <- ls, any (\x -> length x == 3) $ group $ sort l ]
     in twos * threes
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

@@ -1,16 +1,16 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import Data.Char (ord)
+import Data.List (isInfixOf)
+import Data.Word (Word8)
 import qualified Crypto.Hash.MD5 as MD5
 import qualified Data.ByteString as ByteString
-import Data.Char (ord)
-import Data.Word (Word8)
-import Data.List (isInfixOf)
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import Text.Printf (printf)
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -54,7 +54,6 @@ process :: String -> Int
 process salt =
     let keys = findKeys salt
     in keys !! 63
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

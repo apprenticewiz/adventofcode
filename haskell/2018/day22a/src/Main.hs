@@ -1,11 +1,11 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Array
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 parse :: String -> (Int, (Int, Int))
 parse content =
@@ -45,7 +45,6 @@ usage :: String -> IO ()
 usage progname = do
     hPutStrLn stderr $ "usage: " ++ progname ++ " <input file>"
     exitFailure
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

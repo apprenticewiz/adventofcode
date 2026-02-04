@@ -1,14 +1,14 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Set ( Set )
 import qualified Data.Set as Set
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 type Pots = Set Int
 
@@ -57,7 +57,6 @@ process content =
     case parse file "" content of
         Left err -> error (show err)
         Right (initPots, rules) -> sum $ Set.toList (simulate 20 rules initPots)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

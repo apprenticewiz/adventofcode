@@ -1,12 +1,12 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Char
 import Data.List
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -50,7 +50,6 @@ process contents =
             in simulate steps done' q'' (stillWorking ++ newWork) (time + 1)
       where
         allSteps = (nub . sort) ([ a | (a, _) <- steps ] ++ [ b | (_, b) <- steps ])
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

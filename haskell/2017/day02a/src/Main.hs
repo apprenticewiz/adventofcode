@@ -1,10 +1,10 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -18,7 +18,6 @@ process content =
         step line acc =
             let nums = map read (words line) :: [Int]
             in acc + maximum nums - minimum nums
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

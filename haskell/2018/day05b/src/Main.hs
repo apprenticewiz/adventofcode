@@ -1,12 +1,12 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Char
 import Data.List
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -27,7 +27,6 @@ process content =
     in minimum $ map (\x -> length $ reducePolymer (removeComponent x polymer)) components
   where
     removeComponent ch = filter ((/= ch) . toLower)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

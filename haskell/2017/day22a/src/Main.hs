@@ -1,13 +1,13 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Bifunctor
 import Data.Set ( Set )
 import qualified Data.Set as Set
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -48,7 +48,6 @@ process content =
                     else (turnLeft dir, Set.insert pos infected, infectionBursts + 1)
             pos' = bimap (fst pos +) (snd pos +) dir'
         in go (stepsDone + 1) infectionBursts' pos' dir' infected'
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

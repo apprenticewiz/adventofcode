@@ -1,16 +1,16 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Array (Array, array, assocs, bounds, (!))
 import Data.Char (isDigit)
-import qualified Data.Map.Strict as Map
 import Data.Map (Map)
-import qualified Data.Set as Set
 import Data.Set (Set)
+import qualified Data.Map.Strict as Map
+import qualified Data.Set as Set
+import System.Clock
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
 import System.IO ( hPutStrLn, stderr )
-import Control.DeepSeq
-import System.Clock
 
 type Coordinate = (Int, Int)
 
@@ -87,7 +87,6 @@ process content =
             ]
         graph = buildGraph grid numberLocs
     in findMinPath graph '0' (Set.singleton '0')
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

@@ -1,12 +1,12 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -56,7 +56,6 @@ process content =
         in if distA < minA || (distA == minA && distV < minV) || (distA == minA && distV == minV && distP < minP )
             then (distP, distV, distA, n, n + 1)
             else (minP, minV, minA, closest, n + 1)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

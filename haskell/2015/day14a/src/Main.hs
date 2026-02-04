@@ -1,16 +1,16 @@
 module Main (main) where
 
+import Control.DeepSeq
 import Control.Monad
 import Control.Monad.State
 import Data.Int (Int32)
 import qualified Data.Map.Strict as Map
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import Text.Parsec hiding (State)
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 data ReindeerAction = Flying Int
                     | Resting Int
@@ -69,7 +69,6 @@ process content =
             let race = initRace entries
                 final = simulate 2503 race
             in fromIntegral $ maximum [pos | (_, (pos, _, _, _, _)) <- Map.toList final]
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

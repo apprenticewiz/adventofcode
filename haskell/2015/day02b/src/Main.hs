@@ -1,11 +1,11 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import Data.Int (Int32)
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, readFile, stderr)
-import Data.Int (Int32)
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -31,7 +31,6 @@ process content = foldl processLines 0 (lines content)
                 presentLen = minimum [perim1, perim2, perim3]
                 bowLen = (dimensions !! 0) * (dimensions !! 1) * (dimensions !! 2)
             in acc + presentLen + bowLen
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

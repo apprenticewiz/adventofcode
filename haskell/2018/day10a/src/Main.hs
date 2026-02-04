@@ -1,13 +1,13 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 type Light = ((Int, Int), (Int, Int))
 

@@ -1,14 +1,14 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import qualified Crypto.Hash.MD5 as MD5
 import qualified Data.ByteString as ByteString
 import qualified Data.Sequence as Seq
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Printf
-import Control.DeepSeq
-import System.Clock
 
 type Coordinate = (Int, Int)
 type Path = String
@@ -62,7 +62,6 @@ process passcode =
     case bfs passcode of
         Just path -> path
         Nothing   -> error "No path found"
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

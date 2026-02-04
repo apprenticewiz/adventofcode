@@ -1,15 +1,15 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad.ST
 import Data.Char (digitToInt)
 import Data.STRef
 import qualified Data.Vector.Unboxed as Vector
 import qualified Data.Vector.Unboxed.Mutable as MutableVector
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do

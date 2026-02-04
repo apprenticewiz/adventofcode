@@ -1,12 +1,12 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -54,7 +54,6 @@ process content =
 
     isTls :: ([String], [String]) -> Bool
     isTls (o, i) = any hasAbba o && not (any hasAbba i)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

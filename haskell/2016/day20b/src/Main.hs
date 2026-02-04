@@ -1,11 +1,11 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Range
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -26,7 +26,6 @@ process content =
                 start = read startStr :: Int
                 end = read endStr :: Int
             in start +=+ end
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

@@ -1,11 +1,11 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Array.Unboxed
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 type Position = (Int, Int)
 
@@ -52,7 +52,6 @@ process content =
                                        , grid ! p' /= ' ' ] !! 0
                     in go (r + fst validDir, c + snd validDir) validDir (steps + 1) grid
                 _ -> go (r + dr, c + dc) dir (steps + 1) grid
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

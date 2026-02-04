@@ -1,14 +1,14 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad.State
 import Data.Array
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import Text.Parsec hiding (State)
 import Text.Parsec.String (Parser)
-import Control.DeepSeq
-import System.Clock
 
 data Cpu = Cpu
     { a  :: Int
@@ -169,7 +169,6 @@ process content =
             in evalState runProgram (initialCpu, program)
     where
         initialCpu = Cpu { a = 12, b = 0, c = 0, d = 0, pc = 0 }
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

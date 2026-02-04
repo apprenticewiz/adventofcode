@@ -1,11 +1,11 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Bifunctor
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 type Position = (Int, Int)
 
@@ -46,7 +46,6 @@ process content =
     parseCoords s =
         let (xStr, _:yStr) = span (/= ',') s
         in bimap read read (xStr, yStr)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

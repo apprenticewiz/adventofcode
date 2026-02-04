@@ -1,18 +1,18 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad
 import Control.Monad.State
+import Data.Char (ord)
+import Data.Maybe (catMaybes, isJust)
+import Data.Word (Word8)
+import Numeric (readHex, showHex)
 import qualified Crypto.Hash.MD5 as MD5
 import qualified Data.ByteString as ByteString
-import Data.Char (ord)
-import Data.Word (Word8)
-import Data.Maybe (catMaybes, isJust)
-import Numeric (readHex, showHex)
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -54,7 +54,6 @@ genPassword len base =
 
 process :: String -> String
 process base = evalState (genPassword 8 base) (1, replicate 8 Nothing)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

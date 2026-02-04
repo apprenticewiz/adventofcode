@@ -1,11 +1,11 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Char
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -23,7 +23,6 @@ process :: String -> Int
 process content =
     let polymer = if last content == '\n' then init content else content
     in length $ reducePolymer polymer
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

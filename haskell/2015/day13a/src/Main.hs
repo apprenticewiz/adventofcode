@@ -1,16 +1,16 @@
 module Main (main) where
 
+import Control.DeepSeq
 import Data.Int (Int32)
 import Data.List
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 type HappinessTable = Map.Map (String, String) Int
 
@@ -56,7 +56,6 @@ process content =
                 people = Set.toList $ Set.fromList [ p1 | (p1, _, _) <- arrangements ]
                 (fixed:rest) = people
             in fromIntegral $ maximum $ map (computeScore hapTable . (fixed:)) (permutations rest)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

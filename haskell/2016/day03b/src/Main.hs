@@ -1,11 +1,11 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.List
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -36,7 +36,6 @@ process content =
             genTriples [_, _] xs = xs
             genTriples (a:b:c:rest) xs = genTriples rest ([a, b, c]:xs)
         in reverse $ genTriples ns []
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

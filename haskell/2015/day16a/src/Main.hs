@@ -1,15 +1,15 @@
 module Main (main) where
 
+import Control.DeepSeq
 import Data.Int (Int32)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 type Sue = Map.Map String Int
 
@@ -64,7 +64,6 @@ process content =
                    (Set.fromList (map fst sues))
                    [("children", 3), ("cats", 7), ("samoyeds", 2), ("pomeranians", 3), ("akitas", 0),
                     ("vizslas", 0), ("goldfish", 5), ("trees", 3), ("cars", 2), ("perfumes", 1)]
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

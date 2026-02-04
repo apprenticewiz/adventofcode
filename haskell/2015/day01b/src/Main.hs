@@ -1,11 +1,11 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import Data.Int (Int32)
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, readFile, stderr)
-import Data.Int (Int32)
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -22,7 +22,6 @@ process content = fromIntegral $ fst $ foldl findPosition (0, 0) content
                                 ')' -> count - 1
                                 _ -> count
                 in (pos + 1, count')
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

@@ -1,15 +1,15 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad.State
 import Data.Bits
 import Data.Char (isDigit)
 import Data.Int (Int32)
 import qualified Data.Map as Map
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
-import Control.DeepSeq
-import System.Clock
 
 data Operation = AssignOp String
                | NotOp String
@@ -64,7 +64,6 @@ process content =
         newOps = Map.insert "b" (AssignOp (show a)) ops
         a' = evalState (evaluate newOps "a") Map.empty
     in fromIntegral a'
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

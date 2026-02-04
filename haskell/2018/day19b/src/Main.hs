@@ -1,14 +1,14 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad.State
 import Data.Bits
 import Data.Vector (Vector, (!), (//))
 import qualified Data.Vector as Vector
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 data Cpu = Cpu
     { registers :: Vector Int
@@ -149,7 +149,6 @@ process content =
     in if targetNum > 10000
         then sumOfDivisors targetNum
         else evalState (runProgram program) cpu
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

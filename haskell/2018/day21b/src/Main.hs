@@ -1,15 +1,15 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad.State
 import Data.Bits
-import qualified Data.Set as Set
 import Data.Vector (Vector, (!), (//))
+import qualified Data.Set as Set
 import qualified Data.Vector as Vector
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 data Cpu = Cpu
     { registers :: Vector Int
@@ -149,7 +149,6 @@ process content =
     in case evalState (runUntilSwitch program) cpu of
         Right _ -> error "program terminated without hitting comparison instruction"
         Left firstR5 -> runFastLoop firstR5
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

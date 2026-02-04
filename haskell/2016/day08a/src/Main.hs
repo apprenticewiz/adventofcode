@@ -1,16 +1,16 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad
 import Control.Monad.ST
 import Data.Array.ST
 import Data.Array.Unboxed
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 data Operation = Rect Int Int
                | RotateRow Int Int
@@ -85,7 +85,6 @@ process content =
         Right ops ->
             let finalGrid = applyOps ops
             in sum $ elems finalGrid
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

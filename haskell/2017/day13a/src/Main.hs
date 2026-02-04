@@ -1,12 +1,12 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.List.Split
 import qualified Data.Map.Strict as Map
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -27,7 +27,6 @@ process content =
                 then acc + depth * range
                 else acc
         ) 0 (Map.keys firewall)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

@@ -1,15 +1,15 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Functor ( (<&>) )
 import Data.Map.Strict ( Map )
 import qualified Data.Map.Strict as Map
+import System.Clock
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
 import System.IO ( hPutStrLn, stderr )
 import Text.Parsec ( try, char, digit, letter, newline, spaces, string, between, many1, option, sepBy1, sepEndBy1, parse )
 import Text.Parsec.String ( Parser )
-import Control.DeepSeq
-import System.Clock
 
 data Program = Program
     { weight :: Int
@@ -81,7 +81,6 @@ process content = case parse file "" content of
     let root = findRoot programs
         weights = computeWeights programs root
     in findImbalance programs weights root
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

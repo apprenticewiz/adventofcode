@@ -1,15 +1,15 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.List
 import Data.Map.Strict ( Map )
 import qualified Data.Map.Strict as Map
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 data Event = BeginShift Int
            | Sleeps Int
@@ -80,7 +80,6 @@ process content =
                 let guardTable = Map.findWithDefault Map.empty currentGuard sleepTable
                     guardTable' = Map.unionWith (+) guardTable (Map.fromList [(n, 1) | n <- [sleepStart..mm - 1]])
                 in (Map.insert currentGuard guardTable' sleepTable, currentGuard, -1)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

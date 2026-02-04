@@ -1,13 +1,13 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import qualified Crypto.Hash.MD5 as MD5
 import qualified Data.ByteString as ByteString
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Printf
-import Control.DeepSeq
-import System.Clock
 
 type Coordinate = (Int, Int)
 type Path = String
@@ -56,7 +56,6 @@ dfs passcode = go startPos ""
 
 process :: String -> Int
 process = dfs
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

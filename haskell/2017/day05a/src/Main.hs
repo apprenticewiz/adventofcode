@@ -1,13 +1,13 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad.ST
 import Data.Array.MArray
 import Data.Array.ST
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -30,7 +30,6 @@ process content =
                    offset <- readArray os i
                    writeArray os i (offset + 1)
                    go os (i + offset) (steps + 1)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

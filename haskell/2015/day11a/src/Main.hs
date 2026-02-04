@@ -1,11 +1,11 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Char (ord)
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -45,7 +45,6 @@ valid s = prop1 s && prop2 s && prop3 s
 
 process :: String -> String
 process = head . filter valid . tail . iterate inc
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

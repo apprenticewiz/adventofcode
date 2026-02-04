@@ -1,17 +1,17 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Map.Strict ( Map )
+import Data.Set ( Set )
 import qualified Data.Map.Strict as Map
 import qualified Data.Sequence as Seq
-import Data.Set ( Set )
 import qualified Data.Set as Set
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 data Regex =
     Seq [Regex]
@@ -96,7 +96,6 @@ usage :: String -> IO ()
 usage progname = do
     hPutStrLn stderr $ "usage: " ++ progname ++ " <input file>"
     exitFailure
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

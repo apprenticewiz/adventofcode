@@ -1,12 +1,12 @@
 module Main (main) where
 
+import Control.DeepSeq
 import Data.Int (Int32)
 import Data.List
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -20,7 +20,6 @@ process content =
         minContainers = minimum $ map length combos
         minWays = filter (\x -> length x == minContainers) combos
     in fromIntegral $ length minWays
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

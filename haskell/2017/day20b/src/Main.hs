@@ -1,13 +1,13 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import qualified Data.Map.Strict as Map
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -63,7 +63,6 @@ process content =
         in if all (> 0) dots
             then particles'''
             else loop particles'''
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

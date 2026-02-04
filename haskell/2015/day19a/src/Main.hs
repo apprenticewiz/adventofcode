@@ -1,15 +1,15 @@
 module Main (main) where
 
+import Control.DeepSeq
 import Data.Int (Int32)
 import Data.List
 import qualified Data.Set as Set
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 type Rule = (String, String)
 
@@ -45,7 +45,6 @@ process content =
     applyRule (lhs, rhs) molecule = [ pre ++ rhs ++ suf | (pre, rest) <- zip (inits molecule) (tails molecule),
                                                           lhs `isPrefixOf` rest,
                                                           let suf = drop (length lhs) rest ]
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

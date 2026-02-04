@@ -1,12 +1,12 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec hiding (State)
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -35,7 +35,6 @@ process content =
                     let newT = head [x | x <- [t, t + s ..], (start + x + i) `mod` positions == 0]
                     in (newT, s * positions)
                 ) (0, 1) (zip [1..] (discs ++ [(11, 0)]))
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

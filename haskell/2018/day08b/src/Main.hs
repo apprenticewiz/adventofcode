@@ -1,10 +1,10 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 data Node = Node { children :: [Node], metadata :: [Int] }
             deriving (Show)
@@ -41,7 +41,6 @@ process content =
     let input = map read (words content) :: [Int]
         (root, _) = parseNode input
     in computeValue root
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

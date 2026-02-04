@@ -1,13 +1,13 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad.State
 import Data.List
 import Data.Maybe
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -43,7 +43,6 @@ process content =
                 adjustAt i f xs =
                     let (before, x:after) = splitAt i xs
                     in before ++ (f x : after)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

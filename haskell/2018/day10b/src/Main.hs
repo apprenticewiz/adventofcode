@@ -1,12 +1,12 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 type Light = ((Int, Int), (Int, Int))
 
@@ -62,7 +62,6 @@ process content =
     case parse file "" content of
         Left err -> error (show err)
         Right lights -> calcTime maxBound lights 0
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

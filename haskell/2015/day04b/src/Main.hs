@@ -1,16 +1,16 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import Data.Int (Int32)
+import Data.List (isPrefixOf)
+import Data.Word (Word8)
+import Numeric (showHex)
 import qualified Crypto.Hash.MD5 as MD5
 import qualified Data.ByteString as ByteString
-import Data.Int (Int32)
-import Data.Word (Word8)
-import Data.List (isPrefixOf)
-import Numeric (showHex)
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, readFile, stderr)
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -36,7 +36,6 @@ process = check 1
             in if "000000" `isPrefixOf` digest
                 then n
                 else check (n + 1) key
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

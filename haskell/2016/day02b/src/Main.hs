@@ -1,11 +1,11 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import qualified Data.Map.Strict as Map
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 data Direction = U | D | L | R
                  deriving (Eq, Ord, Show)
@@ -50,7 +50,6 @@ process content =
         'L' -> L
         'R' -> R
         _   -> error "charToDir: expected one of U, D, L, or R"
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

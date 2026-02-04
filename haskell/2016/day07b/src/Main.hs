@@ -1,13 +1,13 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.List
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -54,7 +54,6 @@ process content =
         | otherwise = case o of
                           a:b:c:_ | a == c && a /= b && any (\i -> [b, a, b] `isInfixOf` i) is -> True
                           _ -> hasAbaAndBab (tail o) is
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

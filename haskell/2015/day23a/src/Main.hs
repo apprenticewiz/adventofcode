@@ -1,14 +1,14 @@
 module Main (main) where
 
+import Control.DeepSeq
 import Control.Monad.State
 import qualified Data.Array as Array
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import Text.Parsec hiding (State)
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 data Register = A | B
               deriving (Eq, Show)
@@ -139,7 +139,6 @@ process content =
     Right insns ->
         let prog = Array.array (0, length insns - 1) (zip [0..] insns)
         in fromIntegral $ evalState (execute prog) initCPU
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

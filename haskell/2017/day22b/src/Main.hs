@@ -1,13 +1,13 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Bifunctor
 import Data.Map.Strict ( Map )
 import qualified Data.Map as Map
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 data NodeStatus = Clean | Weakened | Infected | Flagged
                   deriving (Eq, Show)
@@ -63,7 +63,6 @@ process content =
                     Flagged -> (turnAround dir, Map.insert pos Clean statusMap, infectionBursts)
             pos' = bimap (fst pos +) (snd pos +) dir'
         in go (stepsDone + 1) infectionBursts' pos' dir' statusMap'
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

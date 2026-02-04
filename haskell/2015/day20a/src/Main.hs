@@ -3,15 +3,15 @@
 
 module Main (main) where
 
+import Control.DeepSeq
 import Control.Monad
 import Control.Monad.ST
 import Data.Array.ST
 import Data.Int (Int32)
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -36,7 +36,6 @@ solve n = runST $ do
 
 process :: Int -> Int32
 process = fromIntegral . solve
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

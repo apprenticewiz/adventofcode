@@ -1,17 +1,17 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad
 import Control.Monad.ST
 import Data.Array.ST
 import Data.Array.Unboxed ( UArray )
-import qualified Data.Array.Unboxed as Array
 import Data.List
 import Data.Ord
+import qualified Data.Array.Unboxed as Array
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 gridDimensions :: (Int, Int)
 gridDimensions = (300, 300)
@@ -80,7 +80,6 @@ process serial =
             | n <- [1..maxX] ]
         (x, y, s, _) = maximumBy (comparing (\(_ ,_ ,_ ,p) -> p)) candidates
     in (x, y, s)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

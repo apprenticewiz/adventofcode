@@ -1,13 +1,13 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Int (Int32)
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 data JValue = JObject [(String, JValue)]
             | JArray [JValue]
@@ -74,7 +74,6 @@ process content =
     case parse json "" content of
         Left err -> error (show err)
         Right ast -> fromIntegral $ sumJSON ast
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

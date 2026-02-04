@@ -1,10 +1,10 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -25,7 +25,6 @@ process = go False 0
                 else case x of
                     '<' -> go True removed xs
                     _   -> go False removed xs
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

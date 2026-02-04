@@ -1,16 +1,16 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Int (Int32)
 import Data.List (permutations)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import Text.Parsec
 import Text.Parsec.String (Parser)
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -60,7 +60,6 @@ process content =
         distances = buildMap edges
         cities = Set.toList (Set.fromList [ c | (a, b, _) <- edges, c <- [a, b] ])
     in fromIntegral $ longestRoute cities distances
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

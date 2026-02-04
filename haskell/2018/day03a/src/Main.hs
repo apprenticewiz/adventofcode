@@ -1,13 +1,13 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import qualified Data.Map.Strict as Map
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 type Position = (Int, Int)
 
@@ -41,7 +41,6 @@ process content =
                                      in foldr (\p acc' -> Map.insertWith (+) p 1 acc') acc points
                                 ) Map.empty claims
              in Map.size $ Map.filter (> 1) counts
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

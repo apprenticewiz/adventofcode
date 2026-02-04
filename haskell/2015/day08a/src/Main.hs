@@ -1,11 +1,11 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Int (Int32)
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -32,7 +32,6 @@ process content =
         memLens = map memLength contentLines
         diffs = zipWith (-) codeLens memLens
     in fromIntegral $ sum diffs
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

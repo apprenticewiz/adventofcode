@@ -1,14 +1,14 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Map.Strict ( Map )
 import qualified Data.Map.Strict as Map
+import System.Clock
 import System.Environment ( getArgs, getProgName )
 import System.Exit ( exitFailure )
 import System.IO ( hPutStrLn, stderr )
 import Text.Parsec ( digit, letter, newline, spaces, string, eof, many1, option, sepEndBy1, (<|>), choice, try, parse )
 import Text.Parsec.String ( Parser )
-import Control.DeepSeq
-import System.Clock
 
 type Cpu = Map String Int
 
@@ -92,7 +92,6 @@ process content =
                 currentHighest = maximum (Map.elems cpu')
                 highest' = max currentHighest highest
             in (cpu', highest')
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

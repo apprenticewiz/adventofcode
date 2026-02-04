@@ -1,13 +1,13 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import qualified Data.Map.Strict as Map
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 type Position = (Int, Int)
 
@@ -46,7 +46,6 @@ process content =
         fst $ head $ filter (\(n, ((ulx, uly), (lrx, lry))) ->
                                 let points = [ (x, y) | x <- [ulx..lrx], y <- [uly..lry] ]
                                 in all (\p -> cs Map.! p == 1) points) claims
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

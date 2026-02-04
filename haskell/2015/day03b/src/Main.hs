@@ -1,15 +1,15 @@
 module Main ( main ) where
 
-import Data.Int (Int32)
-import Data.List as List
-import Data.Set as Set
-import System.Environment (getArgs, getProgName)
-import System.Exit (exitFailure)
-import System.IO (hPutStrLn, readFile, stderr)
 
 import AOC_Utils.Geometry.Position2D (Position2D(..))
 import Control.DeepSeq
+import Data.Int (Int32)
+import Data.List as List
+import Data.Set as Set
 import System.Clock
+import System.Environment (getArgs, getProgName)
+import System.Exit (exitFailure)
+import System.IO (hPutStrLn, readFile, stderr)
 
 usage :: String -> IO ()
 usage progname = do
@@ -38,7 +38,6 @@ process contents = fromIntegral $ Set.size finalMoves
                                                     '>' -> Position2D { x = x roboSanta + 1, y = y roboSanta }
                                                     _ -> roboSanta
                                in (Set.insert newRoboSanta positions, santa, newRoboSanta, True))
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

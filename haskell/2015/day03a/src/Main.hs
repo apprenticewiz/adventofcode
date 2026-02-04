@@ -1,14 +1,14 @@
 module Main ( main ) where
 
-import Data.Int (Int32)
-import Data.Set as Set
-import System.Environment (getArgs, getProgName)
-import System.Exit (exitFailure)
-import System.IO (hPutStrLn, readFile, stderr)
 
 import AOC_Utils.Geometry.Position2D (Position2D(..))
 import Control.DeepSeq
+import Data.Int (Int32)
+import Data.Set as Set
 import System.Clock
+import System.Environment (getArgs, getProgName)
+import System.Exit (exitFailure)
+import System.IO (hPutStrLn, readFile, stderr)
 
 usage :: String -> IO ()
 usage progname = do
@@ -27,7 +27,6 @@ process contents = fromIntegral $ Set.size $ fst $ Prelude.foldl processMove (Se
                             '>' -> Position2D { x = x santa + 1, y = y santa }
                             _ -> santa
             in (Set.insert newSanta positions, newSanta)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

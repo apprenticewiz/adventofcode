@@ -1,22 +1,22 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad
 import Control.Monad.State
 import Data.Array
 import Data.Bits
 import Data.Char
 import Data.List.Split
-import qualified Data.Sequence as Seq
 import Data.Set ( Set )
-import qualified Data.Set as Set
 import Data.Vector ( Vector )
+import qualified Data.Sequence as Seq
+import qualified Data.Set as Set
 import qualified Data.Vector as Vector
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Printf
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -86,7 +86,6 @@ process key =
         grid = listArray ((0,0),(127,127)) bits
         regions = findRegions grid
     in length regions
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

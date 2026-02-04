@@ -1,13 +1,13 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad
 import Control.Monad.State
 import Data.Array.Unboxed
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 type Grid = UArray (Int, Int) Char
 
@@ -54,7 +54,6 @@ process content =
         trees = countTrees finalGrid
         lumberyards = countLumberyards finalGrid
     in trees * lumberyards
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

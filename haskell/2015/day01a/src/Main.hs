@@ -1,11 +1,11 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import Data.Int (Int32)
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, readFile, stderr)
-import Data.Int (Int32)
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -17,7 +17,6 @@ process content = fromIntegral $ foldl count 0 content
     where count acc '(' = acc + 1
           count acc ')' = acc - 1
           count acc _ = acc
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

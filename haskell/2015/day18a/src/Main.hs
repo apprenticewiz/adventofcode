@@ -1,15 +1,15 @@
 module Main (main) where
 
+import Control.DeepSeq
 import Control.Monad
 import Control.Monad.ST
 import Data.Array.ST
 import Data.Array.Unboxed
 import Data.Int (Int32)
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
-import Control.DeepSeq
-import System.Clock
 
 type Grid = UArray (Int, Int) Bool
 
@@ -61,7 +61,6 @@ process :: String -> Int32
 process content =
     let grid = parseInput content
     in fromIntegral $ countLights $ runSteps 100 grid
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

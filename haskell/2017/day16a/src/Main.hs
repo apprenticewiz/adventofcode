@@ -1,15 +1,15 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad
 import Control.Monad.State
 import Data.Array
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec hiding ( State )
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 data Move = Spin Int
           | Exchange Int Int
@@ -78,7 +78,6 @@ process content =
     case parse file "" content of
         Left err -> error (show err)
         Right moves -> evalState (dance moves) (listArray (0, 15) ['a'..'p'])
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

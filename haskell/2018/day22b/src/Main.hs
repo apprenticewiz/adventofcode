@@ -1,14 +1,14 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Array
-import qualified Data.PSQueue as PSQueue
 import qualified Data.PSQueue as PSQ
+import qualified Data.PSQueue as PSQueue
 import qualified Data.Set as Set
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 data Tool = Torch | Climbing | Neither
             deriving (Eq, Ord, Show, Enum, Bounded)
@@ -105,7 +105,6 @@ usage :: String -> IO ()
 usage progname = do
     hPutStrLn stderr $ "usage: " ++ progname ++ " <input file>"
     exitFailure
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

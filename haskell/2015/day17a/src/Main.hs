@@ -1,12 +1,12 @@
 module Main (main) where
 
+import Control.DeepSeq
 import Data.Int (Int32)
 import Data.List
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -18,7 +18,6 @@ process content =
     let containers = (map read (lines content)) :: [Int]
         combos = filter (\x -> sum x == 150) (subsequences containers)
     in fromIntegral $ length combos
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

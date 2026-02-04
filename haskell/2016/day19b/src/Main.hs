@@ -1,10 +1,10 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 numRows :: Int
 numRows = 40
@@ -23,7 +23,6 @@ josephus n =
 
 process :: Int -> Int
 process = josephus
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

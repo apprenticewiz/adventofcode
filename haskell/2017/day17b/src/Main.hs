@@ -1,10 +1,10 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -21,7 +21,6 @@ process step insertions =
             let pos' = (pos + step) `mod` n + 1
                 valueAfter0' = if pos' == 1 then n else valueAfter0
             in go pos' (n + 1) valueAfter0'
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

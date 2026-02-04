@@ -1,12 +1,12 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Array.Unboxed ( UArray )
 import qualified Data.Array.Unboxed as Array
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 gridDimensions :: (Int, Int)
 gridDimensions = (300, 300)
@@ -39,7 +39,6 @@ process serial =
             in if squarePower > bestPower
                 then findBestPower grid squarePower currPos rest
                 else findBestPower grid bestPower bestPos rest
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

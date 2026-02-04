@@ -1,11 +1,11 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.List
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -21,7 +21,6 @@ process content =
                             [] -> findPair xs
         diffByOne a b = length (filter (uncurry (/=)) (zip a b)) == 1
     in findPair ls
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

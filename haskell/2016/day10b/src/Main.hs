@@ -1,17 +1,17 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad.State
-import qualified Data.Map.Strict as Map
 import Data.List
 import Data.Map.Strict (Map)
 import Data.Maybe
+import qualified Data.Map.Strict as Map
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec hiding (State)
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 type BotId = Int
 
@@ -120,7 +120,6 @@ process content =
         Right (initBots, initRules) ->
             let initState = StateData initBots Map.empty initRules
             in fromJust $ evalState simulate initState
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

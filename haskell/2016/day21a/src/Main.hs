@@ -1,14 +1,14 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.List
 import Data.Maybe
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 data Operation =
     SwapPositions Int Int
@@ -111,7 +111,6 @@ rotateRight n s = rotateLeft (length s - n) s
 process :: String -> String
 process content =
     either (error . show) (foldl' applyOp input) (parse file "" content)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

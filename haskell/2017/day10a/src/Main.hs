@@ -1,13 +1,13 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad
 import Control.Monad.State
 import Data.List.Split
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -36,7 +36,6 @@ process content =
                 (final, _, _) = execState (scramble input) ([0..255], 0, 0)
             in product $ take 2 $ final
         _ -> error "malformed input - expected single line of data"
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

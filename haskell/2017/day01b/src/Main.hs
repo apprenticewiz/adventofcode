@@ -1,10 +1,10 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -16,7 +16,6 @@ process content =
     let l = head $ lines content
         pairs = zip l (drop (length l `div` 2) $ cycle l)
     in sum [ read [x] | (x, y) <- pairs, x == y ]
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

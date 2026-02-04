@@ -1,18 +1,18 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad
 import Control.Monad.State
 import Data.IntMap ( IntMap )
-import qualified Data.IntMap as IntMap
 import Data.Map.Strict ( Map )
+import qualified Data.IntMap as IntMap
 import qualified Data.Map.Strict as Map
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec hiding ( State )
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 data Direction = L | R
                  deriving (Eq, Show)
@@ -94,7 +94,6 @@ process content =
     case parse file "" content of
         Left err -> error (show err)
         Right (initState, numSteps, machine) -> evalState (run numSteps machine) (0, initState, IntMap.empty)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

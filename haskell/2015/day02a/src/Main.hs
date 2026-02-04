@@ -1,11 +1,11 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import Data.Int (Int32)
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, readFile, stderr)
-import Data.Int (Int32)
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -31,7 +31,6 @@ process content = foldl processLines 0 (lines content)
                 surfaceArea = (area1 * 2) + (area2 * 2) + (area3 * 2)
                 minArea = minimum [area1, area2, area3]
             in acc + surfaceArea + minArea
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

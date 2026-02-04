@@ -1,15 +1,15 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.List
-import qualified Data.Map.Strict as Map
 import Data.Ord
+import qualified Data.Map.Strict as Map
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -58,7 +58,6 @@ process content =
     case parse file "" content of
         Left err -> error (show err)
         Right rooms -> foldl (\acc room@(_, idNum, _) -> if isReal room then acc + idNum else acc) 0 rooms
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

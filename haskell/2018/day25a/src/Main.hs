@@ -1,13 +1,13 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.List
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 type Position = (Int, Int, Int, Int)
 
@@ -56,7 +56,6 @@ process content =
     case parse file "" content of
         Left err -> error (show err)
         Right positions -> countConstellations positions
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

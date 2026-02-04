@@ -1,16 +1,16 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad
 import Control.Monad.State
 import Data.Bits
 import Data.Char
 import Data.List.Split
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Printf
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -43,7 +43,6 @@ process content =
                 dense = map (foldr1 xor) chunks
             in concatMap (printf "%02x") dense
         _ -> error "malformed input - expected single line of data"
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

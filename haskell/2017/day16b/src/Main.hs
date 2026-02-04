@@ -1,16 +1,16 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad
 import Control.Monad.State
 import Data.Array
 import Data.List
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec hiding ( State )
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 data Move = Spin Int
           | Exchange Int Int
@@ -94,7 +94,6 @@ process content =
             in states !! numRuns
     where
         nextDance moves s = evalState (dance moves) (listArray (0, 15) s)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

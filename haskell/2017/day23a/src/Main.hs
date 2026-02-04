@@ -2,17 +2,17 @@
 
 module Main (main) where
 
+import Control.DeepSeq
 import Control.Lens
 import Control.Monad.State
 import Data.Array
 import Data.Bifunctor
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec hiding (State)
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 data Operand
     = Register Char
@@ -149,7 +149,6 @@ usage :: String -> IO a
 usage progname = do
     hPutStrLn stderr $ "usage: " ++ progname ++ " <input file>"
     exitFailure
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

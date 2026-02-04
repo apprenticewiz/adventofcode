@@ -1,13 +1,13 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import qualified Data.Set as Set
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 data Direction = North | East | South | West
                  deriving(Eq, Show)
@@ -81,7 +81,6 @@ process content =
         Right moves ->
             let firstRepeat = findFirstRepeat moves
             in manhattanDist firstRepeat
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

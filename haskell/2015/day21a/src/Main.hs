@@ -1,14 +1,14 @@
 module Main (main) where
 
+import Control.DeepSeq
 import Data.Int (Int32)
 import Data.List
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import Text.Parsec hiding (State)
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 data ItemType = Armor | Weapon | Ring
                 deriving (Eq, Show)
@@ -101,7 +101,6 @@ process content =
 
     loadoutCost :: [Item] -> Int
     loadoutCost = sum . map cost
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

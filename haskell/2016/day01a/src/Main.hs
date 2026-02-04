@@ -1,12 +1,12 @@
 module Main ( main ) where
 
+import Control.DeepSeq
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 data Direction = North | East | South | West
                  deriving(Eq, Show)
@@ -66,7 +66,6 @@ process content =
                              ((0, 0), North)
                              moves
              in manhattanDist (x, y)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

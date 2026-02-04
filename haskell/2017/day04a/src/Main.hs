@@ -1,12 +1,12 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.List
 import Data.Maybe
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -22,7 +22,6 @@ process content = (length . mapMaybe valid) (lines content)
             in if length parts == length (nub parts)
                then Just line
                else Nothing
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

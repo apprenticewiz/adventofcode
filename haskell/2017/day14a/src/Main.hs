@@ -1,5 +1,6 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad
 import Control.Monad.State
 import Data.Array
@@ -8,12 +9,11 @@ import Data.Char
 import Data.List.Split
 import Data.Vector ( Vector )
 import qualified Data.Vector as Vector
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Printf
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -56,7 +56,6 @@ process key =
 
         countOnes :: String -> Int
         countOnes s = sum $ map (onesArray !) s
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

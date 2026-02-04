@@ -1,15 +1,15 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.List
 import Data.Map.Strict ( Map )
-import qualified Data.Map.Strict as Map
 import Data.Ord
+import qualified Data.Map.Strict as Map
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
-import Control.DeepSeq
-import System.Clock
 
 type Parser a = Parsec String Int a
 
@@ -184,7 +184,6 @@ usage :: String -> IO ()
 usage progname = do
     hPutStrLn stderr $ "usage: " ++ progname ++ " <input file>"
     exitFailure
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

@@ -3,14 +3,14 @@
 
 module Main (main) where
 
+import Control.DeepSeq
 import qualified Data.Map.Strict as Map
+import System.Clock
 import System.Environment (getArgs, getProgName)
 import System.Exit (exitFailure)
 import System.IO (hPutStrLn, stderr)
 import Text.Parsec hiding (State)
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 data Player = Player
   { playerHP   :: Int
@@ -157,7 +157,6 @@ process content =
             , manaSpent = 0
             }
       in search maxBound initState
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

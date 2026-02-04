@@ -1,13 +1,13 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.Bits
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 type Registers = [Int]
 
@@ -170,7 +170,6 @@ process content =
     case parse file "" content of
         Left err -> error (show err)
         Right samples -> length $ filter id $ map checkSample samples
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

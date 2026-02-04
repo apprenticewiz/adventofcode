@@ -1,13 +1,13 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.List
-import qualified Data.Map.Strict as Map
 import Data.Ord
+import qualified Data.Map.Strict as Map
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -22,7 +22,6 @@ process content =
                        (replicate width Map.empty)
                        ls
     in map (fst . maximumBy (comparing snd) . Map.assocs) histos
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

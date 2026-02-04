@@ -1,15 +1,15 @@
 module Main ( main ) where
 
-import qualified Data.Map.Strict as Map
+import Control.DeepSeq
 import Data.Map.Strict ( Map )
+import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 type Coordinate = (Int, Int)
 
@@ -58,7 +58,6 @@ process content =
               used nodeA > 0,
               used nodeA <= (size nodeB - used nodeB)
             ]
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

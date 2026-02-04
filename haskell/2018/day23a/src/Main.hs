@@ -1,14 +1,14 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Data.List
 import Data.Ord
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 data Bot = Bot
   { bx :: Int
@@ -53,7 +53,6 @@ process content =
         Right bots ->
             let strongest = maximumBy (comparing br) bots
             in countInRange strongest bots
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =

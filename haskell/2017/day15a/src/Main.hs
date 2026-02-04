@@ -1,15 +1,15 @@
 module Main ( main ) where
 
+import Control.DeepSeq
 import Control.Monad
 import Control.Monad.State
 import Data.Bits
+import System.Clock
 import System.Environment
 import System.Exit
 import System.IO
 import Text.Parsec hiding ( State )
 import Text.Parsec.String
-import Control.DeepSeq
-import System.Clock
 
 usage :: String -> IO ()
 usage progname = do
@@ -45,7 +45,6 @@ process content =
     case parse file "" content of
         Left err -> error (show err)
         Right (a, b) -> evalState countMatches (a, b, 0)
-
 
 showTime :: TimeSpec -> String
 showTime elapsed =
