@@ -17,10 +17,10 @@ process content =
          (wire1:wire2:_) ->
             let segments1 = parseSegments wire1
                 segments2 = parseSegments wire2
-                intersections = filter (/= (0, 0)) $ catMaybes [ is | (p1, p2) <- segments1
-                                                                        , (p3, p4) <- segments2
-                                                                        , let is = intersection (p1, p2) (p3, p4)
-                                                                   ]
+                intersections = catMaybes [ is | (p1, p2) <- segments1
+                                               , (p3, p4) <- segments2
+                                               , let is = intersection (p1, p2) (p3, p4)
+                                          ]
             in minimum [ manhattanDistance (0, 0) is | is <- intersections ]
          _ -> error "malformed input"
     where
